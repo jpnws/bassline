@@ -1,6 +1,8 @@
 {
   "name": "bassline",
   "private": true,
+  "module": "src/index.ts",
+  "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts",
@@ -12,7 +14,7 @@
     "@prisma/client": "^5.10.2"
   },
   "devDependencies": {
-    "@types/bun": "^1.0.8",
+    "@types/bun": "latest",
     "eslint": "^8.57.0",
     "prisma": "^5.10.2",
     "typescript": "^5.3.3",
