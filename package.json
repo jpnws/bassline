@@ -22,5 +22,8 @@
   },
   "trustedDependencies": [
     "@prisma/client"
-  ]
+  ],
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
 }
