@@ -1,5 +1,15 @@
 {
-  "dependencies": { "elysia": "^0.8.17" },
+  "name": "bassline",
+  "private": true,
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts",
+    "start": "bun src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "elysia": "^0.8.17"
+  },
   "devDependencies": {
     "@types/bun": "^1.0.8"
   }
