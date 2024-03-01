@@ -10,6 +10,6 @@ declare module 'bun' {
 const app = createApp();
 
 app.listen({
-  hostname: process.env.APP_HOST,
-  port: process.env.APP_PORT,
+  hostname: Bun.env.APP_HOST,
+  port: Bun.env.APP_PORT,
 });
