@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import { describe, beforeEach, afterEach, it, expect } from 'bun:test';
+import { describe, afterAll, it, expect, beforeAll } from 'bun:test';
 
 import Helper from 'tests/helper';
 import { Elysia } from 'elysia';
@@ -13,7 +13,7 @@ describe('Posts API', () => {
   let port: number;
   let prisma: PrismaClient;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     helper = new Helper();
     const spawn = await helper.spawnApp();
     app = spawn.app;
@@ -22,80 +22,215 @@ describe('Posts API', () => {
     prisma = spawn.prisma;
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await app.stop();
     await prisma.$disconnect();
     await helper.dropDb();
   });
 
-  it('should create a board, user, and then a post', async () => {
+  it('should create a single post', async () => {
     // * ========================
     // * Arrange
     // * ========================
     // Create a board.
-    const boardResponse = await request(`http://${hostname}:${port}`)
-      .post('/boards')
-      .send({ name: 'Test board' })
-      .expect('Content-Type', /json/)
-      .expect(201);
-    const { id: boardId } = boardResponse.body;
+    const boardCreateResponse = await helper.createBoard({
+      name: 'test-board-name1',
+    });
+    const { id: boardId } = boardCreateResponse.body;
     // Create a user.
-    const userResponse = await request(`http://${hostname}:${port}`)
-      .post('/users')
-      .send({ role: 'member', username: 'Test user', password: 'password' });
-    const { id: userId } = userResponse.body;
+    const userCreateResponse = await helper.createUser({
+      username: 'test-user-username1',
+      password: 'password',
+    });
+    const { id: userId } = userCreateResponse.body;
     // * ========================
     // * Act
     // * ========================
-    const response = await request(`http://${hostname}:${port}`)
-      .post('/posts')
-      .send({
-        subject: 'Test post',
-        text: 'This is a test post.',
-        boardId: boardId,
-        userId: userId,
-      });
+    const postCreateResponse = await helper.createPost({
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: boardId,
+      userId: userId,
+    });
     // * ========================
     // * Assert
     // * ========================
-    expect(response.status).toBe(201);
+    expect(postCreateResponse.status).toBe(201);
+    const post = postCreateResponse.body;
+    expect(post.subject).toBe('test-post-subject1');
+    expect(post.text).toBe('test-post-text1');
+    expect(post.boardId).toBe(boardId);
+    expect(post.userId).toBe(userId);
   });
 
-  // it('should return multiple posts', async () => {
-  //   // Arrange
-  //   let posts = [
-  //     {
-  //       subject: 'Test post 1',
-  //       text: 'This is a test post.',
-  //       boardId: 1,
-  //       userId: 1,
-  //     },
-  //     {
-  //       subject: 'Test post 2',
-  //       text: 'This is another test post.',
-  //       boardId: 1,
-  //       userId: 1,
-  //     },
-  //   ];
-  //   for (const post of posts) {
-  //     await request(`http://${hostname}:${port}/posts`)
-  //       .post('/posts')
-  //       .send(post)
-  //       .expect('Content-Type', /json/)
-  //       .expect(201);
-  //   }
-  //   // Act
-  //   const response = await request(`http://${hostname}:${port}`)
-  //     .get('/boards/1/posts')
-  //     .expect('Content-Type', /json/)
-  //     .expect(200);
-  //   // Assert
-  //   const res = response.body;
-  //   for (let i = 0; i < posts.length; i++) {
-  //     expect(res[i].subject).toBe(posts[i].subject);
-  //     expect(res[i].text).toBe(posts[i].text);
-  //     expect(res[i].boardId).toBe(posts[i].boardId);
-  //     expect(res[i].userId).toBe(posts[i].userId);
-  //   }
-  // });
+  it('should return a single post', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    // Create a board.
+    const boardCreateResponse = await helper.createBoard({
+      name: 'test-board-name2',
+    });
+    const { id: boardId } = boardCreateResponse.body;
+    // Create a user.
+    const userCreateResponse = await helper.createUser({
+      username: 'test-user-username2',
+      password: 'password',
+    });
+    const { id: userId } = userCreateResponse.body;
+    // Create a post.
+    const newPost = {
+      subject: 'test-post-subject2',
+      text: 'test-post-text2',
+      boardId: boardId,
+      userId: userId,
+    };
+    const postCreateResponse = await helper.createPost(newPost);
+    const { id: postId } = postCreateResponse.body;
+    // * ========================
+    // * Act
+    // * ========================
+    const postGetResponse = await helper.getPost(postId);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postGetResponse.status).toBe(200);
+    const post = postGetResponse.body;
+    expect(post.subject).toBe(newPost.subject);
+    expect(post.text).toBe(newPost.text);
+    expect(post.boardId).toBe(newPost.boardId);
+    expect(post.userId).toBe(newPost.userId);
+  });
+
+  it('should return multiple posts', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    // Create a board.
+    const boardCreateResponse = await helper.createBoard({
+      name: 'test-board-name3',
+    });
+    const { id: boardId } = boardCreateResponse.body;
+    // Create a user.
+    const userCreateResponse = await helper.createUser({
+      username: 'test-user-username3',
+      password: 'password',
+    });
+    const { id: userId } = userCreateResponse.body;
+    // Create multiple posts.
+    let newPosts = [
+      {
+        subject: 'test-post-subject3',
+        text: 'test-post-text3',
+        boardId: boardId,
+        userId: userId,
+      },
+      {
+        subject: 'test-post-subject4',
+        text: 'test-post-text4',
+        boardId: boardId,
+        userId: userId,
+      },
+    ];
+    for (const newPost of newPosts) {
+      await helper.createPost(newPost);
+    }
+    // * ========================
+    // * Act
+    // * ========================
+    const getPostsResponse = await helper.getPostsByBoardId(boardId);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(getPostsResponse.status).toBe(200);
+    const posts = getPostsResponse.body;
+    for (let i = 0; i < newPosts.length; i++) {
+      expect(posts[i].subject).toBe(newPosts[i].subject);
+      expect(posts[i].text).toBe(newPosts[i].text);
+      expect(posts[i].boardId).toBe(newPosts[i].boardId);
+      expect(posts[i].userId).toBe(newPosts[i].userId);
+    }
+  });
+
+  it('should update a post', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    // Create a board.
+    const boardCreateResponse = await helper.createBoard({
+      name: 'test-board-name5',
+    });
+    const { id: boardId } = boardCreateResponse.body;
+    // Create a user.
+    const userCreateResponse = await helper.createUser({
+      username: 'test-user-username5',
+      password: 'password',
+    });
+    const { id: userId } = userCreateResponse.body;
+    // Create a post.
+    const newPost = {
+      subject: 'test-post-subject5',
+      text: 'test-post-text5',
+      boardId: boardId,
+      userId: userId,
+    };
+    const postCreateResponse = await helper.createPost(newPost);
+    const { id: postId } = postCreateResponse.body;
+    // * ========================
+    // * Act
+    // * ========================
+    const updatedPost = {
+      id: postId,
+      subject: 'updated-test-post-subject5',
+      text: 'updated-test-post-text5',
+      boardId: boardId,
+      userId: userId,
+    };
+    const postUpdateResponse = await helper.updatePost(postId, updatedPost);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postUpdateResponse.status).toBe(200);
+    const post = postUpdateResponse.body;
+    expect(post.subject).toBe(updatedPost.subject);
+    expect(post.text).toBe(updatedPost.text);
+    expect(post.boardId).toBe(updatedPost.boardId);
+    expect(post.userId).toBe(updatedPost.userId);
+  });
+
+  it('should delete a post', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    // Create a board.
+    const boardCreateResponse = await helper.createBoard({
+      name: 'test-board-name6',
+    });
+    const { id: boardId } = boardCreateResponse.body;
+    // Create a user.
+    const userCreateResponse = await helper.createUser({
+      username: 'test-user-username6',
+      password: 'password',
+    });
+    const { id: userId } = userCreateResponse.body;
+    // Create a post.
+    const newPost = {
+      subject: 'test-post-subject6',
+      text: 'test-post-text6',
+      boardId: boardId,
+      userId: userId,
+    };
+    const postCreateResponse = await helper.createPost(newPost);
+    const { id: postId } = postCreateResponse.body;
+    // * ========================
+    // * Act
+    // * ========================
+    const postDeleteResponse = await helper.deletePost(postId);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postDeleteResponse.status).toBe(202);
+    const postGetResponse = await helper.getPost(postId);
+    expect(postGetResponse.status).toBe(404);
+  });
 });
