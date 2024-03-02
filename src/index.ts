@@ -3,13 +3,6 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-declare module 'bun' {
-  interface Env {
-    APP_HOST: string;
-    APP_PORT: number;
-  }
-}
-
 const app = createApp(prisma);
 
 app.listen({
