@@ -25,6 +25,13 @@ export const createApp = (prisma: PrismaClient, swagger?: any) => {
   }
 
   /**
+   * API health check.
+   */
+  app.get('/health_check', ({ set }) => {
+    set.status = 200;
+  });
+
+  /**
    * Retrieves all boards.
    */
   app.get('/boards', async ({ set }) => {
