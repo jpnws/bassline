@@ -1,4 +1,7 @@
 import { createApp } from './app';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 declare module 'bun' {
   interface Env {
@@ -7,7 +10,7 @@ declare module 'bun' {
   }
 }
 
-const app = createApp();
+const app = createApp(prisma);
 
 app.listen({
   hostname: Bun.env.APP_HOST,
