@@ -127,6 +127,13 @@ export default class Helper {
     }
   }
 
+  async getBoards(): Promise<superagent.Response> {
+    const res = await request(`http://${this.hostname}:${this.port}`).get(
+      '/boards'
+    );
+    return res;
+  }
+
   async createBoard(board: { name: string }): Promise<superagent.Response> {
     const res = await request(`http://${this.hostname}:${this.port}`)
       .post('/boards')
