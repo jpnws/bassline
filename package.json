@@ -10,16 +10,22 @@
     "test": "bun test"
   },
   "dependencies": {
-    "elysia": "^0.8.17",
-    "@prisma/client": "^5.10.2"
+    "@prisma/client": "^5.10.2",
+    "elysia": "^0.8.17"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/pg": "^8.11.2",
+    "@types/supertest": "^6.0.2",
+    "@types/uuid": "^9.0.8",
     "eslint": "^8.57.0",
+    "pg": "^8.11.3",
     "prisma": "^5.10.2",
+    "supertest": "^6.3.4",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3",
-    "typescript-eslint": "^7.1.0"
+    "typescript-eslint": "^7.1.0",
+    "uuid": "^9.0.1"
   },
   "trustedDependencies": [
     "@prisma/client"
