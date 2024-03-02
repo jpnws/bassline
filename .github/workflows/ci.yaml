@@ -1,0 +1,67 @@
+name: ci
+
+on: [push, pull_request]
+
+# Environment variables available to the application during CI tests.
+# No need for APP_PORT as the CI test will use a random application port.
+env:
+  APP_HOST: 127.0.0.1
+  DB_HOST: 127.0.0.1
+  DB_PORT: 5432
+  DB_USER: postgres
+  DB_PASS: password
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      # Prepare the PostgreSQL service for the CI test.
+      # Postgres server is specifically for CI tests.
+      # No need for a DB to be initiated as integration test creates random DBs.
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        # Check if postgres server is ready to accept connections.
+        # This is to ensure that the server is ready before running the tests.
+        # Check every 10 seconds with a timeout of 5 seconds and 3 retries.
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    steps:
+      # Checkout the repository so that the code can be used by the workflow.
+      - uses: actions/checkout@v4
+
+      # Install the Node.js runtime.
+      - name: Install Node.js runtime.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Install the Bun.js runtime.
+      - name: Install Bun.js runtime.
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      # Cache Node.js modules to speed up the build for future runs.
+      - name: Cache Node.js modules.
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install bun and node dependencies.
+        run: bun install
+
+      - name: Run tests.
+        run: bun test
