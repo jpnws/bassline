@@ -17,6 +17,7 @@
     "@types/bun": "latest",
     "eslint": "^8.57.0",
     "prisma": "^5.10.2",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3",
     "typescript-eslint": "^7.1.0"
   },
@@ -24,6 +25,6 @@
     "@prisma/client"
   ],
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "tsx prisma/seed.ts"
   }
 }
