@@ -1,4 +1,4 @@
-import { Elysia, t } from 'elysia';
+import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 
 type Postbody = {
@@ -11,6 +11,22 @@ type Postbody = {
 
 export const createApp = (prisma: PrismaClient) => {
   const app = new Elysia();
+
+  app.post('/boards', async ({ body, set }) => {
+    const { name } = body as { name: string };
+    try {
+      const board = await prisma.board.create({
+        data: {
+          name,
+        },
+      });
+      set.status = 201;
+      return board;
+    } catch (error) {
+      console.error('Failed to create board:', error);
+      set.status = 500;
+    }
+  });
 
   app.get('/boards/:id/posts', async ({ params: { id } }) => {
     try {
@@ -36,27 +52,22 @@ export const createApp = (prisma: PrismaClient) => {
     }
   });
 
-  app.post('/posts', async ({ body }) => {
+  app.post('/posts', async ({ body, set }) => {
     const { subject, text, boardId, userId } = body as Postbody;
     try {
-      return await prisma.post.create({
+      const post = await prisma.post.create({
         data: {
           subject,
           text,
-          board: {
-            connect: {
-              id: boardId,
-            },
-          },
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
+          boardId,
+          userId,
         },
       });
+      set.status = 201;
+      return post;
     } catch (error) {
       console.error('Failed to create post:', error);
+      set.status = 500;
     }
   });
 
@@ -86,6 +97,25 @@ export const createApp = (prisma: PrismaClient) => {
       });
     } catch (error) {
       console.error('Failed to delete post:', error);
+    }
+  });
+
+  app.post('/users', async ({ body, set }) => {
+    const { username, password } = body as {
+      username: string;
+      password: string;
+    };
+    try {
+      const user = prisma.user.create({
+        data: {
+          username,
+          password,
+        },
+      });
+      set.status = 201;
+      return user;
+    } catch (error) {
+      console.error('Failed to create user:', error);
     }
   });
 
