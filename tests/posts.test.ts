@@ -1,5 +1,3 @@
-import request from 'supertest';
-
 import { describe, afterAll, it, expect, beforeAll } from 'bun:test';
 
 import Helper from 'tests/helper';
