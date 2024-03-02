@@ -6,10 +6,10 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts",
-    "start": "bun src/index.ts",
-    "test": "bun test"
+    "start": "bun src/index.ts"
   },
   "dependencies": {
+    "@elysiajs/swagger": "^0.8.5",
     "@prisma/client": "^5.10.2",
     "elysia": "^0.8.17"
   },
