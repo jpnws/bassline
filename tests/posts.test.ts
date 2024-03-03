@@ -7,16 +7,12 @@ import { PrismaClient } from '@prisma/client';
 describe('Posts API', () => {
   let helper: Helper;
   let app: Elysia;
-  let hostname: string;
-  let port: number;
   let prisma: PrismaClient;
 
   beforeAll(async () => {
     helper = new Helper();
     const spawn = await helper.spawnApp();
     app = spawn.app;
-    hostname = spawn.hostname;
-    port = spawn.port;
     prisma = spawn.prisma;
   });
 

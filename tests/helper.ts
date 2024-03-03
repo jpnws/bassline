@@ -13,8 +13,6 @@ import { Elysia } from 'elysia';
 
 type SpawnData = {
   app: Elysia;
-  hostname: string;
-  port: number;
   prisma: PrismaClient;
 };
 
@@ -97,16 +95,10 @@ export default class Helper {
       throw new Error('Server failed to start.');
     }
 
-    // Get the host name or IP address.
-    const hostname = app.server.hostname;
-
-    // Get the dynamically chosen port number.
-    const port = app.server.port;
-
     this.hostname = app.server.hostname;
     this.port = app.server.port;
 
-    return { app, hostname, port, prisma };
+    return { app, prisma };
   }
 
   /**
