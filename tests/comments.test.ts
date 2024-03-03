@@ -16,7 +16,7 @@ describe('Comments API', () => {
     await helper.dropDb();
   });
 
-  it('should create a single comment', async () => {
+  it('should create a comment', async () => {
     // * ========================
     // * Arrange
     // * ========================
@@ -107,7 +107,45 @@ describe('Comments API', () => {
     expect(comment.userId).toBe(updatedComment.userId);
   });
 
-  it('should delete a comment', async () => {});
+  it('should delete a comment', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const boardCreateResponse = await helper.createBoard({
+      name: 'test-board-name3',
+    });
+    const { id: boardId } = boardCreateResponse.body;
+    const userCreateResponse = await helper.createUser({
+      username: 'test-user-username3',
+      password: 'password',
+    });
+    const { id: userId } = userCreateResponse.body;
+    const postCreateResponse = await helper.createPost({
+      subject: 'test-post-subject3',
+      text: 'test-post-text3',
+      boardId: boardId,
+      userId: userId,
+    });
+    const { id: postId } = postCreateResponse.body;
+    const commentCreateResponse = await helper.createComment({
+      text: 'test-comment-text3',
+      postId: postId,
+      userId: userId,
+    });
+    const { id: commentId } = commentCreateResponse.body;
+    // * ========================
+    // * Act
+    // * ========================
+    const commentDeleteResponse = await helper.deleteComment(commentId);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(commentDeleteResponse.status).toBe(202);
+    const commentGetResponse = await helper.getComment(commentId);
+    expect(commentGetResponse.status).toBe(404);
+  });
 
-  it('should return comments by post id', async () => {});
+  it('should return comments by post id', async () => {
+    expect(true).toBe(false);
+  });
 });
