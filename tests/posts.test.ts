@@ -133,10 +133,10 @@ describe('Posts API', () => {
     expect(getPostsResponse.status).toBe(200);
     const posts = getPostsResponse.body;
     for (let i = 0; i < newPosts.length; i++) {
-      expect(posts[i].subject).toBe(newPosts[i].subject);
-      expect(posts[i].text).toBe(newPosts[i].text);
-      expect(posts[i].boardId).toBe(newPosts[i].boardId);
-      expect(posts[i].userId).toBe(newPosts[i].userId);
+      expect(posts[i].subject).toBe(newPosts[i]?.subject);
+      expect(posts[i].text).toBe(newPosts[i]?.text);
+      expect(posts[i].boardId).toBe(newPosts[i]?.boardId);
+      expect(posts[i].userId).toBe(newPosts[i]?.userId);
     }
   });
 
