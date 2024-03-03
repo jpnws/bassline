@@ -49,13 +49,13 @@ async function main() {
       userId: 1,
     },
     {
-      text: '2 This is a commen 2t!',
-      postId: 2,
+      text: '2 This is a commen 2!',
+      postId: 1,
       userId: 1,
     },
     {
       text: '3 This is a comment 3!',
-      postId: 3,
+      postId: 2,
       userId: 1,
     },
   ];
