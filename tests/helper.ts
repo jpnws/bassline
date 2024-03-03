@@ -189,4 +189,14 @@ export default class Helper {
     const res = await request(this.url).put(`/comments/${id}`).send(comment);
     return res;
   }
+
+  async getComment(id: number) {
+    const res = await request(this.url).get(`/comments/${id}`);
+    return res;
+  }
+
+  async deleteComment(id: number) {
+    const res = await request(this.url).delete(`/comments/${id}`);
+    return res;
+  }
 }
