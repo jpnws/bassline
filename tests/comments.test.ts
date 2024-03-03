@@ -146,6 +146,58 @@ describe('Comments API', () => {
   });
 
   it('should return comments by post id', async () => {
-    expect(true).toBe(false);
+    // * ========================
+    // * Arrange
+    // * ========================
+    const boardCreateResponse = await helper.createBoard({
+      name: 'test-board-name4',
+    });
+    const { id: boardId } = boardCreateResponse.body;
+    const userCreateResponse = await helper.createUser({
+      username: 'test-user-username4',
+      password: 'password',
+    });
+    const { id: userId } = userCreateResponse.body;
+    const postCreateResponse = await helper.createPost({
+      subject: 'test-post-subject4',
+      text: 'test-post-text3',
+      boardId: boardId,
+      userId: userId,
+    });
+    const { id: postId } = postCreateResponse.body;
+    let newComments = [
+      {
+        text: 'test-comment-text4',
+        postId: postId,
+        userId: userId,
+      },
+      {
+        text: 'test-comment-text5',
+        postId: postId,
+        userId: userId,
+      },
+      {
+        text: 'test-comment-text6',
+        postId: postId,
+        userId: userId,
+      },
+    ];
+    for (const newComment of newComments) {
+      await helper.createComment(newComment);
+    }
+    // * ========================
+    // * Act
+    // * ========================
+    const getCommentsResponse = await helper.getCommentsByPostId(postId);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(getCommentsResponse.status).toBe(200);
+    const comments = getCommentsResponse.body;
+    for (let i = 0; i < newComments.length; i++) {
+      expect(comments[i].text).toBe(newComments[i]?.text);
+      expect(comments[i].postId).toBe(newComments[i]?.postId);
+      expect(comments[i].userId).toBe(newComments[i]?.userId);
+    }
   });
 });
