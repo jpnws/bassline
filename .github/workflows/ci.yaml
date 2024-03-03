@@ -65,3 +65,13 @@ jobs:
 
       - name: Run tests.
         run: bun test
+
+      - name: Apply migrations to production database.
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Seed the production database.
+        run: npx prisma db seed
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
