@@ -37,8 +37,6 @@ COPY --from=builder /app ./
 
 # Set any runtime environment variables
 ENV NODE_ENV=production
-ENV APP_HOST=0.0.0.0
-ENV APP_PORT=8000
 
 # Expose the port your app runs on
 EXPOSE 8000
