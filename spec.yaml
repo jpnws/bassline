@@ -24,22 +24,22 @@ services:
         value: '8000'
       - key: DATABASE_URL
         scope: RUN_TIME
-        value: ${db.DATABASE_URL}
+        value: ${discodb.DATABASE_URL}
       - key: DB_USER
         scope: RUN_TIME
-        value: ${db.USERNAME}
+        value: ${discodb.USERNAME}
       - key: DB_PASS
         scope: RUN_TIME
-        value: ${db.PASSWORD}
+        value: ${discodb.PASSWORD}
       - key: DB_HOST
         scope: RUN_TIME
-        value: ${db.HOSTNAME}
+        value: ${discodb.HOSTNAME}
       - key: DB_PORT
         scope: RUN_TIME
-        value: ${db.PORT}
+        value: ${discodb.PORT}
       - key: DB_NAME
         scope: RUN_TIME
-        value: ${db.DATABASE}
+        value: ${discodb.DATABASE}
 
 # https://docs.digitalocean.com/release-notes/app-platform/#2023-11-14
 ingress:
