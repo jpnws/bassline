@@ -1,0 +1,60 @@
+# Reference: https://docs.digitalocean.com/products/app-platform/reference/app-spec/#yaml-file-structure
+name: disco-app
+region: sfo3
+
+services:
+  - name: disco-bassline
+    dockerfile_path: Dockerfile
+    source_dir: .
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: jpnws/bassline
+    health_check:
+      http_path: /health_check
+    http_port: 8000
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: APP_HOST
+        scope: RUN_TIME
+        value: '0.0.0.0'
+      - key: APP_PORT
+        scope: RUN_TIME
+        value: '8000'
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${db.DATABASE_URL}
+      - key: DB_USER
+        scope: RUN_TIME
+        value: ${db.USERNAME}
+      - key: DB_PASS
+        scope: RUN_TIME
+        value: ${db.PASSWORD}
+      - key: DB_HOST
+        scope: RUN_TIME
+        value: ${db.HOSTNAME}
+      - key: DB_PORT
+        scope: RUN_TIME
+        value: ${db.PORT}
+      - key: DB_NAME
+        scope: RUN_TIME
+        value: ${db.DATABASE}
+
+# https://docs.digitalocean.com/release-notes/app-platform/#2023-11-14
+ingress:
+  rules:
+    - component:
+        name: disco-bassline
+      # cors:
+      #   allow_origins:
+      #   - prefix: https://internal.example-app.com
+      match:
+        path:
+          prefix: /
+
+databases:
+  - name: discodb
+    engine: PG
+    version: '12'
+    production: false
