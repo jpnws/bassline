@@ -16,7 +16,7 @@ describe('Posts API', () => {
     await helper.dropDb();
   });
 
-  it('should create a single post', async () => {
+  it('should create a post', async () => {
     // * ========================
     // * Arrange
     // * ========================
@@ -51,7 +51,7 @@ describe('Posts API', () => {
     expect(post.userId).toBe(userId);
   });
 
-  it('should return a single post', async () => {
+  it('should return a post', async () => {
     // * ========================
     // * Arrange
     // * ========================
@@ -88,56 +88,6 @@ describe('Posts API', () => {
     expect(post.text).toBe(newPost.text);
     expect(post.boardId).toBe(newPost.boardId);
     expect(post.userId).toBe(newPost.userId);
-  });
-
-  it('should return posts by board id', async () => {
-    // * ========================
-    // * Arrange
-    // * ========================
-    // Create a board.
-    const boardCreateResponse = await helper.createBoard({
-      name: 'test-board-name3',
-    });
-    const { id: boardId } = boardCreateResponse.body;
-    // Create a user.
-    const userCreateResponse = await helper.createUser({
-      username: 'test-user-username3',
-      password: 'password',
-    });
-    const { id: userId } = userCreateResponse.body;
-    // Create multiple posts.
-    let newPosts = [
-      {
-        subject: 'test-post-subject3',
-        text: 'test-post-text3',
-        boardId: boardId,
-        userId: userId,
-      },
-      {
-        subject: 'test-post-subject4',
-        text: 'test-post-text4',
-        boardId: boardId,
-        userId: userId,
-      },
-    ];
-    for (const newPost of newPosts) {
-      await helper.createPost(newPost);
-    }
-    // * ========================
-    // * Act
-    // * ========================
-    const getPostsResponse = await helper.getPostsByBoardId(boardId);
-    // * ========================
-    // * Assert
-    // * ========================
-    expect(getPostsResponse.status).toBe(200);
-    const posts = getPostsResponse.body;
-    for (let i = 0; i < newPosts.length; i++) {
-      expect(posts[i].subject).toBe(newPosts[i]?.subject);
-      expect(posts[i].text).toBe(newPosts[i]?.text);
-      expect(posts[i].boardId).toBe(newPosts[i]?.boardId);
-      expect(posts[i].userId).toBe(newPosts[i]?.userId);
-    }
   });
 
   it('should update a post', async () => {
@@ -220,5 +170,55 @@ describe('Posts API', () => {
     expect(postDeleteResponse.status).toBe(202);
     const postGetResponse = await helper.getPost(postId);
     expect(postGetResponse.status).toBe(404);
+  });
+
+  it('should return posts by board id', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    // Create a board.
+    const boardCreateResponse = await helper.createBoard({
+      name: 'test-board-name7',
+    });
+    const { id: boardId } = boardCreateResponse.body;
+    // Create a user.
+    const userCreateResponse = await helper.createUser({
+      username: 'test-user-username7',
+      password: 'password',
+    });
+    const { id: userId } = userCreateResponse.body;
+    // Create multiple posts.
+    let newPosts = [
+      {
+        subject: 'test-post-subject7',
+        text: 'test-post-text3',
+        boardId: boardId,
+        userId: userId,
+      },
+      {
+        subject: 'test-post-subject7',
+        text: 'test-post-text4',
+        boardId: boardId,
+        userId: userId,
+      },
+    ];
+    for (const newPost of newPosts) {
+      await helper.createPost(newPost);
+    }
+    // * ========================
+    // * Act
+    // * ========================
+    const getPostsResponse = await helper.getPostsByBoardId(boardId);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(getPostsResponse.status).toBe(200);
+    const posts = getPostsResponse.body;
+    for (let i = 0; i < newPosts.length; i++) {
+      expect(posts[i].subject).toBe(newPosts[i]?.subject);
+      expect(posts[i].text).toBe(newPosts[i]?.text);
+      expect(posts[i].boardId).toBe(newPosts[i]?.boardId);
+      expect(posts[i].userId).toBe(newPosts[i]?.userId);
+    }
   });
 });
