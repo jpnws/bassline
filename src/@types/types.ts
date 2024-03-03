@@ -10,3 +10,18 @@ declare module 'bun' {
     DB_SSL: string;
   }
 }
+
+type PostBody = {
+  id: number;
+  subject: string;
+  text: string;
+  boardId: number;
+  userId: number;
+};
+
+type CommentBody = {
+  id: number;
+  text: string;
+  postId: number;
+  userId: number;
+};

@@ -1,21 +1,6 @@
 import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 
-type PostBody = {
-  id: number;
-  subject: string;
-  text: string;
-  boardId: number;
-  userId: number;
-};
-
-type CommentBody = {
-  id: number;
-  text: string;
-  postId: number;
-  userId: number;
-};
-
 /**
  * Creates an instance of the Elysia app and defines various routes for handling HTTP requests.
  *
