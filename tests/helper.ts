@@ -22,6 +22,8 @@ export default class Helper {
   configWithoutDb: pg.ClientConfig;
   hostname: string;
   port: number;
+  app: Elysia | null;
+  prisma: PrismaClient | null;
 
   constructor() {
     this.dbName = uuidv4();
@@ -42,9 +44,11 @@ export default class Helper {
 
     this.hostname = '';
     this.port = 0;
+    this.app = null;
+    this.prisma = null;
   }
 
-  async spawnApp(): Promise<SpawnData> {
+  async spawnApp() {
     // Create a test database.
     const connectionWithoutDb = new pg.Client(this.configWithoutDb);
     await connectionWithoutDb.connect();
@@ -95,10 +99,10 @@ export default class Helper {
       throw new Error('Server failed to start.');
     }
 
+    this.app = app;
+    this.prisma = prisma;
     this.hostname = app.server.hostname;
     this.port = app.server.port;
-
-    return { app, prisma };
   }
 
   /**

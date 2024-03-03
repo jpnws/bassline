@@ -1,24 +1,18 @@
 import { describe, afterAll, it, expect, beforeAll } from 'bun:test';
 
 import Helper from 'tests/helper';
-import { Elysia } from 'elysia';
-import { PrismaClient } from '@prisma/client';
 
 describe('Posts API', () => {
   let helper: Helper;
-  let app: Elysia;
-  let prisma: PrismaClient;
 
   beforeAll(async () => {
     helper = new Helper();
-    const spawn = await helper.spawnApp();
-    app = spawn.app;
-    prisma = spawn.prisma;
+    await helper.spawnApp();
   });
 
   afterAll(async () => {
-    await app.stop();
-    await prisma.$disconnect();
+    await helper.app?.stop();
+    await helper.prisma?.$disconnect();
     await helper.dropDb();
   });
 
