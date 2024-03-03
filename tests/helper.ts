@@ -117,18 +117,15 @@ export default class Helper {
   }
 
   async getBoards() {
-    const res = await request(this.url).get('/boards');
-    return res;
+    return await request(this.url).get('/boards');
   }
 
   async createBoard(board: { name: string }) {
-    const res = await request(this.url).post('/boards').send(board);
-    return res;
+    return await request(this.url).post('/boards').send(board);
   }
 
   async createUser(user: { username: string; password: string }) {
-    const res = await request(this.url).post('/users').send(user);
-    return res;
+    return await request(this.url).post('/users').send(user);
   }
 
   async createPost(post: {
@@ -137,18 +134,15 @@ export default class Helper {
     boardId: number;
     userId: number;
   }) {
-    const res = await request(this.url).post('/posts').send(post);
-    return res;
+    return await request(this.url).post('/posts').send(post);
   }
 
   async getPost(postId: number) {
-    const res = await request(this.url).get(`/posts/${postId}`);
-    return res;
+    return await request(this.url).get(`/posts/${postId}`);
   }
 
   async getPostsByBoardId(boardId: number) {
-    const res = await request(this.url).get(`/boards/${boardId}/posts`);
-    return res;
+    return await request(this.url).get(`/boards/${boardId}/posts`);
   }
 
   async updatePost(
@@ -160,13 +154,11 @@ export default class Helper {
       userId: number;
     }
   ) {
-    const res = await request(this.url).put(`/posts/${id}`).send(post);
-    return res;
+    return await request(this.url).put(`/posts/${id}`).send(post);
   }
 
   async deletePost(id: number) {
-    const res = await request(this.url).delete(`/posts/${id}`);
-    return res;
+    return await request(this.url).delete(`/posts/${id}`);
   }
 
   async createComment(comment: {
@@ -174,8 +166,7 @@ export default class Helper {
     postId: number;
     userId: number;
   }) {
-    const res = await request(this.url).post('/comments').send(comment);
-    return res;
+    return await request(this.url).post('/comments').send(comment);
   }
 
   async updateComment(
@@ -186,22 +177,18 @@ export default class Helper {
       userId: number;
     }
   ) {
-    const res = await request(this.url).put(`/comments/${id}`).send(comment);
-    return res;
+    return await request(this.url).put(`/comments/${id}`).send(comment);
   }
 
   async getComment(id: number) {
-    const res = await request(this.url).get(`/comments/${id}`);
-    return res;
+    return await request(this.url).get(`/comments/${id}`);
   }
 
   async deleteComment(id: number) {
-    const res = await request(this.url).delete(`/comments/${id}`);
-    return res;
+    return await request(this.url).delete(`/comments/${id}`);
   }
 
   async getCommentsByPostId(id: number) {
-    const res = await request(this.url).get(`/posts/${id}/comments`);
-    return res;
+    return await request(this.url).get(`/posts/${id}/comments`);
   }
 }
