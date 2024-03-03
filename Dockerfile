@@ -20,18 +20,12 @@ RUN bunx prisma generate
 # This can include transpilation, pruning of dev dependencies, or any build steps specific to your application
 FROM dependencies as builder
 COPY . .
-# Optionally run tests or any other pre-production steps
-# RUN bun test
-# Build your app here if needed. For Bun.js, this might just be copying files or other simple tasks, as compilation is not typically needed like in Rust.
-# RUN bun run build or any other build command
 
 # Finally, prepare the runtime stage
 FROM oven/bun:latest as runtime
 WORKDIR /app
 
 # Copy production dependencies
-# With Bun.js, if there's no build step, you might skip directly to copying the whole application directory
-# Otherwise, adjust the COPY commands to fit your build output
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY --from=builder /app ./
 
