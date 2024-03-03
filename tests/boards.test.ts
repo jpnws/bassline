@@ -35,7 +35,7 @@ describe('Boards API', () => {
     expect(board.name).toBe('test-board-name1');
   });
 
-  it('should retrieve multiple boards', async () => {
+  it('should return multiple boards', async () => {
     // * ========================
     // * Arrange
     // * ========================
