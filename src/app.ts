@@ -245,5 +245,39 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
     }
   });
 
+  /**
+   * Retrieve all comments by post ID.
+   */
+  app.get('/posts/:id/comments', async ({ params: { id }, set }) => {
+    try {
+      const comments = await prisma.comment.findMany({
+        where: {
+          postId: parseInt(id),
+        },
+      });
+      set.status = 200;
+      return comments;
+    } catch (error) {
+      console.error('Failed to retrieve comments:', error);
+      set.status = 500;
+    }
+  });
+
+  /**
+   * Deletes a comment by its ID.
+   */
+  app.delete('/comments/:id', async ({ params: { id }, set }) => {
+    try {
+      await prisma.comment.delete({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      set.status = 202;
+    } catch (error) {
+      console.error('Failed to delete comment:', error);
+    }
+  });
+
   return app;
 };
