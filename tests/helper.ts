@@ -19,8 +19,10 @@ export default class Helper {
   url: string;
 
   constructor() {
+    // A unique name for the test database.
     this.dbName = uuidv4();
 
+    // Configuration object for pg connection without specifying database.
     this.configWithoutDb = {
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
@@ -29,6 +31,7 @@ export default class Helper {
       ssl: Boolean(process.env.DB_SSL),
     };
 
+    // A connection string for the test database.
     this.dbUrl = `postgresql://${process.env.DB_USER}:${process.env.DB_PASS}@${
       process.env.DB_HOST
     }:${process.env.DB_PORT}/${this.dbName}?sslmode=${
