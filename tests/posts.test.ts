@@ -90,7 +90,7 @@ describe('Posts API', () => {
     expect(post.userId).toBe(newPost.userId);
   });
 
-  it('should return multiple posts', async () => {
+  it('should return posts by board id', async () => {
     // * ========================
     // * Arrange
     // * ========================
