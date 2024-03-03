@@ -1,6 +1,5 @@
 import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
-import { swagger } from '@elysiajs/swagger';
 
 type Postbody = {
   id: string;
