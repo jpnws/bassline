@@ -177,4 +177,16 @@ export default class Helper {
     const res = await request(this.url).post('/comments').send(comment);
     return res;
   }
+
+  async updateComment(
+    id: number,
+    comment: {
+      text: string;
+      postId: number;
+      userId: number;
+    }
+  ) {
+    const res = await request(this.url).put(`/comments/${id}`).send(comment);
+    return res;
+  }
 }
