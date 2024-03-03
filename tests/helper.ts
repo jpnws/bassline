@@ -1,7 +1,6 @@
 import pg from 'pg';
 
 import request from 'supertest';
-import superagent from 'superagent';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,11 +9,6 @@ import { execSync } from 'child_process';
 import { createApp } from 'src/app';
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
-
-type SpawnData = {
-  app: Elysia;
-  prisma: PrismaClient;
-};
 
 export default class Helper {
   dbName: string;
