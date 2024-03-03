@@ -199,4 +199,9 @@ export default class Helper {
     const res = await request(this.url).delete(`/comments/${id}`);
     return res;
   }
+
+  async getCommentsByPostId(id: number) {
+    const res = await request(this.url).get(`/posts/${id}/comments`);
+    return res;
+  }
 }
