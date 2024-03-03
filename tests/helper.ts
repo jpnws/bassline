@@ -122,20 +122,17 @@ export default class Helper {
     }
   }
 
-  async getBoards(): Promise<superagent.Response> {
+  async getBoards() {
     const res = await request(this.url).get('/boards');
     return res;
   }
 
-  async createBoard(board: { name: string }): Promise<superagent.Response> {
+  async createBoard(board: { name: string }) {
     const res = await request(this.url).post('/boards').send(board);
     return res;
   }
 
-  async createUser(user: {
-    username: string;
-    password: string;
-  }): Promise<superagent.Response> {
+  async createUser(user: { username: string; password: string }) {
     const res = await request(this.url).post('/users').send(user);
     return res;
   }
@@ -145,17 +142,17 @@ export default class Helper {
     text: string;
     boardId: number;
     userId: number;
-  }): Promise<superagent.Response> {
+  }) {
     const res = await request(this.url).post('/posts').send(post);
     return res;
   }
 
-  async getPost(postId: number): Promise<superagent.Response> {
+  async getPost(postId: number) {
     const res = await request(this.url).get(`/posts/${postId}`);
     return res;
   }
 
-  async getPostsByBoardId(boardId: number): Promise<superagent.Response> {
+  async getPostsByBoardId(boardId: number) {
     const res = await request(this.url).get(`/boards/${boardId}/posts`);
     return res;
   }
@@ -168,12 +165,12 @@ export default class Helper {
       boardId: number;
       userId: number;
     }
-  ): Promise<superagent.Response> {
+  ) {
     const res = await request(this.url).put(`/posts/${id}`).send(post);
     return res;
   }
 
-  async deletePost(id: number): Promise<superagent.Response> {
+  async deletePost(id: number) {
     const res = await request(this.url).delete(`/posts/${id}`);
     return res;
   }
