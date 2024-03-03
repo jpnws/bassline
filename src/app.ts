@@ -28,6 +28,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any) => {
    * API health check.
    */
   app.get('/health_check', ({ set }) => {
+    console.log(`${Bun.env.DATABASE_URL}`);
     set.status = 200;
   });
 
