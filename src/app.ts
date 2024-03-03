@@ -1,11 +1,18 @@
 import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 
-type Postbody = {
-  id: string;
+type PostBody = {
+  id: number;
   subject: string;
   text: string;
   boardId: number;
+  userId: number;
+};
+
+type CommentBody = {
+  id: number;
+  text: string;
+  postId: number;
   userId: number;
 };
 
@@ -112,7 +119,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
    * Creates a new post.
    */
   app.post('/posts', async ({ body, set }) => {
-    const { subject, text, boardId, userId } = body as Postbody;
+    const { subject, text, boardId, userId } = body as PostBody;
     try {
       const post = await prisma.post.create({
         data: {
@@ -134,7 +141,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
    * Updates an existing post by its ID.
    */
   app.put('/posts/:id', async ({ params: { id }, body, set }) => {
-    const { subject, text, boardId, userId } = body as Postbody;
+    const { subject, text, boardId, userId } = body as PostBody;
     try {
       const post = await prisma.post.update({
         where: {
@@ -190,6 +197,27 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
       return user;
     } catch (error) {
       console.error('Failed to create user:', error);
+    }
+  });
+
+  /**
+   * Creates a new comment.
+   */
+  app.post('/comments', async ({ body, set }) => {
+    const { text, postId, userId } = body as CommentBody;
+    try {
+      const comment = await prisma.comment.create({
+        data: {
+          text,
+          postId,
+          userId,
+        },
+      });
+      set.status = 201;
+      return comment;
+    } catch (error) {
+      console.error('Failed to create comment:', error);
+      set.status = 500;
     }
   });
 
