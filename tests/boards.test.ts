@@ -16,7 +16,7 @@ describe('Boards API', () => {
     await helper.dropDb();
   });
 
-  it('should create a single board', async () => {
+  it('should create a board', async () => {
     // * ========================
     // * Arrange
     // * ========================
@@ -35,7 +35,7 @@ describe('Boards API', () => {
     expect(board.name).toBe('test-board-name1');
   });
 
-  it('should retrieve multiple boards', async () => {
+  it('should return boards', async () => {
     // * ========================
     // * Arrange
     // * ========================

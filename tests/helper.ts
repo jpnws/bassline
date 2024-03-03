@@ -1,7 +1,6 @@
 import pg from 'pg';
 
 import request from 'supertest';
-import superagent from 'superagent';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -11,23 +10,19 @@ import { createApp } from 'src/app';
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
 
-type SpawnData = {
-  app: Elysia;
-  prisma: PrismaClient;
-};
-
 export default class Helper {
   dbName: string;
   dbUrl: string;
   configWithoutDb: pg.ClientConfig;
-  hostname: string;
-  port: number;
   app: Elysia | null;
   prisma: PrismaClient | null;
+  url: string;
 
   constructor() {
+    // A unique name for the test database.
     this.dbName = uuidv4();
 
+    // Configuration object for pg connection without specifying database.
     this.configWithoutDb = {
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
@@ -36,16 +31,16 @@ export default class Helper {
       ssl: Boolean(process.env.DB_SSL),
     };
 
+    // A connection string for the test database.
     this.dbUrl = `postgresql://${process.env.DB_USER}:${process.env.DB_PASS}@${
       process.env.DB_HOST
     }:${process.env.DB_PORT}/${this.dbName}?sslmode=${
       process.env.DB_SSL ? 'require' : 'disable'
     }&schema=public`;
 
-    this.hostname = '';
-    this.port = 0;
     this.app = null;
     this.prisma = null;
+    this.url = '';
   }
 
   async spawnApp() {
@@ -72,6 +67,7 @@ export default class Helper {
       throw error;
     }
 
+    // Create a new instance of PrsimaClient.
     const prisma = new PrismaClient({
       datasources: {
         db: {
@@ -80,6 +76,7 @@ export default class Helper {
       },
     });
 
+    // Establish a Prisma connection.
     await prisma.$connect();
 
     // Create an instance of the app.
@@ -101,8 +98,7 @@ export default class Helper {
 
     this.app = app;
     this.prisma = prisma;
-    this.hostname = app.server.hostname;
-    this.port = app.server.port;
+    this.url = `http://${app.server.hostname}:${app.server.port}`;
   }
 
   /**
@@ -123,28 +119,16 @@ export default class Helper {
     }
   }
 
-  async getBoards(): Promise<superagent.Response> {
-    const res = await request(`http://${this.hostname}:${this.port}`).get(
-      '/boards'
-    );
-    return res;
+  async getBoards() {
+    return await request(this.url).get('/boards');
   }
 
-  async createBoard(board: { name: string }): Promise<superagent.Response> {
-    const res = await request(`http://${this.hostname}:${this.port}`)
-      .post('/boards')
-      .send(board);
-    return res;
+  async createBoard(board: { name: string }) {
+    return await request(this.url).post('/boards').send(board);
   }
 
-  async createUser(user: {
-    username: string;
-    password: string;
-  }): Promise<superagent.Response> {
-    const res = await request(`http://${this.hostname}:${this.port}`)
-      .post('/users')
-      .send(user);
-    return res;
+  async createUser(user: { username: string; password: string }) {
+    return await request(this.url).post('/users').send(user);
   }
 
   async createPost(post: {
@@ -152,25 +136,16 @@ export default class Helper {
     text: string;
     boardId: number;
     userId: number;
-  }): Promise<superagent.Response> {
-    const res = await request(`http://${this.hostname}:${this.port}`)
-      .post('/posts')
-      .send(post);
-    return res;
+  }) {
+    return await request(this.url).post('/posts').send(post);
   }
 
-  async getPost(postId: number): Promise<superagent.Response> {
-    const res = await request(`http://${this.hostname}:${this.port}`).get(
-      `/posts/${postId}`
-    );
-    return res;
+  async getPost(postId: number) {
+    return await request(this.url).get(`/posts/${postId}`);
   }
 
-  async getPostsByBoardId(boardId: number): Promise<superagent.Response> {
-    const res = await request(`http://${this.hostname}:${this.port}`).get(
-      `/boards/${boardId}/posts`
-    );
-    return res;
+  async getPostsByBoardId(boardId: number) {
+    return await request(this.url).get(`/boards/${boardId}/posts`);
   }
 
   async updatePost(
@@ -181,17 +156,42 @@ export default class Helper {
       boardId: number;
       userId: number;
     }
-  ): Promise<superagent.Response> {
-    const res = await request(`http://${this.hostname}:${this.port}`)
-      .put(`/posts/${id}`)
-      .send(post);
-    return res;
+  ) {
+    return await request(this.url).put(`/posts/${id}`).send(post);
   }
 
-  async deletePost(id: number): Promise<superagent.Response> {
-    const res = await request(`http://${this.hostname}:${this.port}`).delete(
-      `/posts/${id}`
-    );
-    return res;
+  async deletePost(id: number) {
+    return await request(this.url).delete(`/posts/${id}`);
+  }
+
+  async createComment(comment: {
+    text: string;
+    postId: number;
+    userId: number;
+  }) {
+    return await request(this.url).post('/comments').send(comment);
+  }
+
+  async updateComment(
+    id: number,
+    comment: {
+      text: string;
+      postId: number;
+      userId: number;
+    }
+  ) {
+    return await request(this.url).put(`/comments/${id}`).send(comment);
+  }
+
+  async getComment(id: number) {
+    return await request(this.url).get(`/comments/${id}`);
+  }
+
+  async deleteComment(id: number) {
+    return await request(this.url).delete(`/comments/${id}`);
+  }
+
+  async getCommentsByPostId(id: number) {
+    return await request(this.url).get(`/posts/${id}/comments`);
   }
 }
