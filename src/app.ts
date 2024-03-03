@@ -15,12 +15,16 @@ type Postbody = {
  * @param prisma - The PrismaClient instance used for interacting with the database.
  * @returns The configured Elysia app instance.
  */
-export const createApp = (prisma: PrismaClient, swagger?: any) => {
+export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   const app = new Elysia();
 
   // Add the Swagger plugin to the app.
   if (swagger) {
     app.use(swagger());
+  }
+
+  if (cors) {
+    app.use(cors());
   }
 
   /**

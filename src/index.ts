@@ -1,10 +1,11 @@
 import { createApp } from './app';
 import { PrismaClient } from '@prisma/client';
 import { swagger } from '@elysiajs/swagger';
+import { cors } from '@elysiajs/cors';
 
 const prisma = new PrismaClient();
 
-const app = createApp(prisma, swagger);
+const app = createApp(prisma, swagger, cors);
 
 app.listen(
   {
