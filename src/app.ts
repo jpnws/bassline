@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia';
+import { Elysia, t } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 
 /**
@@ -176,7 +176,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
       const user = await prisma.user.create({
         data: {
           username,
-          password,
+          hash: await Bun.password.hash(password),
         },
       });
       set.status = 201;
@@ -328,6 +328,82 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
       set.status = 500;
     }
   });
+
+  app.group(
+    '/auth',
+    {
+      body: t.Object({
+        username: t.String(),
+        password: t.String(),
+      }),
+    },
+    (app) =>
+      app
+        .post('/signup', async ({ body, set }) => {
+          const { username, password } = body;
+          // * ================================================
+          // * Check if username or password is empty.
+          // * ================================================
+          if (!username || !password) {
+            set.status = 400;
+            return {
+              message: 'Username or password cannot be empty.',
+            };
+          }
+          // * ================================================
+          // * Check for existing user.
+          // * ================================================
+          const userExists = await prisma.user.findUnique({
+            where: {
+              username,
+            },
+            select: {
+              id: true,
+            },
+          });
+          if (userExists) {
+            set.status = 400;
+            return {
+              message: 'Username already in use.',
+            };
+          }
+          // * ================================================
+          // * Hash the password.
+          // * ================================================
+          const hash = await Bun.password.hash(password);
+          // * ================================================
+          // * Save the user to the database.
+          // * ================================================
+          const user = await prisma.user.create({
+            data: {
+              username,
+              hash,
+            },
+            select: {
+              id: true,
+              username: true,
+            },
+          });
+
+          set.status = 201;
+
+          return user;
+        })
+        .post('/signin', ({ body }) => {
+          const { username, password } = body as {
+            username: string;
+            password: string;
+          };
+          console.log(username, password);
+        })
+        .post('/logout', ({ body }) => {
+          const { username, password } = body as {
+            username: string;
+            password: string;
+          };
+          console.log(username, password);
+        })
+  );
 
   return app;
 };
