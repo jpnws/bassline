@@ -55,7 +55,7 @@ model User {
   id        Int       @id @default(autoincrement())
   role      UserRole  @default(MEMBER)
   username  String    @unique
-  password  String
+  hash      String
   createdAt DateTime  @default(now())
   posts     Post[]
   comments  Comment[]
