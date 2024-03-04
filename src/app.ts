@@ -4,8 +4,10 @@ import { PrismaClient } from '@prisma/client';
 /**
  * Creates an instance of the Elysia app and defines various routes for handling HTTP requests.
  *
- * @param prisma - The PrismaClient instance used for interacting with the database.
- * @returns The configured Elysia app instance.
+ * @param prisma - The Prisma client instance.
+ * @param swagger - The Swagger plugin instance.
+ * @param cors - The CORS plugin instance.
+ * @returns The Elysia app instance.
  */
 export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   const app = new Elysia();
@@ -79,7 +81,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Retrieve a single post by its id.
+   * Retrieve a single post by its ID.
    */
   app.get('/posts/:id', async ({ params: { id }, set }) => {
     try {
@@ -123,7 +125,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Update an existing post by its id.
+   * Update an existing post by its ID.
    */
   app.put('/posts/:id', async ({ params: { id }, body, set }) => {
     const { subject, text, boardId, userId } = body as PostBody;
@@ -148,7 +150,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Delete a post by its id.
+   * Delete a post by its ID.
    */
   app.delete('/posts/:id', async ({ params: { id }, set }) => {
     try {
@@ -209,7 +211,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Update an existing comment by its id.
+   * Update an existing comment by its ID.
    */
   app.put('/comments/:id', async ({ params: { id }, body, set }) => {
     const { text, postId, userId } = body as CommentBody;
@@ -251,7 +253,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Delete a comment by its id.
+   * Delete a comment by its ID.
    */
   app.delete('/comments/:id', async ({ params: { id }, set }) => {
     try {
@@ -268,7 +270,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Retrieve a single user by its id.
+   * Retrieve a single user by its ID.
    */
   app.get('/users/:id', async ({ params: { id }, set }) => {
     try {
@@ -289,7 +291,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Update an existing user by its id.
+   * Update an existing user by its ID.
    */
   app.put('/users/:id', async ({ params: { id }, body, set }) => {
     const { username } = body as {
@@ -313,7 +315,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Delete a user by its id.
+   * Delete a user by its ID.
    */
   app.delete('/users/:id', async ({ params: { id }, set }) => {
     try {
@@ -353,41 +355,56 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
           // * ================================================
           // * Check for existing user.
           // * ================================================
-          const userExists = await prisma.user.findUnique({
-            where: {
-              username,
-            },
-            select: {
-              id: true,
-            },
-          });
-          if (userExists) {
-            set.status = 400;
+          try {
+            const userExists = await prisma.user.findUnique({
+              where: {
+                username,
+              },
+              select: {
+                id: true,
+              },
+            });
+            if (userExists) {
+              set.status = 400;
+              return {
+                message: 'Username already in use.',
+              };
+            }
+          } catch (error) {
+            console.error('Failed to find the user:', error);
+            set.status = 500;
             return {
-              message: 'Username already in use.',
+              message: 'Server error. Unable process the request.',
             };
           }
-          // * ================================================
-          // * Hash the password.
-          // * ================================================
-          const hash = await Bun.password.hash(password);
-          // * ================================================
-          // * Save the user to the database.
-          // * ================================================
-          const user = await prisma.user.create({
-            data: {
-              username,
-              hash,
-            },
-            select: {
-              id: true,
-              username: true,
-            },
-          });
 
-          set.status = 201;
-
-          return user;
+          try {
+            // * ================================================
+            // * Hash the password.
+            // * ================================================
+            const hash = await Bun.password.hash(password);
+            // * ================================================
+            // * Save the user to the database.
+            // * ================================================
+            const user = await prisma.user.create({
+              data: {
+                username,
+                hash,
+              },
+              select: {
+                id: true,
+                username: true,
+              },
+            });
+            set.status = 201;
+            return user;
+          } catch (error) {
+            console.log('Failed to create a new user:', error);
+            set.status = 500;
+            return {
+              message: 'Server error. Unable to create an account.',
+            };
+          }
         })
         .post('/signin', ({ body }) => {
           const { username, password } = body as {
