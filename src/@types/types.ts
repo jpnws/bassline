@@ -25,3 +25,9 @@ type CommentBody = {
   postId: number;
   userId: number;
 };
+
+type UserBody = {
+  id?: number;
+  username: string;
+  password?: string;
+};

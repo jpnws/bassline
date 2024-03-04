@@ -28,7 +28,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Retrieves all boards.
+   * Retrieve all boards.
    */
   app.get('/boards', async ({ set }) => {
     try {
@@ -42,7 +42,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Creates a new board.
+   * Create a new board.
    */
   app.post('/boards', async ({ body, set }) => {
     const { name } = body as { name: string };
@@ -61,7 +61,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Retrieves all posts corresponding to a specific board ID.
+   * Retrieve all posts corresponding to a specific board ID.
    */
   app.get('/boards/:id/posts', async ({ params: { id }, set }) => {
     try {
@@ -79,7 +79,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Retrieves a single post by its ID.
+   * Retrieve a single post by its id.
    */
   app.get('/posts/:id', async ({ params: { id }, set }) => {
     try {
@@ -101,7 +101,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Creates a new post.
+   * Create a new post.
    */
   app.post('/posts', async ({ body, set }) => {
     const { subject, text, boardId, userId } = body as PostBody;
@@ -123,7 +123,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Updates an existing post by its ID.
+   * Update an existing post by its id.
    */
   app.put('/posts/:id', async ({ params: { id }, body, set }) => {
     const { subject, text, boardId, userId } = body as PostBody;
@@ -148,7 +148,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Deletes a post by its ID.
+   * Delete a post by its id.
    */
   app.delete('/posts/:id', async ({ params: { id }, set }) => {
     try {
@@ -160,11 +160,12 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
       set.status = 202;
     } catch (error) {
       console.error('Failed to delete post:', error);
+      set.status = 500;
     }
   });
 
   /**
-   * Creates a new user.
+   * Create a new user.
    */
   app.post('/users', async ({ body, set }) => {
     const { username, password } = body as {
@@ -182,11 +183,12 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
       return user;
     } catch (error) {
       console.error('Failed to create user:', error);
+      set.status = 500;
     }
   });
 
   /**
-   * Creates a new comment.
+   * Create a new comment.
    */
   app.post('/comments', async ({ body, set }) => {
     const { text, postId, userId } = body as CommentBody;
@@ -207,7 +209,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Updates an existing comment by its ID.
+   * Update an existing comment by its id.
    */
   app.put('/comments/:id', async ({ params: { id }, body, set }) => {
     const { text, postId, userId } = body as CommentBody;
@@ -249,7 +251,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   /**
-   * Deletes a comment by its ID.
+   * Delete a comment by its id.
    */
   app.delete('/comments/:id', async ({ params: { id }, set }) => {
     try {
@@ -261,6 +263,69 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
       set.status = 202;
     } catch (error) {
       console.error('Failed to delete comment:', error);
+      set.status = 500;
+    }
+  });
+
+  /**
+   * Retrieve a single user by its id.
+   */
+  app.get('/users/:id', async ({ params: { id }, set }) => {
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      if (!user) {
+        set.status = 404;
+        return { message: 'User not found' };
+      }
+      return user;
+    } catch (error) {
+      console.error('Failed to retrieve user:', error);
+      set.status = 500;
+    }
+  });
+
+  /**
+   * Update an existing user by its id.
+   */
+  app.put('/users/:id', async ({ params: { id }, body, set }) => {
+    const { username } = body as {
+      username: string;
+    };
+    try {
+      const user = await prisma.user.update({
+        where: {
+          id: parseInt(id),
+        },
+        data: {
+          username,
+        },
+      });
+      set.status = 200;
+      return user;
+    } catch (error) {
+      console.error('Failed to update user:', error);
+      set.status = 500;
+    }
+  });
+
+  /**
+   * Delete a user by its id.
+   */
+  app.delete('/users/:id', async ({ params: { id }, set }) => {
+    try {
+      await prisma.user.delete({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      set.status = 202;
+    } catch (error) {
+      console.error('Failed to delete user:', error);
+      set.status = 500;
     }
   });
 

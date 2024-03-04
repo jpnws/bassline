@@ -194,4 +194,16 @@ export default class Helper {
   async getCommentsByPostId(id: number) {
     return await request(this.url).get(`/posts/${id}/comments`);
   }
+
+  async getUser(id: number) {
+    return await request(this.url).get(`/users/${id}`);
+  }
+
+  async deleteUser(id: number) {
+    return await request(this.url).delete(`/users/${id}`);
+  }
+
+  async updateUser(id: number, user: UserBody) {
+    return await request(this.url).put(`/users/${id}`).send(user);
+  }
 }
