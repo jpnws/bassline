@@ -14,7 +14,7 @@ export default class Helper {
   dbName: string;
   dbUrl: string;
   configWithoutDb: pg.ClientConfig;
-  app: Elysia | null;
+  app: Elysia<'/api'> | null;
   prisma: PrismaClient | null;
   url: string;
 

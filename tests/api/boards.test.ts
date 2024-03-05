@@ -1,6 +1,6 @@
 import { describe, afterAll, it, expect, beforeAll } from 'bun:test';
 
-import Helper from 'tests/helper';
+import Helper from 'tests/api/helper';
 
 describe('Boards API', () => {
   let helper: Helper;
