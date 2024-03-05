@@ -23,9 +23,14 @@ export const auth = (prisma: PrismaClient) => {
     .post(
       '/signup',
       async ({ body, set, jwt, cookie: { auth }, setCookie }) => {
-        // TODO: Check if the user is already authenticated.
+        // * ================================================
+        // * Check if user is already authenticated.
+        // * ================================================
         if (auth) {
-          console.log('auth:', auth);
+          set.status = 409;
+          return {
+            message: 'You are already authenticated.',
+          };
         }
         const { username, password } = body;
         // * ================================================
