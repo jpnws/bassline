@@ -60,25 +60,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      # Install Bun.js and Node.js dependencies.
       - name: Install bun and node dependencies.
         run: bun install
 
+      # Run the tests.
       - name: Run tests.
         run: bun test
         env:
           APP_JWT_SECRET: ${{ secrets.APP_JWT_SECRET }}
-
-      - name: Apply migrations to production database.
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      - name: Generate Prisma client for production database.
-        run: npx prisma generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      # - name: Seed the production database.
-      #   run: npx prisma db seed
-      #   env:
-      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}

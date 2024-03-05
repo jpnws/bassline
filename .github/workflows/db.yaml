@@ -1,0 +1,56 @@
+name: production-db-migration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository so that the code can be used by the workflow.
+      - uses: actions/checkout@v4
+
+      # Install the Node.js runtime.
+      - name: Install Node.js runtime.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Install the Bun.js runtime.
+      - name: Install Bun.js runtime.
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      # Cache Node.js modules to speed up the build for future runs.
+      - name: Cache Node.js modules.
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install bun and node dependencies.
+        run: bun install
+
+      - name: Apply migrations to production database.
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Generate Prisma client for production database.
+        run: npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      # - name: Seed the production database.
+      #   run: npx prisma db seed
+      #   env:
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
