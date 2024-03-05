@@ -131,4 +131,27 @@ describe('Posts API', () => {
     expect(authCookieArray.some((str) => /Max\-Age/.test(str))).toBeTrue();
     expect(authCookieArray.some((str) => /HttpOnly/.test(str))).toBeTrue();
   });
+
+  it('should not allow signup while signed in', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newUser1 = {
+      username: 'spiderman',
+      password: 'password',
+    };
+    await helper.signUpUser(newUser1);
+    // * ========================
+    // * Act
+    // * ========================
+    const newUser2 = {
+      username: 'ironman',
+      password: 'password',
+    };
+    const newUserResponse = await helper.signUpUser(newUser2);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(newUserResponse.status).toBe(409);
+  });
 });
