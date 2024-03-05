@@ -84,6 +84,7 @@ export const signup = (prisma: PrismaClient) => {
             select: {
               id: true,
               username: true,
+              role: true,
             },
           });
           // * ================================================
@@ -91,7 +92,11 @@ export const signup = (prisma: PrismaClient) => {
           // * ================================================
           setCookie(
             'auth',
-            await jwt.sign({ id: user.id, username: user.username }),
+            await jwt.sign({
+              id: user.id,
+              username: user.username,
+              role: user.role,
+            }),
             {
               httpOnly: true,
               maxAge: 60 * 60 * 24 * 7,
