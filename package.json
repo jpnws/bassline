@@ -9,7 +9,9 @@
     "start": "bun src/index.ts"
   },
   "dependencies": {
+    "@elysiajs/cookie": "^0.8.0",
     "@elysiajs/cors": "^0.8.0",
+    "@elysiajs/jwt": "^0.8.0",
     "@elysiajs/swagger": "^0.8.5",
     "@prisma/client": "^5.10.2",
     "elysia": "^0.8.17"
