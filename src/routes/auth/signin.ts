@@ -3,6 +3,18 @@ import { Elysia, t } from 'elysia';
 import jwt from '@elysiajs/jwt';
 import cookie from '@elysiajs/cookie';
 
+/**
+ * Signin route.
+ *
+ * This route is used to authenticate a user. It checks if the user is already
+ * authenticated. If not, it checks if the username or password is empty. If not
+ * empty, it checks if the username exists. If so, it checks if the password is
+ * correct. If so, it signs JWT and stores it in a cookie, essentially logging
+ * in the user.
+ *
+ * @param prisma - The Prisma client.
+ * @returns The Elysia app.
+ */
 export const signin = (_prisma: PrismaClient) => {
   const app = new Elysia();
 

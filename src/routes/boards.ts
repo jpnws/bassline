@@ -1,6 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
 
+/**
+ * Boards route.
+ * @param prisma - The Prisma client.
+ * @returns The Elysia app.
+ */
 export const boards = (prisma: PrismaClient) => {
   const app = new Elysia();
 

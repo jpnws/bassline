@@ -3,6 +3,18 @@ import { Elysia, t } from 'elysia';
 import jwt from '@elysiajs/jwt';
 import cookie from '@elysiajs/cookie';
 
+/**
+ * Signup route.
+ *
+ * This route is used to create a new user account. It checks if the user is
+ * already authenticated. If not, it checks if the username or password is
+ * empty. If not, it checks if the username is already in use. If not, it hashes
+ * the password and saves the user to the database. Finally, it stores the JWT
+ * in a cookie.
+ *
+ * @param prisma - The Prisma client.
+ * @returns The Elysia app.
+ */
 export const signup = (prisma: PrismaClient) => {
   const app = new Elysia();
 

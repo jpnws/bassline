@@ -2,6 +2,16 @@ import { Elysia } from 'elysia';
 import jwt from '@elysiajs/jwt';
 import cookie from '@elysiajs/cookie';
 
+/**
+ * Signout route.
+ *
+ * The signout route is responsible for clearing the client's authentication
+ * cookie. It first verifies the user's JWT, and then clears the client's
+ * cookie. If the user is not authenticated, the route returns a 400 status
+ * code. If the user is not authorized, the route returns a 401 status code.
+ *
+ * @returns The Elysia app.
+ */
 export const signout = () => {
   const app = new Elysia();
 
