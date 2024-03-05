@@ -127,10 +127,6 @@ export default class Helper {
     return await request(this.url).post('/boards').send(board);
   }
 
-  async createUser(user: { username: string; password: string }) {
-    return await request(this.url).post('/users').send(user);
-  }
-
   async createPost(post: {
     subject: string;
     text: string;
@@ -191,6 +187,10 @@ export default class Helper {
     return await request(this.url).delete(`/comments/${id}`);
   }
 
+  async createUser(user: { username: string; password: string }) {
+    return await request(this.url).post('/users').send(user);
+  }
+
   async getCommentsByPostId(id: number) {
     return await request(this.url).get(`/posts/${id}/comments`);
   }
@@ -205,5 +205,9 @@ export default class Helper {
 
   async updateUser(id: number, user: UserBody) {
     return await request(this.url).put(`/users/${id}`).send(user);
+  }
+
+  async signUpUser(user: UserBody) {
+    return await request(this.url).post(`/auth/signup`).send(user);
   }
 }
