@@ -98,7 +98,7 @@ export default class Helper {
 
     this.app = app;
     this.prisma = prisma;
-    this.url = `http://${app.server.hostname}:${app.server.port}`;
+    this.url = `http://${app.server.hostname}:${app.server.port}/api`;
   }
 
   /**
