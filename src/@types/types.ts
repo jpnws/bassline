@@ -8,7 +8,7 @@ declare module 'bun' {
     DB_USER: string;
     DB_PASS: string;
     DB_SSL: string;
-    JWT_SECRET: string;
+    APP_JWT_SECRET: string;
   }
 }
 

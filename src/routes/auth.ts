@@ -16,7 +16,7 @@ export const auth = (prisma: PrismaClient) => {
     .use(
       jwt({
         name: 'jwt',
-        secret: Bun.env.JWT_SECRET,
+        secret: Bun.env.APP_JWT_SECRET,
       })
     )
     .use(cookie())
