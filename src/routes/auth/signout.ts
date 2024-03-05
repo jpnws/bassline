@@ -33,13 +33,16 @@ export const signout = () => {
           message: 'You are not authorized to sign out.',
         };
       }
-      set.status = 200;
+      // * ================================================
+      // * Clear client cookie.
+      // * ================================================
       setCookie('auth', '', {
         httpOnly: true,
         maxAge: 0,
         path: '/',
         secure: Bun.env.NODE_ENV === 'production',
       });
+      set.status = 200;
     });
 
   return app;
