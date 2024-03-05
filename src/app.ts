@@ -28,10 +28,12 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
     app.use(cors());
   }
 
+  // Define a health check route.
   app.get('/health_check', ({ set }) => {
     set.status = 200;
   });
 
+  // Define various routes for handling HTTP requests.
   app.use(boards(prisma));
   app.use(posts(prisma));
   app.use(users(prisma));
