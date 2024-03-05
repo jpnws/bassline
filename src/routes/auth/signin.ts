@@ -6,27 +6,34 @@ import cookie from '@elysiajs/cookie';
 export const signin = (_prisma: PrismaClient) => {
   const app = new Elysia();
 
-  app
-    .guard({
+  app.group(
+    '',
+    {
       body: t.Object({
         username: t.String(),
         password: t.String(),
       }),
-    })
-    .use(
-      jwt({
-        name: 'jwt',
-        secret: Bun.env.APP_JWT_SECRET,
-      })
-    )
-    .use(cookie())
-    .post('/signin', ({ body }) => {
-      const { username, password } = body as {
-        username: string;
-        password: string;
-      };
-      console.log(username, password);
-    });
+    },
+    (app) => {
+      app
+        .use(
+          jwt({
+            name: 'jwt',
+            secret: Bun.env.APP_JWT_SECRET,
+          })
+        )
+        .use(cookie())
+        .post('/signin', ({ body }) => {
+          const { username, password } = body as {
+            username: string;
+            password: string;
+          };
+          console.log(username, password);
+        });
+
+      return app;
+    }
+  );
 
   return app;
 };
