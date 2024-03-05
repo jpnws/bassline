@@ -8,7 +8,11 @@ import { signout } from 'src/routes/auth/signout';
 export const auth = (prisma: PrismaClient) => {
   const app = new Elysia({ prefix: '/auth' });
 
-  app.use(signup(prisma)).use(signin(prisma)).use(signout());
+  app.use(signup(prisma));
+
+  app.use(signin(prisma));
+
+  app.use(signout());
 
   return app;
 };
