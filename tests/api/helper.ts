@@ -207,7 +207,9 @@ export default class Helper {
     return await request(this.url).put(`/users/${id}`).send(user);
   }
 
-  async signUpUser(user: UserBody) {
-    return await request(this.url).post(`/auth/signup`).send(user);
+  async signUpUser(user: UserBody, headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).post(`/auth/signup`);
+    req = headers ? req.set(headers) : req;
+    return await req.send(user);
   }
 }

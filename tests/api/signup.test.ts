@@ -140,7 +140,8 @@ describe('Posts API', () => {
       username: 'spiderman',
       password: 'password',
     };
-    await helper.signUpUser(newUser1);
+    const newUserResponse1 = await helper.signUpUser(newUser1);
+    const cookies = newUserResponse1.get('Set-Cookie');
     // * ========================
     // * Act
     // * ========================
@@ -148,10 +149,12 @@ describe('Posts API', () => {
       username: 'ironman',
       password: 'password',
     };
-    const newUserResponse = await helper.signUpUser(newUser2);
+    const newUserResponse2 = await helper.signUpUser(newUser2, {
+      Cookie: cookies,
+    });
     // * ========================
     // * Assert
     // * ========================
-    expect(newUserResponse.status).toBe(409);
+    expect(newUserResponse2.status).toBe(409);
   });
 });
