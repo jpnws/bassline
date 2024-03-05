@@ -16,6 +16,9 @@ services:
     instance_count: 1
     instance_size_slug: basic-xxs
     envs:
+      # Note: For the APP_JWT_SECRET environment variable. You must manually go into
+      # DigitalOcean. And then, go into your app's settings, then create an app-level
+      # environment variable APP_JWT_SECRET with the JWT secret.
       - key: APP_HOST
         scope: RUN_TIME
         value: '0.0.0.0'
