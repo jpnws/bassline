@@ -121,7 +121,7 @@ describe('Posts API', () => {
     const cookies = signUpUserResponse.headers['set-cookie'];
     let authCookie = '';
     for (const cookie of cookies) {
-      if (cookie.includes('Authorization=')) {
+      if (cookie.includes('auth=')) {
         authCookie = cookie;
       }
     }
