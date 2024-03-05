@@ -212,4 +212,10 @@ export default class Helper {
     req = headers ? req.set(headers) : req;
     return await req.send(user);
   }
+
+  async signOutUser(headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).post(`/auth/signout`);
+    req = headers ? req.set(headers) : req;
+    return await req.send();
+  }
 }
