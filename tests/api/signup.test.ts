@@ -2,7 +2,7 @@ import { describe, afterAll, it, expect, beforeAll } from 'bun:test';
 
 import Helper from 'tests/api/helper';
 
-describe('Posts API', () => {
+describe('Signup API', () => {
   let helper: Helper;
 
   beforeAll(async () => {
