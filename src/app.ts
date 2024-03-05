@@ -346,7 +346,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
         .use(
           jwt({
             name: 'jwt',
-            secret: 'secret',
+            secret: Bun.env.JWT_SECRET,
           })
         )
         .use(cookie())
@@ -415,6 +415,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
                 httpOnly: true,
                 maxAge: 60 * 60 * 24 * 7,
                 path: '/',
+                secure: true,
               }
             );
             set.status = 201;
