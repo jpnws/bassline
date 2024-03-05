@@ -1,5 +1,7 @@
 import { Elysia, t } from 'elysia';
 import { PrismaClient } from '@prisma/client';
+import jwt from '@elysiajs/jwt';
+import cookie from '@elysiajs/cookie';
 
 /**
  * Creates an instance of the Elysia app and defines various routes for handling HTTP requests.
@@ -341,7 +343,14 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
     },
     (app) =>
       app
-        .post('/signup', async ({ body, set }) => {
+        .use(
+          jwt({
+            name: 'jwt',
+            secret: 'secret',
+          })
+        )
+        .use(cookie())
+        .post('/signup', async ({ body, set, jwt, setCookie }) => {
           const { username, password } = body;
           // * ================================================
           // * Check if username or password is empty.
@@ -396,8 +405,19 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
                 username: true,
               },
             });
+            // * ================================================
+            // * Store JWT in a cookie.
+            // * ================================================
+            setCookie(
+              'Authorization',
+              await jwt.sign({ id: user.id, username: user.username }),
+              {
+                httpOnly: true,
+                maxAge: 60 * 60 * 24 * 7,
+                path: '/',
+              }
+            );
             set.status = 201;
-            return user;
           } catch (error) {
             console.log('Failed to create a new user:', error);
             set.status = 500;
