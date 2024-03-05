@@ -3,8 +3,8 @@ import { Elysia, t } from 'elysia';
 import jwt from '@elysiajs/jwt';
 import cookie from '@elysiajs/cookie';
 
-export const auth = (prisma: PrismaClient) => {
-  const app = new Elysia({ prefix: '/auth' });
+export const signup = (prisma: PrismaClient) => {
+  const app = new Elysia();
 
   app
     .guard({
@@ -108,21 +108,7 @@ export const auth = (prisma: PrismaClient) => {
           };
         }
       }
-    )
-    .post('/signin', ({ body }) => {
-      const { username, password } = body as {
-        username: string;
-        password: string;
-      };
-      console.log(username, password);
-    })
-    .post('/logout', ({ body }) => {
-      const { username, password } = body as {
-        username: string;
-        password: string;
-      };
-      console.log(username, password);
-    });
+    );
 
   return app;
 };
