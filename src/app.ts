@@ -1,11 +1,11 @@
 import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 
-import { boards } from 'src/routes/boards/boards';
-import { posts } from 'src/routes/posts/posts';
-import { users } from 'src/routes/users/users';
-import { comments } from 'src/routes/comments/comments';
-import { auth } from 'src/routes/auth/auth';
+import { boards } from 'src/routes/boards';
+import { posts } from 'src/routes/posts';
+import { users } from 'src/routes/users';
+import { comments } from 'src/routes/comments';
+import { auth } from 'src/routes/auth';
 
 /**
  * Creates an instance of the Elysia app and defines various routes for handling HTTP requests.
