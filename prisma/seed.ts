@@ -13,7 +13,7 @@ async function main() {
     data: {
       username: 'alice',
       role: UserRole.MEMBER,
-      hash: await Bun.password.hash('password'),
+      hash: 'password',
     },
   });
 
