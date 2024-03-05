@@ -65,6 +65,8 @@ jobs:
 
       - name: Run tests.
         run: bun test
+        env:
+          APP_JWT_SECRET: ${{ secrets.APP_JWT_SECRET }}
 
       - name: Apply migrations to production database.
         run: npx prisma migrate deploy
