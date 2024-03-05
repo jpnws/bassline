@@ -415,7 +415,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
                 httpOnly: true,
                 maxAge: 60 * 60 * 24 * 7,
                 path: '/',
-                secure: true,
+                secure: Bun.env.NODE_ENV === 'production',
               }
             );
             set.status = 201;
