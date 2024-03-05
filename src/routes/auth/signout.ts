@@ -14,7 +14,17 @@ export const signout = () => {
         })
       )
       .use(cookie())
-      .post('/signout', ({}) => {})
+      .post('/signout', ({ set, jwt, cookie: { auth } }) => {
+        // * ================================================
+        // * Ensure that the user is already authenticated.
+        // * ================================================
+        if (!auth) {
+          set.status = 400;
+          return {
+            message: 'You were not authenticated.',
+          };
+        }
+      })
   );
 
   return app;
