@@ -40,6 +40,11 @@ jobs:
       - name: Install bun and node dependencies.
         run: bun install
 
+      - name: Reset the production database.
+        run: npx prisma migrate reset
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Apply migrations to production database.
         run: npx prisma migrate deploy
         env:
