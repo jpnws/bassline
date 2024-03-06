@@ -19,7 +19,7 @@ export const signout = () => {
     .use(
       jwt({
         name: 'jwt',
-        secret: Bun.env.APP_JWT_SECRET,
+        secret: process.env.APP_JWT_SECRET,
       })
     )
     .use(cookie())
@@ -52,7 +52,7 @@ export const signout = () => {
           httpOnly: true,
           maxAge: 0,
           path: '/',
-          secure: Bun.env.NODE_ENV === 'production',
+          secure: process.env.NODE_ENV === 'production',
         });
         set.status = 200;
       },
