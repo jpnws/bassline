@@ -5,7 +5,7 @@ import cookie from '@elysiajs/cookie';
 
 /**
  * Retrieve a single post by its ID.
- * GET /posts/:id
+ *
  * @param prisma - The Prisma client.
  * @returns The Elysia app.
  */
