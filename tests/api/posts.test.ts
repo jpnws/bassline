@@ -20,12 +20,10 @@ describe('Posts API', () => {
     // * ========================
     // * Arrange
     // * ========================
-    // Create a board.
     const boardCreateResponse = await helper.createBoard({
       name: 'test-board-name1',
     });
     const { id: boardId } = boardCreateResponse.body;
-    // Create a user.
     const userCreateResponse = await helper.createUser({
       username: 'test-user-username1',
       password: 'password',
@@ -55,18 +53,15 @@ describe('Posts API', () => {
     // * ========================
     // * Arrange
     // * ========================
-    // Create a board.
     const boardCreateResponse = await helper.createBoard({
       name: 'test-board-name2',
     });
     const { id: boardId } = boardCreateResponse.body;
-    // Create a user.
     const userCreateResponse = await helper.createUser({
       username: 'test-user-username2',
       password: 'password',
     });
     const { id: userId } = userCreateResponse.body;
-    // Create a post.
     const newPost = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
@@ -94,18 +89,15 @@ describe('Posts API', () => {
     // * ========================
     // * Arrange
     // * ========================
-    // Create a board.
     const boardCreateResponse = await helper.createBoard({
       name: 'test-board-name5',
     });
     const { id: boardId } = boardCreateResponse.body;
-    // Create a user.
     const userCreateResponse = await helper.createUser({
       username: 'test-user-username5',
       password: 'password',
     });
     const { id: userId } = userCreateResponse.body;
-    // Create a post.
     const newPost = {
       subject: 'test-post-subject5',
       text: 'test-post-text5',
@@ -140,18 +132,15 @@ describe('Posts API', () => {
     // * ========================
     // * Arrange
     // * ========================
-    // Create a board.
     const boardCreateResponse = await helper.createBoard({
       name: 'test-board-name6',
     });
     const { id: boardId } = boardCreateResponse.body;
-    // Create a user.
     const userCreateResponse = await helper.createUser({
       username: 'test-user-username6',
       password: 'password',
     });
     const { id: userId } = userCreateResponse.body;
-    // Create a post.
     const newPost = {
       subject: 'test-post-subject6',
       text: 'test-post-text6',
@@ -176,18 +165,15 @@ describe('Posts API', () => {
     // * ========================
     // * Arrange
     // * ========================
-    // Create a board.
     const boardCreateResponse = await helper.createBoard({
       name: 'test-board-name7',
     });
     const { id: boardId } = boardCreateResponse.body;
-    // Create a user.
     const userCreateResponse = await helper.createUser({
       username: 'test-user-username7',
       password: 'password',
     });
     const { id: userId } = userCreateResponse.body;
-    // Create multiple posts.
     let newPosts = [
       {
         subject: 'test-post-subject7',

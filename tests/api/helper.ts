@@ -56,7 +56,6 @@ export default class Helper {
     await connectionWithoutDb.connect();
     try {
       await connectionWithoutDb.query(`CREATE DATABASE "${this.dbName}";`);
-      // console.log("Database created.");
     } catch (error) {
       console.error(`Failed to create a test database: ${this.dbName}`);
       console.error(error);
@@ -68,7 +67,6 @@ export default class Helper {
     // Run Prisma migrations.
     try {
       execSync(`DATABASE_URL="${this.dbUrl}" bunx prisma migrate deploy`);
-      // console.log("Migration successful.");
     } catch (error) {
       console.error('Migration failed:', error);
       throw error;
@@ -116,7 +114,6 @@ export default class Helper {
     await client.connect();
     try {
       await client.query(`DROP DATABASE "${this.dbName}"`);
-      // console.log("Data base dropped.");
     } catch (error) {
       console.error(`Failed to drop database: ${this.dbName}`);
       console.error(error);

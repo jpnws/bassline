@@ -20,12 +20,10 @@ describe('Comments API', () => {
     // * ========================
     // * Arrange
     // * ========================
-    // Create a board.
     const boardCreateResponse = await helper.createBoard({
       name: 'test-board-name1',
     });
     const { id: boardId } = boardCreateResponse.body;
-    // Create a user.
     const userCreateResponse = await helper.createUser({
       username: 'test-user-username1',
       password: 'password',
@@ -61,12 +59,10 @@ describe('Comments API', () => {
     // * ========================
     // * Arrange
     // * ========================
-    // Create a board.
     const boardCreateResponse = await helper.createBoard({
       name: 'test-board-name2',
     });
     const { id: boardId } = boardCreateResponse.body;
-    // Create a user.
     const userCreateResponse = await helper.createUser({
       username: 'test-user-username2',
       password: 'password',
