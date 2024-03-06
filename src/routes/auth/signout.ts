@@ -31,9 +31,6 @@ export const signout = () => {
         // * ================================================
         if (!auth) {
           set.status = 400;
-          return {
-            message: 'You were not authenticated.',
-          };
         }
         // * ================================================
         // * Verify the user's JWT.
@@ -41,9 +38,6 @@ export const signout = () => {
         const user = await jwt.verify(auth);
         if (!user) {
           set.status = 401;
-          return {
-            message: 'You are not authorized to sign out.',
-          };
         }
         // * ================================================
         // * Clear client cookie.
