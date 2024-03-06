@@ -39,6 +39,7 @@ export const createPost = (prisma: PrismaClient) => {
             // * ================================================
             if (!auth) {
               set.status = 400;
+              return;
             }
             // * ================================================
             // * Verify the user's JWT.
@@ -46,6 +47,7 @@ export const createPost = (prisma: PrismaClient) => {
             const user = (await jwt.verify(auth)) as UserBody;
             if (!user) {
               set.status = 401;
+              return;
             }
             const { subject, text, boardId, userId } = body as PostBody;
             try {

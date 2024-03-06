@@ -61,7 +61,7 @@ export const getPost = (prisma: PrismaClient) => {
               });
               if (!post) {
                 set.status = 404;
-                return { message: 'Post not found' };
+                return;
               }
               set.status = 200;
               if (auth) {
@@ -178,7 +178,7 @@ export const getPost = (prisma: PrismaClient) => {
                   description: 'Post not found',
                 },
                 500: {
-                  description: 'Internal server error',
+                  description: 'An unexpected error occurred',
                 },
               },
             },
