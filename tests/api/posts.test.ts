@@ -20,33 +20,45 @@ describe('Posts API', () => {
     // * ========================
     // * Arrange
     // * ========================
-    const boardCreateResponse = await helper.createBoard({
-      name: 'test-board-name1',
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name1',
+      },
     });
-    const { id: boardId } = boardCreateResponse.body;
-    const userCreateResponse = await helper.createUser({
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
       username: 'test-user-username1',
       password: 'password',
-    });
-    const { id: userId } = userCreateResponse.body;
+    };
+    const userSignUpResponse = await helper.signUpUser(newUser);
+    const data = userSignUpResponse.body;
+    const { user } = data;
+    const cookies = userSignUpResponse.get('Set-Cookie');
     // * ========================
     // * Act
     // * ========================
-    const postCreateResponse = await helper.createPost({
+    const newPost = {
       subject: 'test-post-subject1',
       text: 'test-post-text1',
-      boardId: boardId,
-      userId: userId,
+      boardId: board.id,
+      userId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Cookie: cookies,
     });
     // * ========================
     // * Assert
     // * ========================
     expect(postCreateResponse.status).toBe(201);
     const post = postCreateResponse.body;
-    expect(post.subject).toBe('test-post-subject1');
-    expect(post.text).toBe('test-post-text1');
-    expect(post.boardId).toBe(boardId);
-    expect(post.userId).toBe(userId);
+    expect(post.subject).toBe(newPost.subject);
+    expect(post.text).toBe(newPost.text);
+    expect(post.boardId).toBe(board.id);
+    expect(post.userId).toBe(user.id);
   });
 
   it('should return a post', async () => {
