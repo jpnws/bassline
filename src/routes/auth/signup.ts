@@ -120,6 +120,17 @@ export const signup = (prisma: PrismaClient) => {
                 }
               );
               set.status = 201;
+              return {
+                status: 'success',
+                message: 'User created.',
+                data: {
+                  user: {
+                    id: user.id,
+                    username: username,
+                    role: user.role,
+                  },
+                },
+              };
             } catch (error) {
               console.log('Failed to create a new user:', error);
               set.status = 500;
