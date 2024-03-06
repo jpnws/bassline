@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Elysia, t } from 'elysia';
+import { Elysia } from 'elysia';
 
 /**
  * Delete a post by its ID.
