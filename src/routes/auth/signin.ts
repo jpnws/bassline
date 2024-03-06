@@ -35,13 +35,21 @@ export const signin = (_prisma: PrismaClient) => {
           })
         )
         .use(cookie())
-        .post('/signin', ({ body }) => {
-          const { username, password } = body as {
-            username: string;
-            password: string;
-          };
-          console.log(username, password);
-        });
+        .post(
+          '/signin',
+          ({ body }) => {
+            const { username, password } = body as {
+              username: string;
+              password: string;
+            };
+            console.log(username, password);
+          },
+          {
+            detail: {
+              tags: ['Auth'],
+            },
+          }
+        );
 
       return app;
     }

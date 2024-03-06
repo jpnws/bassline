@@ -23,37 +23,45 @@ export const signout = () => {
       })
     )
     .use(cookie())
-    .post('/signout', async ({ jwt, set, cookie: { auth }, setCookie }) => {
-      // * ================================================
-      // * Ensure that the user is already authenticated.
-      // * ================================================
-      if (!auth) {
-        set.status = 400;
-        return {
-          message: 'You were not authenticated.',
-        };
+    .post(
+      '/signout',
+      async ({ jwt, set, cookie: { auth }, setCookie }) => {
+        // * ================================================
+        // * Ensure that the user is already authenticated.
+        // * ================================================
+        if (!auth) {
+          set.status = 400;
+          return {
+            message: 'You were not authenticated.',
+          };
+        }
+        // * ================================================
+        // * Verify the user's JWT.
+        // * ================================================
+        const user = await jwt.verify(auth);
+        if (!user) {
+          set.status = 401;
+          return {
+            message: 'You are not authorized to sign out.',
+          };
+        }
+        // * ================================================
+        // * Clear client cookie.
+        // * ================================================
+        setCookie('auth', '', {
+          httpOnly: true,
+          maxAge: 0,
+          path: '/',
+          secure: Bun.env.NODE_ENV === 'production',
+        });
+        set.status = 200;
+      },
+      {
+        detail: {
+          tags: ['Auth'],
+        },
       }
-      // * ================================================
-      // * Verify the user's JWT.
-      // * ================================================
-      const user = await jwt.verify(auth);
-      if (!user) {
-        set.status = 401;
-        return {
-          message: 'You are not authorized to sign out.',
-        };
-      }
-      // * ================================================
-      // * Clear client cookie.
-      // * ================================================
-      setCookie('auth', '', {
-        httpOnly: true,
-        maxAge: 0,
-        path: '/',
-        secure: Bun.env.NODE_ENV === 'production',
-      });
-      set.status = 200;
-    });
+    );
 
   return app;
 };

@@ -20,7 +20,24 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
 
   // Add the Swagger plugin to the app.
   if (swagger) {
-    app.use(swagger());
+    app.use(
+      swagger({
+        documentation: {
+          info: {
+            title: 'Disco API',
+            version: '1.0.0',
+            description: 'Documentation for the Disco API.',
+          },
+          tags: [
+            { name: 'Boards', description: 'Boards API' },
+            { name: 'Posts', description: 'Posts API' },
+            { name: 'Comments', description: 'Comments API' },
+            { name: 'Users', description: 'Users API' },
+            { name: 'Auth', description: 'Auth API' },
+          ],
+        },
+      })
+    );
   }
 
   // Add CORS to allow requests from any origin.

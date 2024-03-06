@@ -127,6 +127,11 @@ export const signup = (prisma: PrismaClient) => {
                 message: 'Server error. Unable to create an account.',
               };
             }
+          },
+          {
+            detail: {
+              tags: ['Auth'],
+            },
           }
         );
       return app;
