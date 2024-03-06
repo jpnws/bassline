@@ -24,9 +24,10 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
       swagger({
         documentation: {
           info: {
-            title: 'Disco API',
+            title: 'Bassline (Disco API)',
             version: '1.0.0',
-            description: 'Documentation for the Disco API.',
+            description:
+              'Bassline serves as the backend within a project named Disco. Disco is a blog/disucssion board (SPA) that offers a basic yet functional platform for users to engage in discussions. Registered members have the capability to create posts and comments, as well as to edit and delete their own content. It also allows its administrators to delete any posts or comments.',
           },
           tags: [
             { name: 'Boards', description: 'Boards API' },
