@@ -207,4 +207,48 @@ describe('Posts API', () => {
       expect(posts[i].userId).toBe(newPosts[i]?.userId);
     }
   });
+
+  it('should return true if a user is the author of a post', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newBoard = {
+      name: 'test-board-name8',
+    };
+    const boardCreateResponse = await helper.createBoard(newBoard);
+    const { id: boardId } = boardCreateResponse.body;
+    const newUser = {
+      username: 'superman',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    expect(signUpUserResponse.status).toBe(201);
+    const { data } = signUpUserResponse.body;
+    const { user } = data;
+    const cookies = signUpUserResponse.get('Set-Cookie');
+    const newPost = {
+      subject: 'test-post-subject7',
+      text: 'test-post-text7',
+      boardId: boardId,
+      userId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Cookie: cookies,
+    });
+    expect(postCreateResponse.status).toBe(201);
+    const { id: postId } = postCreateResponse.body;
+    // * ========================
+    // * Act
+    // * ========================
+    const postGetResponse = await helper.getPost(postId, { Cookie: cookies });
+    expect(postGetResponse.status).toBe(200);
+    const { data: postGetData } = postGetResponse.body;
+    const { post: postData, user: userData } = postGetData;
+    expect(postData.boardName).toBe(newBoard.name);
+    expect(postData.username).toBe(newUser.username);
+    expect(postData.subject).toBe(newPost.subject);
+    expect(postData.text).toBe(newPost.text);
+    expect(userData.isAuthor).toBe(true);
+    expect(userData.isAdmin).toBe(false);
+  });
 });

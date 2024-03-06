@@ -131,17 +131,16 @@ export default class Helper {
     return await request(this.url).post('/boards').send(board);
   }
 
-  async createPost(post: {
-    subject: string;
-    text: string;
-    boardId: number;
-    userId: number;
-  }) {
-    return await request(this.url).post('/posts').send(post);
+  async createPost(post: PostBody, headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).post(`/posts`);
+    req = headers ? req.set(headers) : req;
+    return await req.send(post);
   }
 
-  async getPost(postId: number) {
-    return await request(this.url).get(`/posts/${postId}`);
+  async getPost(postId: number, headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).get(`/posts/${postId}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send();
   }
 
   async getPostsByBoardId(boardId: number) {
