@@ -10,6 +10,13 @@ import { createApp } from 'src/app';
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
 
+/**
+ * Helper class for testing the API.
+ *
+ * The Helper class is a utility class that provides methods to interact with
+ * the API endpoints. It also provides methods to create and drop the test
+ * database, and to start and stop the app server.
+ */
 export default class Helper {
   dbName: string;
   dbUrl: string;
