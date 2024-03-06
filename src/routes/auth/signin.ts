@@ -15,7 +15,7 @@ import cookie from '@elysiajs/cookie';
  * @param prisma - The Prisma client.
  * @returns The Elysia app.
  */
-export const signin = (_prisma: PrismaClient) => {
+export const signin = (prisma: PrismaClient) => {
   const app = new Elysia();
 
   app.group(
@@ -37,12 +37,75 @@ export const signin = (_prisma: PrismaClient) => {
         .use(cookie())
         .post(
           '/signin',
-          ({ body }) => {
-            const { username, password } = body as {
-              username: string;
-              password: string;
-            };
-            console.log(username, password);
+          async ({ body, set, jwt, setCookie }) => {
+            const { username, password } = body;
+            // * ================================================
+            // * Check if username or password is empty.
+            // * ================================================
+            if (!username || !password) {
+              set.status = 401;
+              return;
+            }
+            // * ================================================
+            // * Get user from DB and verify the password.
+            // * ================================================
+            try {
+              const user = await prisma.user.findUnique({
+                where: {
+                  username,
+                },
+                select: {
+                  id: true,
+                  hash: true,
+                  role: true,
+                },
+              });
+              if (!user) {
+                set.status = 401;
+                return;
+              }
+              const isMatch = await Bun.password.verify(password, user.hash);
+              if (!isMatch) {
+                set.status = 401;
+                return;
+              }
+              // * ================================================
+              // * Store JWT in a cookie.
+              // * ================================================
+              setCookie(
+                'auth',
+                await jwt.sign({
+                  id: user.id,
+                  username: username,
+                  role: user.role,
+                }),
+                {
+                  httpOnly: true,
+                  maxAge: 60 * 60 * 24 * 7,
+                  path: '/',
+                  secure: Bun.env.NODE_ENV === 'production',
+                }
+              );
+              set.status = 200;
+              return {
+                status: 'success',
+                message: 'Authentication successful',
+                data: {
+                  user: {
+                    id: user.id,
+                    username: username,
+                    role: user.role,
+                  },
+                },
+              };
+            } catch (error) {
+              console.error('Failed to sign in user:', error);
+              set.status = 500;
+              return {
+                status: 'error',
+                message: 'An unexpected error occurred.',
+              };
+            }
           },
           {
             detail: {
