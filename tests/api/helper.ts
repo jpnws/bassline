@@ -148,19 +148,19 @@ export default class Helper {
   }
 
   async updatePost(
-    id: number,
-    post: {
-      subject: string;
-      text: string;
-      boardId: number;
-      userId: number;
-    }
+    postId: number,
+    post: PostBody,
+    headers?: { [key: string]: string } | {}
   ) {
-    return await request(this.url).put(`/posts/${id}`).send(post);
+    let req = request(this.url).put(`/posts/${postId}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send(post);
   }
 
-  async deletePost(id: number) {
-    return await request(this.url).delete(`/posts/${id}`);
+  async deletePost(postId: number, headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).delete(`/posts/${postId}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send();
   }
 
   async createComment(comment: {
