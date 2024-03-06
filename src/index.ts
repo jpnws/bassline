@@ -1,4 +1,4 @@
-import { createApp } from './app';
+import { createApp } from 'src/app';
 import { PrismaClient } from '@prisma/client';
 import { swagger } from '@elysiajs/swagger';
 import { cors } from '@elysiajs/cors';
