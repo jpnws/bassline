@@ -5,7 +5,7 @@ import cookie from '@elysiajs/cookie';
 
 /**
  * Create a new post.
- * POST /posts.
+ *
  * @param prisma - The Prisma client.
  * @returns The Elysia app.
  */
