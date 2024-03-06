@@ -10,28 +10,6 @@ export const boards = (prisma: PrismaClient) => {
   const app = new Elysia();
 
   /**
-   * Retrieve all boards.
-   */
-  app.get(
-    '/boards',
-    async ({ set }) => {
-      try {
-        const boards = await prisma.board.findMany();
-        set.status = 200;
-        return boards;
-      } catch (error) {
-        console.error('Failed to retrieve boards:', error);
-        set.status = 500;
-      }
-    },
-    {
-      detail: {
-        tags: ['Boards'],
-      },
-    }
-  );
-
-  /**
    * Create a new board.
    */
   app.post(
@@ -48,6 +26,28 @@ export const boards = (prisma: PrismaClient) => {
         return board;
       } catch (error) {
         console.error('Failed to create board:', error);
+        set.status = 500;
+      }
+    },
+    {
+      detail: {
+        tags: ['Boards'],
+      },
+    }
+  );
+
+  /**
+   * Retrieve all boards.
+   */
+  app.get(
+    '/boards',
+    async ({ set }) => {
+      try {
+        const boards = await prisma.board.findMany();
+        set.status = 200;
+        return boards;
+      } catch (error) {
+        console.error('Failed to retrieve boards:', error);
         set.status = 500;
       }
     },

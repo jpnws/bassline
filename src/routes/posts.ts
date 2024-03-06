@@ -10,36 +10,6 @@ export const posts = (prisma: PrismaClient) => {
   const app = new Elysia();
 
   /**
-   * Retrieve a single post by its ID.
-   */
-  app.get(
-    '/posts/:id',
-    async ({ params: { id }, set }) => {
-      try {
-        const post = await prisma.post.findUnique({
-          where: {
-            id: parseInt(id),
-          },
-        });
-        if (!post) {
-          set.status = 404;
-          return { message: 'Post not found' };
-        }
-        set.status = 200;
-        return post;
-      } catch (error) {
-        console.error('Failed to retrieve post:', error);
-        set.status = 500;
-      }
-    },
-    {
-      detail: {
-        tags: ['Posts'],
-      },
-    }
-  );
-
-  /**
    * Create a new post.
    */
   app.post(
@@ -59,6 +29,36 @@ export const posts = (prisma: PrismaClient) => {
         return post;
       } catch (error) {
         console.error('Failed to create post:', error);
+        set.status = 500;
+      }
+    },
+    {
+      detail: {
+        tags: ['Posts'],
+      },
+    }
+  );
+
+  /**
+   * Retrieve a single post by its ID.
+   */
+  app.get(
+    '/posts/:id',
+    async ({ params: { id }, set }) => {
+      try {
+        const post = await prisma.post.findUnique({
+          where: {
+            id: parseInt(id),
+          },
+        });
+        if (!post) {
+          set.status = 404;
+          return { message: 'Post not found' };
+        }
+        set.status = 200;
+        return post;
+      } catch (error) {
+        console.error('Failed to retrieve post:', error);
         set.status = 500;
       }
     },
