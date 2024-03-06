@@ -67,9 +67,10 @@ export const getPost = (prisma: PrismaClient) => {
                 id: post.id,
                 subject: post.subject,
                 text: post.text,
-                createdAt: post.createdAt,
                 boardName: post.board.name,
                 username: post.user.username,
+                createdAt: post.createdAt,
+                updatedAt: post.updatedAt,
               };
               set.status = 200;
               if (auth) {
