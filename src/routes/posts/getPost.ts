@@ -41,18 +41,19 @@ export const getPost = (prisma: PrismaClient) => {
                 },
                 select: {
                   id: true,
-                  userId: true,
                   subject: true,
                   text: true,
                   createdAt: true,
                   updatedAt: true,
                   board: {
                     select: {
+                      id: true,
                       name: true,
                     },
                   },
                   user: {
                     select: {
+                      id: true,
                       username: true,
                     },
                   },
@@ -62,16 +63,6 @@ export const getPost = (prisma: PrismaClient) => {
                 set.status = 404;
                 return { message: 'Post not found' };
               }
-              const postUserId = post.userId;
-              const resPost = {
-                id: post.id,
-                subject: post.subject,
-                text: post.text,
-                boardName: post.board.name,
-                username: post.user.username,
-                createdAt: post.createdAt,
-                updatedAt: post.updatedAt,
-              };
               set.status = 200;
               if (auth) {
                 // * ================================================
@@ -84,10 +75,13 @@ export const getPost = (prisma: PrismaClient) => {
                   // * ================================================
                   return {
                     data: {
-                      post: resPost,
-                      user: {
-                        isAuthor: false,
-                        isAdmin: false,
+                      post: {
+                        ...post,
+                        user: {
+                          ...post.user,
+                          isAuthor: false,
+                          isAdmin: false,
+                        },
                       },
                     },
                   };
@@ -97,10 +91,13 @@ export const getPost = (prisma: PrismaClient) => {
                 // * ================================================
                 return {
                   data: {
-                    post: resPost,
-                    user: {
-                      isAuthor: user.id === postUserId,
-                      isAdmin: user.role === 'ADMIN',
+                    post: {
+                      ...post,
+                      user: {
+                        ...post.user,
+                        isAuthor: user.id === post.user.id,
+                        isAdmin: user.role === 'ADMIN',
+                      },
                     },
                   },
                 };
@@ -110,10 +107,13 @@ export const getPost = (prisma: PrismaClient) => {
               // * ================================================
               return {
                 data: {
-                  post: resPost,
-                  user: {
-                    isAuthor: false,
-                    isAdmin: false,
+                  post: {
+                    ...post,
+                    user: {
+                      ...post.user,
+                      isAuthor: false,
+                      isAdmin: false,
+                    },
                   },
                 },
               };
@@ -129,6 +129,58 @@ export const getPost = (prisma: PrismaClient) => {
           {
             detail: {
               tags: ['Posts'],
+              // OpenAPIV3.ResponsesObject
+              responses: {
+                200: {
+                  description: 'Post retrieved',
+                  content: {
+                    'application/json': {
+                      schema: {
+                        type: 'object',
+                        properties: {
+                          data: {
+                            type: 'object',
+                            properties: {
+                              post: {
+                                type: 'object',
+                                properties: {
+                                  id: { type: 'number' },
+                                  subject: { type: 'string' },
+                                  text: { type: 'string' },
+                                  createdAt: { type: 'string' },
+                                  updatedAt: { type: 'string' },
+                                  board: {
+                                    type: 'object',
+                                    properties: {
+                                      id: { type: 'number' },
+                                      name: { type: 'string' },
+                                    },
+                                  },
+                                  user: {
+                                    type: 'object',
+                                    properties: {
+                                      id: { type: 'number' },
+                                      username: { type: 'string' },
+                                      isAuthor: { type: 'boolean' },
+                                      isAdmin: { type: 'boolean' },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+                404: {
+                  description: 'Post not found',
+                },
+                500: {
+                  description: 'Internal server error',
+                },
+              },
             },
           }
         );
