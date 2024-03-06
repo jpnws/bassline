@@ -79,6 +79,9 @@ export const getPost = (prisma: PrismaClient) => {
                 // * ================================================
                 const user = (await jwt.verify(auth)) as UserBody;
                 if (!user) {
+                  // * ================================================
+                  // * Respond with ordinary payload when unauthorized.
+                  // * ================================================
                   return {
                     data: {
                       post: resPost,
@@ -89,6 +92,9 @@ export const getPost = (prisma: PrismaClient) => {
                     },
                   };
                 }
+                // * ================================================
+                // * Respond with payload for registered member.
+                // * ================================================
                 return {
                   data: {
                     post: resPost,
@@ -99,6 +105,9 @@ export const getPost = (prisma: PrismaClient) => {
                   },
                 };
               }
+              // * ================================================
+              // * Respond with ordinary payload for anon user.
+              // * ================================================
               return {
                 data: {
                   post: resPost,
@@ -111,6 +120,10 @@ export const getPost = (prisma: PrismaClient) => {
             } catch (error) {
               console.error('Failed to retrieve post:', error);
               set.status = 500;
+              return {
+                status: 'error',
+                message: 'Failed to retrieve post',
+              };
             }
           },
           {
