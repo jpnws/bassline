@@ -33,7 +33,20 @@ export const createPost = (prisma: PrismaClient) => {
         .use(cookie())
         .post(
           '/posts',
-          async ({ body, set }) => {
+          async ({ body, jwt, set, cookie: { auth } }) => {
+            // * ================================================
+            // * Ensure that the user is already authenticated.
+            // * ================================================
+            if (!auth) {
+              set.status = 400;
+            }
+            // * ================================================
+            // * Verify the user's JWT.
+            // * ================================================
+            const user = (await jwt.verify(auth)) as UserBody;
+            if (!user) {
+              set.status = 401;
+            }
             const { subject, text, boardId, userId } = body as PostBody;
             try {
               const post = await prisma.post.create({
@@ -45,7 +58,13 @@ export const createPost = (prisma: PrismaClient) => {
                 },
               });
               set.status = 201;
-              return post;
+              return {
+                data: {
+                  post: {
+                    id: post.id,
+                  },
+                },
+              };
             } catch (error) {
               console.error('Failed to create post:', error);
               set.status = 500;
@@ -54,6 +73,41 @@ export const createPost = (prisma: PrismaClient) => {
           {
             detail: {
               tags: ['Posts'],
+              // OpenAPIV3.ResponsesObject
+              responses: {
+                201: {
+                  description: 'Post created',
+                  content: {
+                    'application/json': {
+                      schema: {
+                        type: 'object',
+                        properties: {
+                          data: {
+                            type: 'object',
+                            properties: {
+                              post: {
+                                type: 'object',
+                                properties: {
+                                  id: { type: 'number' },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+                400: {
+                  description: 'Bad request',
+                },
+                401: {
+                  description: 'Unauthorized',
+                },
+                500: {
+                  description: 'Internal server error',
+                },
+              },
             },
           }
         );
