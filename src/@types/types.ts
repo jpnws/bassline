@@ -13,7 +13,7 @@ declare module 'bun' {
 }
 
 type PostBody = {
-  id: number;
+  id?: number;
   subject: string;
   text: string;
   boardId: number;
@@ -21,7 +21,7 @@ type PostBody = {
 };
 
 type CommentBody = {
-  id: number;
+  id?: number;
   text: string;
   postId: number;
   userId: number;
@@ -31,4 +31,5 @@ type UserBody = {
   id?: number;
   username: string;
   password?: string;
+  role?: 'MEMBER' | 'ADMIN';
 };
