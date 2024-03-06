@@ -24,7 +24,7 @@ export const getPost = (prisma: PrismaClient) => {
         .use(
           jwt({
             name: 'jwt',
-            secret: Bun.env.APP_JWT_SECRET,
+            secret: process.env.APP_JWT_SECRET,
           })
         )
         .use(cookie())
