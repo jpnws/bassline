@@ -54,8 +54,8 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   // Define various routes for handling HTTP requests.
   app.use(boards(prisma));
   app.use(posts(prisma));
-  app.use(users(prisma));
   app.use(comments(prisma));
+  app.use(users(prisma));
   app.use(auth(prisma));
 
   return app;

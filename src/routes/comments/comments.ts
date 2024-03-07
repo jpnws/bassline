@@ -2,9 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
 
 import { createComment } from 'src/routes/comments/createComment';
-import { deleteComment } from 'src/routes/comments/deleteComment';
 import { getComment } from 'src/routes/comments/getComment';
 import { updateComment } from 'src/routes/comments/updateComment';
+import { deleteComment } from 'src/routes/comments/deleteComment';
 
 /**
  * Comments route.
