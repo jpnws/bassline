@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Elysia, t } from 'elysia';
+import { Elysia } from 'elysia';
 
 import jwt from '@elysiajs/jwt';
 import cookie from '@elysiajs/cookie';
