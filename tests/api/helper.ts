@@ -191,8 +191,13 @@ export default class Helper {
     return await req.send();
   }
 
-  async deleteComment(id: number) {
-    return await request(this.url).delete(`/comments/${id}`);
+  async deleteComment(
+    commentId: number,
+    headers?: { [key: string]: string } | {}
+  ) {
+    let req = request(this.url).delete(`/comments/${commentId}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send();
   }
 
   async createUser(user: { username: string; password: string }) {
