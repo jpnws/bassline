@@ -173,14 +173,13 @@ export default class Helper {
   }
 
   async updateComment(
-    id: number,
-    comment: {
-      text: string;
-      postId: number;
-      userId: number;
-    }
+    commentId: number,
+    comment: CommentBody,
+    headers?: { [key: string]: string } | {}
   ) {
-    return await request(this.url).put(`/comments/${id}`).send(comment);
+    let req = request(this.url).put(`/comments/${commentId}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send(comment);
   }
 
   async getComment(
