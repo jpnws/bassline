@@ -105,4 +105,30 @@ describe('Users API', () => {
     const userGetResponse = await helper.getUser(userId);
     expect(userGetResponse.status).toBe(404);
   });
+
+  it('should retrieve the current user', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newUser = {
+      username: 'janedoe',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const cookies = signUpUserResponse.get('Set-Cookie');
+    // * ========================
+    // * Act
+    // * ========================
+    const getCurrentUserResponse = await helper.getCurrentUser({
+      Cookie: cookies,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(getCurrentUserResponse.status).toBe(200);
+    const user = getCurrentUserResponse.body.data.user;
+    expect(user.id).toBeDefined();
+    expect(user.username).toBe(newUser.username);
+    expect(user.role).toBeDefined();
+  });
 });

@@ -263,4 +263,10 @@ export default class Helper {
     req = headers ? req.set(headers) : req;
     return await req.send();
   }
+
+  async getCurrentUser(headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).get(`/users/current`);
+    req = headers ? req.set(headers) : req;
+    return await req.send();
+  }
 }
