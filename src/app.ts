@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 
 import { boards } from 'src/routes/boards/boards';
 import { posts } from 'src/routes/posts/posts';
-import { users } from 'src/routes/users';
+import { users } from 'src/routes/users/users';
 import { comments } from 'src/routes/comments/comments';
 import { auth } from 'src/routes/auth/auth';
 
