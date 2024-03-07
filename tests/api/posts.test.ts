@@ -385,7 +385,7 @@ describe('Posts API', () => {
     // * ========================
     // * Act
     // * ========================
-    const getPostCommentsResponse = await helper.getCommentsByPostId(post.id);
+    const getPostCommentsResponse = await helper.getPostComments(post.id);
     // * ========================
     // * Assert
     // * ========================

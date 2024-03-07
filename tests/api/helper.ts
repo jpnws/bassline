@@ -200,12 +200,12 @@ export default class Helper {
     return await req.send();
   }
 
-  async createUser(user: { username: string; password: string }) {
-    return await request(this.url).post('/users').send(user);
+  async getPostComments(id: number) {
+    return await request(this.url).get(`/posts/${id}/comments`);
   }
 
-  async getCommentsByPostId(id: number) {
-    return await request(this.url).get(`/posts/${id}/comments`);
+  async createUser(user: { username: string; password: string }) {
+    return await request(this.url).post('/users').send(user);
   }
 
   async getUser(id: number) {
