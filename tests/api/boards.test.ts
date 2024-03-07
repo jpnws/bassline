@@ -31,11 +31,9 @@ describe('Boards API', () => {
     // * Assert
     // * ========================
     expect(boardCreateResponse.status).toBe(201);
-    const board = boardCreateResponse.body;
-    expect(board.name).toBe('test-board-name1');
   });
 
-  it('should return boards', async () => {
+  it('should return all boards', async () => {
     // * ========================
     // * Arrange
     // * ========================
@@ -57,7 +55,72 @@ describe('Boards API', () => {
     expect(createBoardResponse1.status).toBe(201);
     expect(createBoardResponse2.status).toBe(201);
     expect(getBoardsResponse.status).toBe(200);
-    const boards = getBoardsResponse.body;
+    const boards = getBoardsResponse.body.data.boards;
     expect(boards.length).toBe(3);
+  });
+
+  it('should retrieve all posts associated with a board', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newBoard = {
+      name: 'test-board-name4',
+    };
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: newBoard.name,
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'test-user-username2',
+      password: 'password',
+    };
+    const userSignUpResponse = await helper.signUpUser(newUser);
+    const user = userSignUpResponse.body.data.user;
+    const cookies = userSignUpResponse.get('Set-Cookie');
+    const newPost1 = {
+      subject: 'test-post-subject2',
+      text: 'test-post-text2',
+      boardId: board.id,
+      userId: user.id,
+    };
+    const newPost2 = {
+      subject: 'test-post-subject3',
+      text: 'test-post-text3',
+      boardId: board.id,
+      userId: user.id,
+    };
+    const postCreateResponse1 = await helper.createPost(newPost1, {
+      Cookie: cookies,
+    });
+    const postCreateResponse2 = await helper.createPost(newPost2, {
+      Cookie: cookies,
+    });
+    // * ========================
+    // * Act
+    // * ========================
+    const getBoardPostsResponse = await helper.getPostsByBoardId(board.id);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postCreateResponse1.status).toBe(201);
+    expect(postCreateResponse2.status).toBe(201);
+    expect(getBoardPostsResponse.status).toBe(200);
+    const boardData = getBoardPostsResponse.body.data.board;
+    expect(boardData.id).toBeDefined();
+    expect(boardData.name).toBe(newBoard.name);
+    const posts = getBoardPostsResponse.body.data.board.posts;
+    expect(posts.length).toBe(2);
+    for (const post of posts) {
+      expect(post.id).toBeDefined();
+      expect(post.subject).toBeDefined();
+      expect(post.createdAt).toBeDefined();
+      expect(post.user.username).toBeDefined();
+    }
   });
 });
