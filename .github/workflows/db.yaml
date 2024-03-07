@@ -45,15 +45,15 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      - name: Apply migrations to production database.
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # - name: Apply migrations to production database.
+      #   run: npx prisma migrate deploy
+      #   env:
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
-      - name: Generate Prisma client for production database.
-        run: npx prisma generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # - name: Generate Prisma client for production database.
+      #   run: npx prisma generate
+      #   env:
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       # - name: Seed the production database.
       #   run: npx prisma db seed
