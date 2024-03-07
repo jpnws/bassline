@@ -74,7 +74,7 @@ export const getBoardPosts = (prisma: PrismaClient) => {
                                   id: { type: 'number' },
                                   subject: { type: 'string' },
                                   createdAt: { type: 'string' },
-                                  user: {
+                                  author: {
                                     type: 'object',
                                     properties: {
                                       username: { type: 'string' },

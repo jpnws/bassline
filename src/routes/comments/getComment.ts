@@ -139,7 +139,7 @@ export const getComment = (prisma: PrismaClient) => {
                           data: {
                             type: 'object',
                             properties: {
-                              post: {
+                              comment: {
                                 type: 'object',
                                 properties: {
                                   id: { type: 'number' },
@@ -152,15 +152,20 @@ export const getComment = (prisma: PrismaClient) => {
                                       id: { type: 'number' },
                                     },
                                   },
-                                  user: {
+                                  author: {
                                     type: 'object',
                                     properties: {
                                       id: { type: 'number' },
                                       username: { type: 'string' },
-                                      isAuthor: { type: 'boolean' },
-                                      isAdmin: { type: 'boolean' },
                                     },
                                   },
+                                },
+                              },
+                              currentUser: {
+                                type: 'object',
+                                properties: {
+                                  id: { type: 'number' },
+                                  username: { type: 'string' },
                                 },
                               },
                             },

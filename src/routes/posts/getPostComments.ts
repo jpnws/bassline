@@ -81,7 +81,7 @@ export const getPostComments = (prisma: PrismaClient) => {
                                     properties: {
                                       id: { type: 'number' },
                                       text: { type: 'string' },
-                                      user: {
+                                      author: {
                                         type: 'object',
                                         properties: {
                                           id: { type: 'number' },
@@ -93,6 +93,13 @@ export const getPostComments = (prisma: PrismaClient) => {
                                     },
                                   },
                                 },
+                              },
+                            },
+                            currentUser: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'number' },
+                                username: { type: 'string' },
                               },
                             },
                           },

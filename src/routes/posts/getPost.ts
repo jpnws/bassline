@@ -156,15 +156,20 @@ export const getPost = (prisma: PrismaClient) => {
                                       name: { type: 'string' },
                                     },
                                   },
-                                  user: {
+                                  author: {
                                     type: 'object',
                                     properties: {
                                       id: { type: 'number' },
                                       username: { type: 'string' },
-                                      isAuthor: { type: 'boolean' },
-                                      isAdmin: { type: 'boolean' },
                                     },
                                   },
+                                },
+                              },
+                              currentUser: {
+                                type: 'object',
+                                properties: {
+                                  id: { type: 'number' },
+                                  username: { type: 'string' },
                                 },
                               },
                             },
