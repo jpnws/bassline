@@ -120,6 +120,13 @@ export const signup = (prisma: PrismaClient) => {
                 }
               );
               set.status = 201;
+              return {
+                data: {
+                  user: {
+                    id: user.id,
+                  },
+                },
+              };
             } catch (error) {
               console.log('Failed to create a new user:', error);
               set.status = 500;
@@ -135,6 +142,28 @@ export const signup = (prisma: PrismaClient) => {
               responses: {
                 201: {
                   description: 'User created successfully.',
+                  content: {
+                    'application/json': {
+                      schema: {
+                        type: 'object',
+                        properties: {
+                          data: {
+                            type: 'object',
+                            properties: {
+                              user: {
+                                type: 'object',
+                                properties: {
+                                  id: {
+                                    type: 'number',
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
                 },
                 400: {
                   description: 'Username or password cannot be empty.',
