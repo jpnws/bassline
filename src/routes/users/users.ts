@@ -3,6 +3,7 @@ import { Elysia } from 'elysia';
 
 import { createUser } from 'src/routes/users/createUser';
 import { deleteUser } from 'src/routes/users/deleteUser';
+import { getCurrentUser } from 'src/routes/users/getCurrentUser';
 import { getUser } from 'src/routes/users/getUser';
 import { updateUser } from 'src/routes/users/updateUser';
 
@@ -19,6 +20,7 @@ export const users = (prisma: PrismaClient) => {
   app.use(getUser(prisma));
   app.use(updateUser(prisma));
   app.use(deleteUser(prisma));
+  app.use(getCurrentUser(prisma));
 
   return app;
 };
