@@ -26,13 +26,13 @@ model Board {
 model Post {
   id        Int       @id @default(autoincrement())
   boardId   Int
-  userId    Int
+  authorId  Int       @map("userId")
   subject   String
   text      String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   board     Board     @relation(fields: [boardId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id])
   comments  Comment[]
 
   @@map("posts")
@@ -41,12 +41,12 @@ model Post {
 model Comment {
   id        Int      @id @default(autoincrement())
   postId    Int
-  userId    Int
+  authorId  Int      @map("userId")
   text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   post      Post     @relation(fields: [postId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
 
   @@map("comments")
 }
