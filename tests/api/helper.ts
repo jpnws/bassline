@@ -183,8 +183,13 @@ export default class Helper {
     return await request(this.url).put(`/comments/${id}`).send(comment);
   }
 
-  async getComment(id: number) {
-    return await request(this.url).get(`/comments/${id}`);
+  async getComment(
+    commentId: number,
+    headers?: { [key: string]: string } | {}
+  ) {
+    let req = request(this.url).get(`/comments/${commentId}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send();
   }
 
   async deleteComment(id: number) {
