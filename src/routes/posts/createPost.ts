@@ -49,6 +49,9 @@ export const createPost = (prisma: PrismaClient) => {
               set.status = 401;
               return;
             }
+            // * ================================================
+            // * Create a new post.
+            // * ================================================
             const { subject, text, boardId, userId } = body as PostBody;
             try {
               const post = await prisma.post.create({
