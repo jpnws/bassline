@@ -272,12 +272,12 @@ describe('Posts API', () => {
     // * Arrange
     // * ========================
     const newBoard = {
-      name: 'test-board-name7',
+      name: 'test-board-name8',
     };
     const boardCreateResponse = await helper.createBoard(newBoard);
     const { id: boardId } = boardCreateResponse.body;
     const newUser = {
-      username: 'superman',
+      username: 'ironman',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
@@ -286,8 +286,8 @@ describe('Posts API', () => {
     const { user } = data;
     const cookies = signUpUserResponse.get('Set-Cookie');
     const newPost = {
-      subject: 'test-post-subject7',
-      text: 'test-post-text7',
+      subject: 'test-post-subject8',
+      text: 'test-post-text8',
       boardId: boardId,
       userId: user.id,
     };
@@ -302,6 +302,9 @@ describe('Posts API', () => {
     // * Act
     // * ========================
     const postGetResponse = await helper.getPost(postId, { Cookie: cookies });
+    // * ========================
+    // * Assert
+    // * ========================
     expect(postGetResponse.status).toBe(200);
     const { data: postGetData } = postGetResponse.body;
     const { post: postData } = postGetData;
@@ -311,5 +314,79 @@ describe('Posts API', () => {
     expect(postData.user.username).toBe(newUser.username);
     expect(postData.user.isAuthor).toBe(true);
     expect(postData.user.isAdmin).toBe(false);
+  });
+
+  it('should prevent creating post if not authenticated', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newBoard = {
+      name: 'test-board-name10',
+    };
+    const boardCreateResponse = await helper.createBoard(newBoard);
+    const { id: boardId } = boardCreateResponse.body;
+    const newUser = {
+      username: 'superman',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    expect(signUpUserResponse.status).toBe(201);
+    const { data } = signUpUserResponse.body;
+    const { user } = data;
+    // * ========================
+    // * Act
+    // * ========================
+    const newPost = {
+      subject: 'test-post-subject7',
+      text: 'test-post-text7',
+      boardId: boardId,
+      userId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postCreateResponse.status).toBe(400);
+  });
+
+  it('should prevent creating post if jwt in cookie is invalid', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newBoard = {
+      name: 'test-board-name9',
+    };
+    const boardCreateResponse = await helper.createBoard(newBoard);
+    const { id: boardId } = boardCreateResponse.body;
+    const newUser = {
+      username: 'spiderman',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    expect(signUpUserResponse.status).toBe(201);
+    const { data } = signUpUserResponse.body;
+    const { user } = data;
+    let cookies = signUpUserResponse.get('Set-Cookie');
+    for (let i = 0; i < cookies.length; i++) {
+      if (cookies[i].includes('auth=')) {
+        cookies[i] = 'auth=abc; Max-Age=604800; Path=/; HttpOnly';
+      }
+    }
+    // * ========================
+    // * Act
+    // * ========================
+    const newPost = {
+      subject: 'test-post-subject8',
+      text: 'test-post-text8',
+      boardId: boardId,
+      userId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Cookie: cookies,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postCreateResponse.status).toBe(401);
   });
 });
