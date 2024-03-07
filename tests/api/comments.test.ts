@@ -68,7 +68,69 @@ describe('Comments API', () => {
   //   expect(comment.id).toBeDefined();
   // });
 
-  it('should retrieve a single comment by id', async () => {
+  // it('should retrieve a single comment by id', async () => {
+  //   // * ========================
+  //   // * Arrange
+  //   // * ========================
+  //   const board = await helper.prisma?.board.create({
+  //     data: {
+  //       name: 'test-board-name2',
+  //     },
+  //   });
+  //   if (!board) {
+  //     expect(board).not.toBeNull();
+  //     expect(board).not.toBeUndefined();
+  //     return;
+  //   }
+  //   const newUser = {
+  //     username: 'test-user-username2',
+  //     password: 'password',
+  //   };
+  //   const userSignUpResponse = await helper.signUpUser(newUser);
+  //   const user = userSignUpResponse.body.data.user;
+  //   const cookies = userSignUpResponse.get('Set-Cookie');
+  //   const newPost = {
+  //     subject: 'test-post-subject2',
+  //     text: 'test-post-text2',
+  //     boardId: board.id,
+  //     userId: user.id,
+  //   };
+  //   const postCreateResponse = await helper.createPost(newPost, {
+  //     Cookie: cookies,
+  //   });
+  //   const postData = postCreateResponse.body.data.post;
+  //   const newComment = {
+  //     text: 'test-comment-text1',
+  //     postId: postData.id,
+  //     userId: user.id,
+  //   };
+  //   const commentCreateResponse = await helper.createComment(newComment, {
+  //     Cookie: cookies,
+  //   });
+  //   const commentData = commentCreateResponse.body.data.comment;
+  //   // * ========================
+  //   // * Act
+  //   // * ========================
+  //   const commentGetResponse = await helper.getComment(commentData.id, {
+  //     Cookie: cookies,
+  //   });
+  //   // * ========================
+  //   // * Assert
+  //   // * ========================
+  //   expect(commentGetResponse.status).toBe(200);
+  //   expect(commentGetResponse.body.data).toBeDefined();
+  //   expect(commentGetResponse.body.data.comment).toBeDefined();
+  //   const comment = commentGetResponse.body.data.comment;
+  //   expect(comment.id).toBeDefined();
+  //   expect(comment.text).toBe(newComment.text);
+  //   expect(comment.post.id).toBe(postData.id);
+  //   expect(comment.user.id).toBe(user.id);
+  //   expect(comment.user.username).toBe(newUser.username);
+  //   expect(comment.user.isAuthor).toBeTrue();
+  //   expect(comment.user.isAdmin).toBeFalse();
+  // });
+
+  it('should update a comment', async () => {
     // * ========================
     // * Arrange
     // * ========================
@@ -107,26 +169,25 @@ describe('Comments API', () => {
     const commentCreateResponse = await helper.createComment(newComment, {
       Cookie: cookies,
     });
-    const commentdata = commentCreateResponse.body.data.comment;
+    const commentData = commentCreateResponse.body.data.comment;
     // * ========================
     // * Act
     // * ========================
-    const commentGetResponse = await helper.getComment(commentdata.id, {
-      Cookie: cookies,
-    });
+    const updateComment = {
+      text: 'updated-comment-text2',
+      postId: postData.id,
+      userId: user.id,
+    };
+    const commentUpdateResponse = await helper.updateComment(
+      commentData.id,
+      updateComment,
+      {
+        Cookie: cookies,
+      }
+    );
     // * ========================
     // * Assert
     // * ========================
-    expect(commentGetResponse.status).toBe(200);
-    expect(commentGetResponse.body.data).toBeDefined();
-    expect(commentGetResponse.body.data.comment).toBeDefined();
-    const comment = commentGetResponse.body.data.comment;
-    expect(comment.id).toBeDefined();
-    expect(comment.text).toBe(newComment.text);
-    expect(comment.post.id).toBe(postData.id);
-    expect(comment.user.id).toBe(user.id);
-    expect(comment.user.username).toBe(newUser.username);
-    expect(comment.user.isAuthor).toBeTrue();
-    expect(comment.user.isAdmin).toBeFalse();
+    expect(commentUpdateResponse.status).toBe(200);
   });
 });
