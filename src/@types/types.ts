@@ -17,14 +17,14 @@ type PostBody = {
   subject: string;
   text: string;
   boardId: number;
-  userId: number;
+  authorId: number;
 };
 
 type CommentBody = {
   id?: number;
   text: string;
   postId: number;
-  userId: number;
+  authorId: number;
 };
 
 type UserBody = {
