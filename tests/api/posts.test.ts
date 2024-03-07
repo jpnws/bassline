@@ -334,4 +334,79 @@ describe('Posts API', () => {
     // * ========================
     expect(postCreateResponse.status).toBe(401);
   });
+
+  it('should retrieve all comments associated with a post', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name11',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'test-user-username12',
+      password: 'password',
+    };
+    const userSignUpResponse = await helper.signUpUser(newUser);
+    const user = userSignUpResponse.body.data.user;
+    const cookies = userSignUpResponse.get('Set-Cookie');
+    const newPost = {
+      subject: 'test-post-subject5',
+      text: 'test-post-text5',
+      boardId: board.id,
+      userId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Cookie: cookies,
+    });
+    const post = postCreateResponse.body.data.post;
+    const newComment1 = {
+      text: 'test-comment-text5',
+      postId: post.id,
+      userId: user.id,
+    };
+    const newComment2 = {
+      text: 'test-comment-text6',
+      postId: post.id,
+      userId: user.id,
+    };
+    const commentCreateResponse1 = await helper.createComment(newComment1, {
+      Cookie: cookies,
+    });
+    const commentCreateResponse2 = await helper.createComment(newComment2, {
+      Cookie: cookies,
+    });
+    // * ========================
+    // * Act
+    // * ========================
+    const getPostCommentsResponse = await helper.getCommentsByPostId(post.id);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(commentCreateResponse1.status).toBe(201);
+    expect(commentCreateResponse2.status).toBe(201);
+    expect(getPostCommentsResponse.status).toBe(200);
+    const postData = getPostCommentsResponse.body.data.post;
+    expect(postData).toBeDefined();
+    expect(postData.id).toBeDefined();
+    expect(postData.id).toBe(post.id);
+    const comments = getPostCommentsResponse.body.data.post.comments;
+    expect(comments).toBeDefined();
+    expect(comments).toBeArray();
+    expect(comments.length).toBe(2);
+    for (const comment of comments) {
+      expect(comment.id).toBeDefined();
+      expect(comment.text).toBeDefined();
+      expect(comment.user.id).toBeDefined();
+      expect(comment.user.username).toBeDefined();
+      expect(comment.createdAt).toBeDefined();
+      expect(comment.updatedAt).toBeDefined();
+    }
+  });
 });
