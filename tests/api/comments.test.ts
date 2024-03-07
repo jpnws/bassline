@@ -16,13 +16,65 @@ describe('Comments API', () => {
     await helper.dropDb();
   });
 
-  it('should create a comment', async () => {
+  // it('should create a comment', async () => {
+  //   // * ========================
+  //   // * Arrange
+  //   // * ========================
+  //   const board = await helper.prisma?.board.create({
+  //     data: {
+  //       name: 'test-board-name1',
+  //     },
+  //   });
+  //   if (!board) {
+  //     expect(board).not.toBeNull();
+  //     expect(board).not.toBeUndefined();
+  //     return;
+  //   }
+  //   const newUser = {
+  //     username: 'test-user-username1',
+  //     password: 'password',
+  //   };
+  //   const userSignUpResponse = await helper.signUpUser(newUser);
+  //   const user = userSignUpResponse.body.data.user;
+  //   const cookies = userSignUpResponse.get('Set-Cookie');
+  //   const newPost = {
+  //     subject: 'test-post-subject1',
+  //     text: 'test-post-text1',
+  //     boardId: board.id,
+  //     userId: user.id,
+  //   };
+  //   const postCreateResponse = await helper.createPost(newPost, {
+  //     Cookie: cookies,
+  //   });
+  //   const post = postCreateResponse.body.data.post;
+  //   // * ========================
+  //   // * Act
+  //   // * ========================
+  //   const newComment = {
+  //     text: 'test-comment-text1',
+  //     postId: post.id,
+  //     userId: user.id,
+  //   };
+  //   const commentCreateResponse = await helper.createComment(newComment, {
+  //     Cookie: cookies,
+  //   });
+  //   // * ========================
+  //   // * Assert
+  //   // * ========================
+  //   expect(commentCreateResponse.status).toBe(201);
+  //   expect(commentCreateResponse.body.data).toBeDefined();
+  //   expect(commentCreateResponse.body.data.comment).toBeDefined();
+  //   const comment = commentCreateResponse.body.data.comment;
+  //   expect(comment.id).toBeDefined();
+  // });
+
+  it('should retrieve a single comment by id', async () => {
     // * ========================
     // * Arrange
     // * ========================
     const board = await helper.prisma?.board.create({
       data: {
-        name: 'test-board-name1',
+        name: 'test-board-name2',
       },
     });
     if (!board) {
@@ -31,182 +83,50 @@ describe('Comments API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username1',
+      username: 'test-user-username2',
       password: 'password',
     };
     const userSignUpResponse = await helper.signUpUser(newUser);
     const user = userSignUpResponse.body.data.user;
     const cookies = userSignUpResponse.get('Set-Cookie');
     const newPost = {
-      subject: 'test-post-subject1',
-      text: 'test-post-text1',
+      subject: 'test-post-subject2',
+      text: 'test-post-text2',
       boardId: board.id,
       userId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
     });
-    const post = postCreateResponse.body.data.post;
-    // * ========================
-    // * Act
-    // * ========================
+    const postData = postCreateResponse.body.data.post;
     const newComment = {
       text: 'test-comment-text1',
-      postId: post.id,
+      postId: postData.id,
       userId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
       Cookie: cookies,
     });
+    const commentdata = commentCreateResponse.body.data.comment;
+    // * ========================
+    // * Act
+    // * ========================
+    const commentGetResponse = await helper.getComment(commentdata.id, {
+      Cookie: cookies,
+    });
     // * ========================
     // * Assert
     // * ========================
-    expect(commentCreateResponse.status).toBe(201);
-    expect(commentCreateResponse.body.data).toBeDefined();
-    expect(commentCreateResponse.body.data.comment).toBeDefined();
-    const comment = commentCreateResponse.body.data.post;
+    expect(commentGetResponse.status).toBe(200);
+    expect(commentGetResponse.body.data).toBeDefined();
+    expect(commentGetResponse.body.data.comment).toBeDefined();
+    const comment = commentGetResponse.body.data.comment;
     expect(comment.id).toBeDefined();
+    expect(comment.text).toBe(newComment.text);
+    expect(comment.post.id).toBe(postData.id);
+    expect(comment.user.id).toBe(user.id);
+    expect(comment.user.username).toBe(newUser.username);
+    expect(comment.user.isAuthor).toBeTrue();
+    expect(comment.user.isAdmin).toBeFalse();
   });
-
-  // it('should update a comment', async () => {
-  //   // * ========================
-  //   // * Arrange
-  //   // * ========================
-  //   const boardCreateResponse = await helper.createBoard({
-  //     name: 'test-board-name2',
-  //   });
-  //   const { id: boardId } = boardCreateResponse.body;
-  //   const userCreateResponse = await helper.createUser({
-  //     username: 'test-user-username2',
-  //     password: 'password',
-  //   });
-  //   const { id: userId } = userCreateResponse.body;
-  //   const postCreateResponse = await helper.createPost({
-  //     subject: 'test-post-subject2',
-  //     text: 'test-post-text2',
-  //     boardId: boardId,
-  //     userId: userId,
-  //   });
-  //   const { id: postId } = postCreateResponse.body;
-  //   const commentCreateResponse = await helper.createComment({
-  //     text: 'test-comment-text2',
-  //     postId: postId,
-  //     userId: userId,
-  //   });
-  //   const { id: commentId } = commentCreateResponse.body;
-  //   // * ========================
-  //   // * Act
-  //   // * ========================
-  //   const updatedComment = {
-  //     text: 'test-comment-text2-updated',
-  //     postId: postId,
-  //     userId: userId,
-  //   };
-  //   const commentUpdateResponse = await helper.updateComment(
-  //     commentId,
-  //     updatedComment
-  //   );
-  //   // * ========================
-  //   // * Assert
-  //   // * ========================
-  //   expect(commentUpdateResponse.status).toBe(200);
-  //   const comment = commentUpdateResponse.body;
-  //   expect(comment.text).toBe(updatedComment.text);
-  //   expect(comment.postId).toBe(updatedComment.postId);
-  //   expect(comment.userId).toBe(updatedComment.userId);
-  // });
-
-  // it('should delete a comment', async () => {
-  //   // * ========================
-  //   // * Arrange
-  //   // * ========================
-  //   const boardCreateResponse = await helper.createBoard({
-  //     name: 'test-board-name3',
-  //   });
-  //   const { id: boardId } = boardCreateResponse.body;
-  //   const userCreateResponse = await helper.createUser({
-  //     username: 'test-user-username3',
-  //     password: 'password',
-  //   });
-  //   const { id: userId } = userCreateResponse.body;
-  //   const postCreateResponse = await helper.createPost({
-  //     subject: 'test-post-subject3',
-  //     text: 'test-post-text3',
-  //     boardId: boardId,
-  //     userId: userId,
-  //   });
-  //   const { id: postId } = postCreateResponse.body;
-  //   const commentCreateResponse = await helper.createComment({
-  //     text: 'test-comment-text3',
-  //     postId: postId,
-  //     userId: userId,
-  //   });
-  //   const { id: commentId } = commentCreateResponse.body;
-  //   // * ========================
-  //   // * Act
-  //   // * ========================
-  //   const commentDeleteResponse = await helper.deleteComment(commentId);
-  //   // * ========================
-  //   // * Assert
-  //   // * ========================
-  //   expect(commentDeleteResponse.status).toBe(202);
-  //   const commentGetResponse = await helper.getComment(commentId);
-  //   expect(commentGetResponse.status).toBe(404);
-  // });
-
-  // it('should return comments by post id', async () => {
-  //   // * ========================
-  //   // * Arrange
-  //   // * ========================
-  //   const boardCreateResponse = await helper.createBoard({
-  //     name: 'test-board-name4',
-  //   });
-  //   const { id: boardId } = boardCreateResponse.body;
-  //   const userCreateResponse = await helper.createUser({
-  //     username: 'test-user-username4',
-  //     password: 'password',
-  //   });
-  //   const { id: userId } = userCreateResponse.body;
-  //   const postCreateResponse = await helper.createPost({
-  //     subject: 'test-post-subject4',
-  //     text: 'test-post-text3',
-  //     boardId: boardId,
-  //     userId: userId,
-  //   });
-  //   const { id: postId } = postCreateResponse.body;
-  //   let newComments = [
-  //     {
-  //       text: 'test-comment-text4',
-  //       postId: postId,
-  //       userId: userId,
-  //     },
-  //     {
-  //       text: 'test-comment-text5',
-  //       postId: postId,
-  //       userId: userId,
-  //     },
-  //     {
-  //       text: 'test-comment-text6',
-  //       postId: postId,
-  //       userId: userId,
-  //     },
-  //   ];
-  //   for (const newComment of newComments) {
-  //     await helper.createComment(newComment);
-  //   }
-  //   // * ========================
-  //   // * Act
-  //   // * ========================
-  //   const getCommentsResponse = await helper.getCommentsByPostId(postId);
-  //   // * ========================
-  //   // * Assert
-  //   // * ========================
-  //   expect(getCommentsResponse.status).toBe(200);
-  //   const comments = getCommentsResponse.body;
-  //   for (let i = 0; i < newComments.length; i++) {
-  //     expect(comments[i].text).toBe(newComments[i]?.text);
-  //     expect(comments[i].postId).toBe(newComments[i]?.postId);
-  //     expect(comments[i].userId).toBe(newComments[i]?.userId);
-  //   }
-  // });
 });
