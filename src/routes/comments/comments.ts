@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
 import { createComment } from 'src/routes/comments/createComment';
 import { getComment } from 'src/routes/comments/getComment';
+import { updateComment } from 'src/routes/comments/updateComment';
 
 /**
  * Comments route.
@@ -13,38 +14,7 @@ export const comments = (prisma: PrismaClient) => {
 
   app.use(createComment(prisma));
   app.use(getComment(prisma));
-
-  /**
-   * Update an existing comment by its ID.
-   */
-  app.put(
-    '/comments/:id',
-    async ({ params: { id }, body, set }) => {
-      const { text, postId, userId } = body as CommentBody;
-      try {
-        const comment = await prisma.comment.update({
-          where: {
-            id: parseInt(id),
-          },
-          data: {
-            text,
-            postId,
-            userId,
-          },
-        });
-        set.status = 200;
-        return comment;
-      } catch (error) {
-        console.error('Failed to update comment:', error);
-        set.status = 500;
-      }
-    },
-    {
-      detail: {
-        tags: ['Comments'],
-      },
-    }
-  );
+  app.use(updateComment(prisma));
 
   /**
    * Delete a comment by its ID.
