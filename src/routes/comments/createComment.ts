@@ -18,7 +18,7 @@ export const createComment = (prisma: PrismaClient) => {
       body: t.Object({
         text: t.String(),
         postId: t.Numeric(),
-        userId: t.Numeric(),
+        authorId: t.Numeric(),
       }),
     },
     (app) => {
@@ -49,15 +49,28 @@ export const createComment = (prisma: PrismaClient) => {
               return;
             }
             // * ================================================
+            // * Extract the data from the request body.
+            // * ================================================
+            const { text, postId, authorId } = body as CommentBody;
+            // * ================================================
+            // * Verify that the user updating is the author.
+            // * ================================================
+            if (user.id !== authorId) {
+              set.status = 401;
+              return;
+            }
+            // * ================================================
             // * Create a new comment.
             // * ================================================
-            const { text, postId, userId } = body as CommentBody;
             try {
               const comment = await prisma.comment.create({
                 data: {
                   text,
                   postId,
-                  userId,
+                  authorId,
+                },
+                select: {
+                  id: true,
                 },
               });
               set.status = 201;

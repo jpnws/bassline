@@ -55,10 +55,10 @@ export const deleteComment = (prisma: PrismaClient) => {
                   id,
                 },
                 select: {
-                  userId: true,
+                  authorId: true,
                 },
               });
-              if (user.id !== comment?.userId) {
+              if (user.id !== comment?.authorId) {
                 set.status = 401;
                 return;
               }

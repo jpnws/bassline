@@ -21,7 +21,7 @@ export const updateComment = (prisma: PrismaClient) => {
       body: t.Object({
         text: t.String(),
         postId: t.Numeric(),
-        userId: t.Numeric(),
+        authorId: t.Numeric(),
       }),
     },
     (app) => {
@@ -54,11 +54,11 @@ export const updateComment = (prisma: PrismaClient) => {
             // * ================================================
             // * Extract the comment data from the request body.
             // * ================================================
-            const { text, postId, userId } = body as CommentBody;
+            const { text, postId, authorId } = body as CommentBody;
             // * ================================================
             // * Verify the user updating the comment is author.
             // * ================================================
-            if (user.id !== userId) {
+            if (user.id !== authorId) {
               set.status = 401;
               return;
             }
@@ -73,7 +73,7 @@ export const updateComment = (prisma: PrismaClient) => {
                 data: {
                   text,
                   postId,
-                  userId,
+                  authorId,
                 },
               });
               set.status = 200;
