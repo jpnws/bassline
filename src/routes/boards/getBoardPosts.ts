@@ -26,8 +26,10 @@ export const getBoardPosts = (prisma: PrismaClient) => {
                 id: true,
                 subject: true,
                 createdAt: true,
-                user: {
+                updatedAt: true,
+                author: {
                   select: {
+                    id: true,
                     username: true,
                   },
                 },
@@ -74,9 +76,11 @@ export const getBoardPosts = (prisma: PrismaClient) => {
                                   id: { type: 'number' },
                                   subject: { type: 'string' },
                                   createdAt: { type: 'string' },
+                                  updatedAt: { type: 'string' },
                                   author: {
                                     type: 'object',
                                     properties: {
+                                      id: { type: 'number' },
                                       username: { type: 'string' },
                                     },
                                   },
