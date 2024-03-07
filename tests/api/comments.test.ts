@@ -41,7 +41,7 @@ describe('Comments API', () => {
       subject: 'test-post-subject1',
       text: 'test-post-text1',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -53,7 +53,7 @@ describe('Comments API', () => {
     const newComment = {
       text: 'test-comment-text1',
       postId: post.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
       Cookie: cookies,
@@ -93,7 +93,7 @@ describe('Comments API', () => {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -102,7 +102,7 @@ describe('Comments API', () => {
     const newComment = {
       text: 'test-comment-text1',
       postId: postData.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
       Cookie: cookies,
@@ -123,11 +123,11 @@ describe('Comments API', () => {
     const comment = commentGetResponse.body.data.comment;
     expect(comment.id).toBeDefined();
     expect(comment.text).toBe(newComment.text);
+    expect(comment.createdAt).toBeDefined();
+    expect(comment.updatedAt).toBeDefined();
     expect(comment.post.id).toBe(postData.id);
-    expect(comment.user.id).toBe(user.id);
-    expect(comment.user.username).toBe(newUser.username);
-    expect(comment.user.isAuthor).toBeTrue();
-    expect(comment.user.isAdmin).toBeFalse();
+    expect(comment.author.id).toBe(user.id);
+    expect(comment.author.username).toBe(newUser.username);
   });
 
   it('should update a comment', async () => {
@@ -155,7 +155,7 @@ describe('Comments API', () => {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -164,7 +164,7 @@ describe('Comments API', () => {
     const newComment = {
       text: 'test-comment-text1',
       postId: postData.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
       Cookie: cookies,
@@ -176,7 +176,7 @@ describe('Comments API', () => {
     const updateComment = {
       text: 'updated-comment-text2',
       postId: postData.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const commentUpdateResponse = await helper.updateComment(
       commentData.id,
@@ -216,7 +216,7 @@ describe('Comments API', () => {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -225,7 +225,7 @@ describe('Comments API', () => {
     const newComment = {
       text: 'test-comment-text1',
       postId: postData.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
       Cookie: cookies,

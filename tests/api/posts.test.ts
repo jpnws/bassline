@@ -44,7 +44,7 @@ describe('Posts API', () => {
       subject: 'test-post-subject1',
       text: 'test-post-text1',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -84,7 +84,7 @@ describe('Posts API', () => {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -93,9 +93,7 @@ describe('Posts API', () => {
     // * ========================
     // * Act
     // * ========================
-    const postGetResponse = await helper.getPost(postData.id, {
-      Cookie: cookies,
-    });
+    const postGetResponse = await helper.getPost(postData.id);
     // * ========================
     // * Assert
     // * ========================
@@ -108,10 +106,8 @@ describe('Posts API', () => {
     expect(post.text).toBe(newPost.text);
     expect(post.board.id).toBe(board.id);
     expect(post.board.name).toBe(board.name);
-    expect(post.user.id).toBe(user.id);
-    expect(post.user.username).toBe(newUser.username);
-    expect(post.user.isAuthor).toBeTrue();
-    expect(post.user.isAdmin).toBeFalse();
+    expect(post.author.id).toBe(user.id);
+    expect(post.author.username).toBe(newUser.username);
   });
 
   it('should update a post', async () => {
@@ -139,7 +135,7 @@ describe('Posts API', () => {
       subject: 'test-post-subject3',
       text: 'test-post-text3',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -152,7 +148,7 @@ describe('Posts API', () => {
       subject: 'updated-post-subject3',
       text: 'updated-post-text3',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postUpdateResponse = await helper.updatePost(
       postData.id,
@@ -192,7 +188,7 @@ describe('Posts API', () => {
       subject: 'test-post-subject4',
       text: 'test-post-text4',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -210,55 +206,6 @@ describe('Posts API', () => {
     expect(postDeleteResponse.status).toBe(202);
     const postGetResponse = await helper.getPost(postData.id);
     expect(postGetResponse.status).toBe(404);
-  });
-
-  it('should return true if a user is the author of a post', async () => {
-    // * ========================
-    // * Arrange
-    // * ========================
-    const newBoard = {
-      name: 'test-board-name8',
-    };
-    const boardCreateResponse = await helper.createBoard(newBoard);
-    const { id: boardId } = boardCreateResponse.body.data.board;
-    const newUser = {
-      username: 'ironman',
-      password: 'password',
-    };
-    const signUpUserResponse = await helper.signUpUser(newUser);
-    const { data } = signUpUserResponse.body;
-    const { user } = data;
-    const cookies = signUpUserResponse.get('Set-Cookie');
-    const newPost = {
-      subject: 'test-post-subject8',
-      text: 'test-post-text8',
-      boardId: boardId,
-      userId: user.id,
-    };
-    const postCreateResponse = await helper.createPost(newPost, {
-      Cookie: cookies,
-    });
-    const { data: newPostResponseData } = postCreateResponse.body;
-    const { post: newPostResponse } = newPostResponseData;
-    const { id: postId } = newPostResponse;
-    // * ========================
-    // * Act
-    // * ========================
-    const postGetResponse = await helper.getPost(postId, { Cookie: cookies });
-    // * ========================
-    // * Assert
-    // * ========================
-    expect(signUpUserResponse.status).toBe(201);
-    expect(postCreateResponse.status).toBe(201);
-    expect(postGetResponse.status).toBe(200);
-    const { data: postGetData } = postGetResponse.body;
-    const { post: postData } = postGetData;
-    expect(postData.subject).toBe(newPost.subject);
-    expect(postData.text).toBe(newPost.text);
-    expect(postData.board.name).toBe(newBoard.name);
-    expect(postData.user.username).toBe(newUser.username);
-    expect(postData.user.isAuthor).toBe(true);
-    expect(postData.user.isAdmin).toBe(false);
   });
 
   it('should prevent creating post if not authenticated', async () => {
@@ -285,7 +232,7 @@ describe('Posts API', () => {
       subject: 'test-post-subject7',
       text: 'test-post-text7',
       boardId: boardId,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost);
     // * ========================
@@ -324,7 +271,7 @@ describe('Posts API', () => {
       subject: 'test-post-subject8',
       text: 'test-post-text8',
       boardId: boardId,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -360,7 +307,7 @@ describe('Posts API', () => {
       subject: 'test-post-subject5',
       text: 'test-post-text5',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
@@ -369,12 +316,12 @@ describe('Posts API', () => {
     const newComment1 = {
       text: 'test-comment-text5',
       postId: post.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const newComment2 = {
       text: 'test-comment-text6',
       postId: post.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const commentCreateResponse1 = await helper.createComment(newComment1, {
       Cookie: cookies,
@@ -403,8 +350,8 @@ describe('Posts API', () => {
     for (const comment of comments) {
       expect(comment.id).toBeDefined();
       expect(comment.text).toBeDefined();
-      expect(comment.user.id).toBeDefined();
-      expect(comment.user.username).toBeDefined();
+      expect(comment.author.id).toBeDefined();
+      expect(comment.author.username).toBeDefined();
       expect(comment.createdAt).toBeDefined();
       expect(comment.updatedAt).toBeDefined();
     }

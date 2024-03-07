@@ -87,13 +87,13 @@ describe('Boards API', () => {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const newPost2 = {
       subject: 'test-post-subject3',
       text: 'test-post-text3',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     };
     const postCreateResponse1 = await helper.createPost(newPost1, {
       Cookie: cookies,
@@ -120,7 +120,9 @@ describe('Boards API', () => {
       expect(post.id).toBeDefined();
       expect(post.subject).toBeDefined();
       expect(post.createdAt).toBeDefined();
-      expect(post.user.username).toBeDefined();
+      expect(post.updatedAt).toBeDefined();
+      expect(post.author.id).toBeDefined();
+      expect(post.author.username).toBeDefined();
     }
   });
 });
