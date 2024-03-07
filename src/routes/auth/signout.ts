@@ -53,6 +53,18 @@ export const signout = () => {
       {
         detail: {
           tags: ['Auth'],
+          // OpenAPIV3.ResponseObject
+          responses: {
+            200: {
+              description: 'OK',
+            },
+            400: {
+              description: 'Bad Request',
+            },
+            401: {
+              description: 'Unauthorized',
+            },
+          },
         },
       }
     );

@@ -120,17 +120,6 @@ export const signup = (prisma: PrismaClient) => {
                 }
               );
               set.status = 201;
-              return {
-                status: 'success',
-                message: 'User created.',
-                data: {
-                  user: {
-                    id: user.id,
-                    username: username,
-                    role: user.role,
-                  },
-                },
-              };
             } catch (error) {
               console.log('Failed to create a new user:', error);
               set.status = 500;
@@ -142,6 +131,21 @@ export const signup = (prisma: PrismaClient) => {
           {
             detail: {
               tags: ['Auth'],
+              // OpenAPIV3.ResponsesObject
+              responses: {
+                201: {
+                  description: 'User created successfully.',
+                },
+                400: {
+                  description: 'Username or password cannot be empty.',
+                },
+                409: {
+                  description: 'User already authenticated.',
+                },
+                500: {
+                  description: 'Server error. Unable to create an account.',
+                },
+              },
             },
           }
         );

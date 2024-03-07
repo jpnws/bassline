@@ -87,17 +87,6 @@ export const signin = (prisma: PrismaClient) => {
                 }
               );
               set.status = 200;
-              return {
-                status: 'success',
-                message: 'Authentication successful',
-                data: {
-                  user: {
-                    id: user.id,
-                    username: username,
-                    role: user.role,
-                  },
-                },
-              };
             } catch (error) {
               console.error('Failed to sign in user:', error);
               set.status = 500;
@@ -110,6 +99,18 @@ export const signin = (prisma: PrismaClient) => {
           {
             detail: {
               tags: ['Auth'],
+              // OpenAPIV3.ResponsesObject
+              responses: {
+                200: {
+                  description: 'OK',
+                },
+                401: {
+                  description: 'Unauthorized',
+                },
+                500: {
+                  description: 'An unexpected error occurred',
+                },
+              },
             },
           }
         );
