@@ -22,31 +22,32 @@ export const getPostComments = (prisma: PrismaClient) => {
         '/posts/:id/comments',
         async ({ params: { id }, set }) => {
           try {
-            const comments = await prisma.comment.findMany({
+            const post = await prisma.post.findUnique({
               where: {
-                postId: id,
+                id,
               },
               select: {
                 id: true,
-                post: {
+                comments: {
                   select: {
                     id: true,
+                    text: true,
+                    user: {
+                      select: {
+                        id: true,
+                        username: true,
+                      },
+                    },
+                    createdAt: true,
+                    updatedAt: true,
                   },
                 },
-                user: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-                createdAt: true,
-                updatedAt: true,
               },
             });
             set.status = 200;
             return {
               data: {
-                comments,
+                post,
               },
             };
           } catch (error) {
@@ -69,27 +70,28 @@ export const getPostComments = (prisma: PrismaClient) => {
                         data: {
                           type: 'object',
                           properties: {
-                            comments: {
-                              type: 'array',
-                              items: {
-                                type: 'object',
-                                properties: {
-                                  id: { type: 'number' },
-                                  post: {
+                            post: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'number' },
+                                comments: {
+                                  type: 'array',
+                                  items: {
                                     type: 'object',
                                     properties: {
                                       id: { type: 'number' },
+                                      text: { type: 'string' },
+                                      user: {
+                                        type: 'object',
+                                        properties: {
+                                          id: { type: 'number' },
+                                          username: { type: 'string' },
+                                        },
+                                      },
+                                      createdAt: { type: 'string' },
+                                      updatedAt: { type: 'string' },
                                     },
                                   },
-                                  user: {
-                                    type: 'object',
-                                    properties: {
-                                      id: { type: 'number' },
-                                      username: { type: 'string' },
-                                    },
-                                  },
-                                  createdAt: { type: 'string' },
-                                  updatedAt: { type: 'string' },
                                 },
                               },
                             },
