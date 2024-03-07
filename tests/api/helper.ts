@@ -163,12 +163,13 @@ export default class Helper {
     return await req.send();
   }
 
-  async createComment(comment: {
-    text: string;
-    postId: number;
-    userId: number;
-  }) {
-    return await request(this.url).post('/comments').send(comment);
+  async createComment(
+    comment: CommentBody,
+    headers?: { [key: string]: string } | {}
+  ) {
+    let req = request(this.url).post(`/comments`);
+    req = headers ? req.set(headers) : req;
+    return await req.send(comment);
   }
 
   async updateComment(
