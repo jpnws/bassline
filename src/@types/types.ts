@@ -8,26 +8,28 @@ declare module 'bun' {
     DB_USER: string;
     DB_PASS: string;
     DB_SSL: string;
+    APP_JWT_SECRET: string;
   }
 }
 
 type PostBody = {
-  id: number;
+  id?: number;
   subject: string;
   text: string;
   boardId: number;
-  userId: number;
+  authorId: number;
 };
 
 type CommentBody = {
-  id: number;
+  id?: number;
   text: string;
   postId: number;
-  userId: number;
+  authorId: number;
 };
 
 type UserBody = {
   id?: number;
   username: string;
   password?: string;
+  role?: 'MEMBER' | 'ADMIN';
 };

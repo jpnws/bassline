@@ -1,3 +1,5 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "bun.debugTerminal.enabled": true,
+  "bun.debugTerminal.stopOnEntry": false
 }

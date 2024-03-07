@@ -13,7 +13,7 @@ async function main() {
     data: {
       username: 'alice',
       role: UserRole.MEMBER,
-      password: 'password123',
+      hash: 'password',
     },
   });
 
@@ -22,19 +22,19 @@ async function main() {
       subject: 'Hello, World! 1',
       text: 'This is my first post!',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     },
     {
       subject: 'Hello, World! 2',
       text: 'This is my first post!',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     },
     {
       subject: 'Hello, World! 3',
       text: 'This is my first post!',
       boardId: board.id,
-      userId: user.id,
+      authorId: user.id,
     },
   ];
 
@@ -46,17 +46,17 @@ async function main() {
     {
       text: '1 This is a comment 1!',
       postId: 1,
-      userId: 1,
+      authorId: 1,
     },
     {
       text: '2 This is a commen 2!',
       postId: 1,
-      userId: 1,
+      authorId: 1,
     },
     {
       text: '3 This is a comment 3!',
       postId: 2,
-      userId: 1,
+      authorId: 1,
     },
   ];
 
