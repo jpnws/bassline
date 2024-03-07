@@ -47,7 +47,7 @@ export const deletePost = (prisma: PrismaClient) => {
               return;
             }
             // * ================================================
-            // * Verify the user deleting the post is the author.
+            // * Verify the user deleting is the author.
             // * ================================================
             try {
               const post = await prisma.post.findUnique({
@@ -55,10 +55,10 @@ export const deletePost = (prisma: PrismaClient) => {
                   id,
                 },
                 select: {
-                  userId: true,
+                  authorId: true,
                 },
               });
-              if (user.id !== post?.userId) {
+              if (user.id !== post?.authorId) {
                 set.status = 401;
                 return;
               }

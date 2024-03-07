@@ -22,7 +22,7 @@ export const updatePost = (prisma: PrismaClient) => {
         subject: t.String(),
         text: t.String(),
         boardId: t.Numeric(),
-        userId: t.Numeric(),
+        authorId: t.Numeric(),
       }),
     },
     (app) => {
@@ -55,11 +55,11 @@ export const updatePost = (prisma: PrismaClient) => {
             // * ================================================
             // * Extract the post data from the request body.
             // * ================================================
-            const { subject, text, boardId, userId } = body as PostBody;
+            const { subject, text, boardId, authorId } = body as PostBody;
             // * ================================================
-            // * Verify the user updating the post is the author.
+            // * Verify the user updating is the author.
             // * ================================================
-            if (user.id !== userId) {
+            if (user.id !== authorId) {
               set.status = 401;
               return;
             }
@@ -75,7 +75,7 @@ export const updatePost = (prisma: PrismaClient) => {
                   subject,
                   text,
                   boardId,
-                  userId,
+                  authorId,
                 },
               });
               set.status = 200;

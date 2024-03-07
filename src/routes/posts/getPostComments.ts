@@ -32,7 +32,7 @@ export const getPostComments = (prisma: PrismaClient) => {
                   select: {
                     id: true,
                     text: true,
-                    user: {
+                    author: {
                       select: {
                         id: true,
                         username: true,
@@ -93,13 +93,6 @@ export const getPostComments = (prisma: PrismaClient) => {
                                     },
                                   },
                                 },
-                              },
-                            },
-                            currentUser: {
-                              type: 'object',
-                              properties: {
-                                id: { type: 'number' },
-                                username: { type: 'string' },
                               },
                             },
                           },
