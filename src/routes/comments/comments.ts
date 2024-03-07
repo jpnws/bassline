@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
+import { createComment } from 'src/routes/comments/createComment';
+import { getComment } from 'src/routes/comments/getComment';
 
 /**
  * Comments route.
@@ -9,34 +11,8 @@ import { Elysia } from 'elysia';
 export const comments = (prisma: PrismaClient) => {
   const app = new Elysia();
 
-  /**
-   * Create a new comment.
-   */
-  app.post(
-    '/comments',
-    async ({ body, set }) => {
-      const { text, postId, userId } = body as CommentBody;
-      try {
-        const comment = await prisma.comment.create({
-          data: {
-            text,
-            postId,
-            userId,
-          },
-        });
-        set.status = 201;
-        return comment;
-      } catch (error) {
-        console.error('Failed to create comment:', error);
-        set.status = 500;
-      }
-    },
-    {
-      detail: {
-        tags: ['Comments'],
-      },
-    }
-  );
+  app.use(createComment(prisma));
+  app.use(getComment(prisma));
 
   /**
    * Update an existing comment by its ID.

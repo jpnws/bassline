@@ -1,0 +1,88 @@
+import { PrismaClient } from '@prisma/client';
+import { Elysia, t } from 'elysia';
+import jwt from '@elysiajs/jwt';
+import cookie from '@elysiajs/cookie';
+
+/**
+ * Create a new comment.
+ *
+ * @param prisma - The Prisma client.
+ * @returns The Elysia app.
+ */
+export const createComment = (prisma: PrismaClient) => {
+  const app = new Elysia();
+
+  app.group(
+    '',
+    {
+      body: t.Object({
+        text: t.String(),
+        postId: t.Numeric(),
+        userId: t.Numeric(),
+      }),
+    },
+    (app) => {
+      app
+        .use(
+          jwt({
+            name: 'jwt',
+            secret: process.env.APP_JWT_SECRET,
+          })
+        )
+        .use(cookie())
+        .post(
+          '/comments',
+          async ({ body, jwt, set, cookie: { auth } }) => {
+            // * ================================================
+            // * Ensure that the user is already authenticated.
+            // * ================================================
+            if (!auth) {
+              set.status = 400;
+              return;
+            }
+            // * ================================================
+            // * Verify the user's JWT.
+            // * ================================================
+            const user = (await jwt.verify(auth)) as UserBody;
+            if (!user) {
+              set.status = 401;
+              return;
+            }
+            // * ================================================
+            // * Create a new comment.
+            // * ================================================
+            const { text, postId, userId } = body as CommentBody;
+            try {
+              const comment = await prisma.comment.create({
+                data: {
+                  text,
+                  postId,
+                  userId,
+                },
+              });
+              set.status = 201;
+              return {
+                data: {
+                  comment: {
+                    id: comment.id,
+                  },
+                },
+              };
+            } catch (error) {
+              console.error('Failed to create comment:', error);
+              set.status = 500;
+            }
+          },
+          {
+            detail: {
+              tags: ['Comments'],
+            },
+          }
+        );
+
+      return app;
+    }
+  );
+
+  return app;
+};
