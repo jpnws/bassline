@@ -52,7 +52,7 @@ export const updateComment = (prisma: PrismaClient) => {
               return;
             }
             // * ================================================
-            // * Extract the post data from the request body.
+            // * Extract the comment data from the request body.
             // * ================================================
             const { text, postId, userId } = body as CommentBody;
             // * ================================================
@@ -84,7 +84,7 @@ export const updateComment = (prisma: PrismaClient) => {
           },
           {
             detail: {
-              tags: ['Posts'],
+              tags: ['Comments'],
               // OpenAPIV3.ResponsesObject
               responses: {
                 200: {
