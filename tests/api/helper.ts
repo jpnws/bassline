@@ -1,21 +1,21 @@
-import pg from 'pg';
-
-import request from 'supertest';
-
-import { v4 as uuidv4 } from 'uuid';
-
 import { execSync } from 'child_process';
 
-import { createApp } from 'src/app';
+import pg from 'pg';
+import request from 'supertest';
+import { v4 as uuidv4 } from 'uuid';
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
+
+import { createApp } from 'src/app';
 
 /**
  * Helper class for testing the API.
  *
  * The Helper class is a utility class that provides methods to interact with
  * the API endpoints. It also provides methods to create and drop the test
- * database, and to start and stop the app server.
+ * database, and to start and stop the app server. Additionally, it initializes
+ * the base URL for the API and provides methods to interact with the API
+ * endpoints.
  */
 export default class Helper {
   dbName: string;
@@ -50,6 +50,12 @@ export default class Helper {
     this.url = '';
   }
 
+  /**
+   * Start the app server and establish a Prisma connection.
+   *
+   * Called before each test suite to start the app server and establish a
+   * Prisma connection.
+   */
   async spawnApp() {
     // Create a test database.
     const connectionWithoutDb = new pg.Client(this.configWithoutDb);
@@ -72,7 +78,7 @@ export default class Helper {
       throw error;
     }
 
-    // Create a new instance of PrsimaClient.
+    // Create a new instance of PrismaClient.
     const prisma = new PrismaClient({
       datasources: {
         db: {
@@ -108,6 +114,8 @@ export default class Helper {
 
   /**
    * Drop the test database.
+   *
+   * Called after each test suite to drop the test database.
    */
   async dropDb() {
     const client = new pg.Client(this.configWithoutDb);
@@ -123,13 +131,25 @@ export default class Helper {
     }
   }
 
-  async getBoards() {
-    return await request(this.url).get('/boards');
-  }
+  // * ==============================
+  // * Board API request methods
+  // * ==============================
 
   async createBoard(board: { name: string }) {
     return await request(this.url).post('/boards').send(board);
   }
+
+  async getBoards() {
+    return await request(this.url).get('/boards');
+  }
+
+  async getBoardPosts(boardId: number) {
+    return await request(this.url).get(`/boards/${boardId}/posts`);
+  }
+
+  // * ==============================
+  // * Post API request methods
+  // * ==============================
 
   async createPost(post: PostBody, headers?: { [key: string]: string } | {}) {
     let req = request(this.url).post(`/posts`);
@@ -141,10 +161,6 @@ export default class Helper {
     let req = request(this.url).get(`/posts/${postId}`);
     req = headers ? req.set(headers) : req;
     return await req.send();
-  }
-
-  async getPostsByBoardId(boardId: number) {
-    return await request(this.url).get(`/boards/${boardId}/posts`);
   }
 
   async updatePost(
@@ -163,21 +179,19 @@ export default class Helper {
     return await req.send();
   }
 
+  async getPostComments(id: number) {
+    return await request(this.url).get(`/posts/${id}/comments`);
+  }
+
+  // * ==============================
+  // * Comment API request methods
+  // * ==============================
+
   async createComment(
     comment: CommentBody,
     headers?: { [key: string]: string } | {}
   ) {
     let req = request(this.url).post(`/comments`);
-    req = headers ? req.set(headers) : req;
-    return await req.send(comment);
-  }
-
-  async updateComment(
-    commentId: number,
-    comment: CommentBody,
-    headers?: { [key: string]: string } | {}
-  ) {
-    let req = request(this.url).put(`/comments/${commentId}`);
     req = headers ? req.set(headers) : req;
     return await req.send(comment);
   }
@@ -191,6 +205,16 @@ export default class Helper {
     return await req.send();
   }
 
+  async updateComment(
+    commentId: number,
+    comment: CommentBody,
+    headers?: { [key: string]: string } | {}
+  ) {
+    let req = request(this.url).put(`/comments/${commentId}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send(comment);
+  }
+
   async deleteComment(
     commentId: number,
     headers?: { [key: string]: string } | {}
@@ -200,9 +224,9 @@ export default class Helper {
     return await req.send();
   }
 
-  async getPostComments(id: number) {
-    return await request(this.url).get(`/posts/${id}/comments`);
-  }
+  // * ==============================
+  // * User API request methods
+  // * ==============================
 
   async createUser(user: { username: string; password: string }) {
     return await request(this.url).post('/users').send(user);
@@ -212,13 +236,17 @@ export default class Helper {
     return await request(this.url).get(`/users/${id}`);
   }
 
+  async updateUser(id: number, user: UserBody) {
+    return await request(this.url).put(`/users/${id}`).send(user);
+  }
+
   async deleteUser(id: number) {
     return await request(this.url).delete(`/users/${id}`);
   }
 
-  async updateUser(id: number, user: UserBody) {
-    return await request(this.url).put(`/users/${id}`).send(user);
-  }
+  // * ==============================
+  // * Auth API request methods
+  // * ==============================
 
   async signUpUser(user: UserBody, headers?: { [key: string]: string } | {}) {
     let req = request(this.url).post(`/auth/signup`);

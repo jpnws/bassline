@@ -104,7 +104,7 @@ describe('Boards API', () => {
     // * ========================
     // * Act
     // * ========================
-    const getBoardPostsResponse = await helper.getPostsByBoardId(board.id);
+    const getBoardPostsResponse = await helper.getBoardPosts(board.id);
     // * ========================
     // * Assert
     // * ========================
