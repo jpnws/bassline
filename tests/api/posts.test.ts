@@ -220,13 +220,12 @@ describe('Posts API', () => {
       name: 'test-board-name8',
     };
     const boardCreateResponse = await helper.createBoard(newBoard);
-    const { id: boardId } = boardCreateResponse.body;
+    const { id: boardId } = boardCreateResponse.body.data.board;
     const newUser = {
       username: 'ironman',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
-    expect(signUpUserResponse.status).toBe(201);
     const { data } = signUpUserResponse.body;
     const { user } = data;
     const cookies = signUpUserResponse.get('Set-Cookie');
@@ -239,7 +238,6 @@ describe('Posts API', () => {
     const postCreateResponse = await helper.createPost(newPost, {
       Cookie: cookies,
     });
-    expect(postCreateResponse.status).toBe(201);
     const { data: newPostResponseData } = postCreateResponse.body;
     const { post: newPostResponse } = newPostResponseData;
     const { id: postId } = newPostResponse;
@@ -250,6 +248,8 @@ describe('Posts API', () => {
     // * ========================
     // * Assert
     // * ========================
+    expect(signUpUserResponse.status).toBe(201);
+    expect(postCreateResponse.status).toBe(201);
     expect(postGetResponse.status).toBe(200);
     const { data: postGetData } = postGetResponse.body;
     const { post: postData } = postGetData;
@@ -269,7 +269,7 @@ describe('Posts API', () => {
       name: 'test-board-name10',
     };
     const boardCreateResponse = await helper.createBoard(newBoard);
-    const { id: boardId } = boardCreateResponse.body;
+    const { id: boardId } = boardCreateResponse.body.data.board;
     const newUser = {
       username: 'superman',
       password: 'password',
@@ -302,7 +302,7 @@ describe('Posts API', () => {
       name: 'test-board-name9',
     };
     const boardCreateResponse = await helper.createBoard(newBoard);
-    const { id: boardId } = boardCreateResponse.body;
+    const { id: boardId } = boardCreateResponse.body.data.board;
     const newUser = {
       username: 'spiderman',
       password: 'password',
