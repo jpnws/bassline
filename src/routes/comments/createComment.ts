@@ -76,6 +76,41 @@ export const createComment = (prisma: PrismaClient) => {
           {
             detail: {
               tags: ['Comments'],
+              // OpenAPIV3.ResponsesObject
+              responses: {
+                201: {
+                  description: 'Comment created',
+                  content: {
+                    'application/json': {
+                      schema: {
+                        type: 'object',
+                        properties: {
+                          data: {
+                            type: 'object',
+                            properties: {
+                              comment: {
+                                type: 'object',
+                                properties: {
+                                  id: { type: 'number' },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+                400: {
+                  description: 'Bad request',
+                },
+                401: {
+                  description: 'Unauthorized',
+                },
+                500: {
+                  description: 'Internal server error',
+                },
+              },
             },
           }
         );
