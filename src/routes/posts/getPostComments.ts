@@ -1,7 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { Elysia, t } from 'elysia';
-import jwt from '@elysiajs/jwt';
-import cookie from '@elysiajs/cookie';
 
 /**
  * Retrieve all comments by post ID.
