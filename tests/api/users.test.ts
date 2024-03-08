@@ -115,7 +115,10 @@ describe('Users API', () => {
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
-    const cookies = signUpUserResponse.get('Set-Cookie');
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     // * ========================
     // * Act
     // * ========================
