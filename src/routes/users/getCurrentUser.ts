@@ -61,6 +61,11 @@ export const getCurrentUser = (prisma: PrismaClient) => {
                 username: authUser.username,
                 role: authUser.role,
               },
+              select: {
+                id: true,
+                username: true,
+                role: true,
+              },
             });
             if (!user) {
               set.status = 404;
