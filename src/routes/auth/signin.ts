@@ -37,7 +37,7 @@ export const signin = (prisma: PrismaClient) => {
         .use(cookie())
         .post(
           '/signin',
-          async ({ body, set, jwt, setCookie }) => {
+          async ({ body, set, jwt }) => {
             const { username, password } = body;
             // * ================================================
             // * Check if username or password is empty.
@@ -70,23 +70,22 @@ export const signin = (prisma: PrismaClient) => {
                 return;
               }
               // * ================================================
-              // * Store JWT in a cookie.
+              // * Generate a JWT and send it in the response.
               // * ================================================
-              setCookie(
-                'auth',
-                await jwt.sign({
-                  id: user.id,
-                  username: username,
-                  role: user.role,
-                }),
-                {
-                  httpOnly: true,
-                  maxAge: 60 * 60 * 24 * 7,
-                  path: '/',
-                  secure: process.env.NODE_ENV === 'production',
-                }
-              );
+              const token = await jwt.sign({
+                id: user.id,
+                username: username,
+                role: user.role,
+              });
               set.status = 200;
+              return {
+                data: {
+                  user: {
+                    id: user.id,
+                  },
+                  token,
+                },
+              };
             } catch (error) {
               console.error('Failed to sign in user:', error);
               set.status = 500;
@@ -103,6 +102,31 @@ export const signin = (prisma: PrismaClient) => {
               responses: {
                 200: {
                   description: 'OK',
+                  content: {
+                    'application/json': {
+                      schema: {
+                        type: 'object',
+                        properties: {
+                          data: {
+                            type: 'object',
+                            properties: {
+                              user: {
+                                type: 'object',
+                                properties: {
+                                  id: {
+                                    type: 'number',
+                                  },
+                                },
+                              },
+                              token: {
+                                type: 'string',
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
                 },
                 401: {
                   description: 'Unauthorized',

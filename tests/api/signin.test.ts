@@ -92,7 +92,7 @@ describe('Signin API', () => {
     expect(signInUserResponse.status).toBe(200);
   });
 
-  it('should produce a cookie with jwt when user signs in', async () => {
+  it('should retrieve a token when a user signins', async () => {
     // * ========================
     // * Arrange
     // * ========================
@@ -109,19 +109,11 @@ describe('Signin API', () => {
     // * Assert
     // * ========================
     expect(signInUserResponse.status).toBe(200);
-    expect(signInUserResponse.headers).toBeObject();
-    expect(signInUserResponse.headers['set-cookie']).not.toBeUndefined();
-    const cookies = signInUserResponse.headers['set-cookie'];
-    let authCookie = '';
-    for (const cookie of cookies) {
-      if (cookie.includes('auth=')) {
-        authCookie = cookie;
-      }
-    }
-    expect(authCookie).not.toBeEmpty();
-    const authCookieArray = authCookie.split(';');
-    expect(authCookieArray.some((str) => /Path/.test(str))).toBeTrue();
-    expect(authCookieArray.some((str) => /Max\-Age/.test(str))).toBeTrue();
-    expect(authCookieArray.some((str) => /HttpOnly/.test(str))).toBeTrue();
+    expect(signInUserResponse.body).toBeDefined();
+    expect(signInUserResponse.body).toBeObject();
+    expect(signInUserResponse.body.data).toBeDefined();
+    expect(signInUserResponse.body.data).toBeObject();
+    expect(signInUserResponse.body.data.token).toBeDefined();
+    expect(signInUserResponse.body.data.token).toBeString();
   });
 });

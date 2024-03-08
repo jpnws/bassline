@@ -34,9 +34,12 @@ describe('Posts API', () => {
       username: 'test-user-username1',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     // * ========================
     // * Act
     // * ========================
@@ -77,9 +80,12 @@ describe('Posts API', () => {
       username: 'test-user-username2',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     const newPost = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
@@ -128,9 +134,12 @@ describe('Posts API', () => {
       username: 'test-user-username3',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     const newPost = {
       subject: 'test-post-subject3',
       text: 'test-post-text3',
@@ -181,9 +190,12 @@ describe('Posts API', () => {
       username: 'test-user-username4',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     const newPost = {
       subject: 'test-post-subject4',
       text: 'test-post-text4',
@@ -258,7 +270,10 @@ describe('Posts API', () => {
     expect(signUpUserResponse.status).toBe(201);
     const { data } = signUpUserResponse.body;
     const { user } = data;
-    let cookies = signUpUserResponse.get('Set-Cookie');
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     for (let i = 0; i < cookies.length; i++) {
       if (cookies[i].includes('auth=')) {
         cookies[i] = 'auth=abc; Max-Age=604800; Path=/; HttpOnly';
@@ -300,9 +315,12 @@ describe('Posts API', () => {
       username: 'test-user-username12',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     const newPost = {
       subject: 'test-post-subject5',
       text: 'test-post-text5',

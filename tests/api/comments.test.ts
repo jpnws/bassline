@@ -34,9 +34,12 @@ describe('Comments API', () => {
       username: 'test-user-username1',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     const newPost = {
       subject: 'test-post-subject1',
       text: 'test-post-text1',
@@ -86,9 +89,12 @@ describe('Comments API', () => {
       username: 'test-user-username2',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     const newPost = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
@@ -148,9 +154,12 @@ describe('Comments API', () => {
       username: 'test-user-username3',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     const newPost = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
@@ -209,9 +218,12 @@ describe('Comments API', () => {
       username: 'test-user-username4',
       password: 'password',
     };
-    const userSignUpResponse = await helper.signUpUser(newUser);
-    const user = userSignUpResponse.body.data.user;
-    const cookies = userSignUpResponse.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     const newPost = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
