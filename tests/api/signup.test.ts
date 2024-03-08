@@ -100,7 +100,7 @@ describe('Signup API', () => {
     expect(userExists).not.toBeNull();
   });
 
-  it('should produce a cookie with jwt', async () => {
+  it('should return with a token', async () => {
     // * ========================
     // * Arrange
     // * ========================
@@ -116,20 +116,12 @@ describe('Signup API', () => {
     // * Assert
     // * ========================
     expect(signUpUserResponse.status).toBe(201);
-    expect(signUpUserResponse.headers).toBeObject();
-    expect(signUpUserResponse.headers['set-cookie']).not.toBeUndefined();
-    const cookies = signUpUserResponse.headers['set-cookie'];
-    let authCookie = '';
-    for (const cookie of cookies) {
-      if (cookie.includes('auth=')) {
-        authCookie = cookie;
-      }
-    }
-    expect(authCookie).not.toBeEmpty();
-    const authCookieArray = authCookie.split(';');
-    expect(authCookieArray.some((str) => /Path/.test(str))).toBeTrue();
-    expect(authCookieArray.some((str) => /Max\-Age/.test(str))).toBeTrue();
-    expect(authCookieArray.some((str) => /HttpOnly/.test(str))).toBeTrue();
+    expect(signUpUserResponse.body).toBeDefined();
+    expect(signUpUserResponse.body).toBeObject();
+    expect(signUpUserResponse.body.data).toBeDefined();
+    expect(signUpUserResponse.body.data).toBeObject();
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
   });
 
   it('should not allow signup while signed in', async () => {
@@ -140,8 +132,15 @@ describe('Signup API', () => {
       username: 'spiderman',
       password: 'password',
     };
-    const newUserResponse1 = await helper.signUpUser(newUser1);
-    const cookies = newUserResponse1.get('Set-Cookie');
+    const signUpUserResponse = await helper.signUpUser(newUser1);
+    expect(signUpUserResponse.body).toBeDefined();
+    expect(signUpUserResponse.body).toBeObject();
+    expect(signUpUserResponse.body.data).toBeDefined();
+    expect(signUpUserResponse.body.data).toBeObject();
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const cookies = [`auth=${token}`];
     // * ========================
     // * Act
     // * ========================
