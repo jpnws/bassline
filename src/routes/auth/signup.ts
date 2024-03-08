@@ -37,7 +37,7 @@ export const signup = (prisma: PrismaClient) => {
         .use(cookie())
         .post(
           '/signup',
-          async ({ body, set, jwt, cookie: { auth }, setCookie }) => {
+          async ({ body, set, jwt, cookie: { auth } }) => {
             // * ================================================
             // * Check if user is already authenticated.
             // * ================================================
@@ -103,28 +103,20 @@ export const signup = (prisma: PrismaClient) => {
                 },
               });
               // * ================================================
-              // * Store JWT in a cookie.
+              // * Generate a JWT and send it in the response.
               // * ================================================
-              setCookie(
-                'auth',
-                await jwt.sign({
-                  id: user.id,
-                  username: user.username,
-                  role: user.role,
-                }),
-                {
-                  httpOnly: true,
-                  maxAge: 60 * 60 * 24 * 7,
-                  path: '/',
-                  secure: process.env.NODE_ENV === 'production',
-                }
-              );
+              const token = await jwt.sign({
+                id: user.id,
+                username: user.username,
+                role: user.role,
+              });
               set.status = 201;
               return {
                 data: {
                   user: {
                     id: user.id,
                   },
+                  token,
                 },
               };
             } catch (error) {
@@ -157,6 +149,9 @@ export const signup = (prisma: PrismaClient) => {
                                     type: 'number',
                                   },
                                 },
+                              },
+                              token: {
+                                type: 'string',
                               },
                             },
                           },
