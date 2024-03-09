@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
 
 import jwt from '@elysiajs/jwt';
-import cookie from '@elysiajs/cookie';
+import bearer from '@elysiajs/bearer';
 
 /**
  * Get the current logged in user.
@@ -21,21 +21,21 @@ export const getCurrentUser = (prisma: PrismaClient) => {
           secret: process.env.APP_JWT_SECRET,
         })
       )
-      .use(cookie())
+      .use(bearer())
       .get(
         '/users/current',
-        async ({ jwt, set, cookie: { auth } }) => {
+        async ({ jwt, set, bearer }) => {
           // * ================================================
           // * Ensure that the user is already authenticated.
           // * ================================================
-          if (!auth) {
+          if (!bearer) {
             set.status = 400;
             return;
           }
           // * ================================================
           // * Verify the user's JWT.
           // * ================================================
-          const authUser = (await jwt.verify(auth)) as UserBody;
+          const authUser = (await jwt.verify(bearer)) as UserBody;
           if (!authUser) {
             set.status = 401;
             return;
