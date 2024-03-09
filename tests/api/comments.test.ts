@@ -39,7 +39,7 @@ describe('Comments API', () => {
     expect(signUpUserResponse.body.data.token).toBeDefined();
     expect(signUpUserResponse.body.data.token).toBeString();
     const token = signUpUserResponse.body.data.token;
-    const cookies = [`auth=${token}`];
+    const bearer = `Bearer ${token}`;
     const newPost = {
       subject: 'test-post-subject1',
       text: 'test-post-text1',
@@ -47,7 +47,7 @@ describe('Comments API', () => {
       authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     const post = postCreateResponse.body.data.post;
     // * ========================
@@ -59,7 +59,7 @@ describe('Comments API', () => {
       authorId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     // * ========================
     // * Assert
@@ -94,7 +94,7 @@ describe('Comments API', () => {
     expect(signUpUserResponse.body.data.token).toBeDefined();
     expect(signUpUserResponse.body.data.token).toBeString();
     const token = signUpUserResponse.body.data.token;
-    const cookies = [`auth=${token}`];
+    const bearer = `Bearer ${token}`;
     const newPost = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
@@ -102,7 +102,7 @@ describe('Comments API', () => {
       authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     const postData = postCreateResponse.body.data.post;
     const newComment = {
@@ -111,14 +111,14 @@ describe('Comments API', () => {
       authorId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     const commentData = commentCreateResponse.body.data.comment;
     // * ========================
     // * Act
     // * ========================
     const commentGetResponse = await helper.getComment(commentData.id, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     // * ========================
     // * Assert
@@ -159,7 +159,7 @@ describe('Comments API', () => {
     expect(signUpUserResponse.body.data.token).toBeDefined();
     expect(signUpUserResponse.body.data.token).toBeString();
     const token = signUpUserResponse.body.data.token;
-    const cookies = [`auth=${token}`];
+    const bearer = `Bearer ${token}`;
     const newPost = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
@@ -167,7 +167,7 @@ describe('Comments API', () => {
       authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     const postData = postCreateResponse.body.data.post;
     const newComment = {
@@ -176,7 +176,7 @@ describe('Comments API', () => {
       authorId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     const commentData = commentCreateResponse.body.data.comment;
     // * ========================
@@ -191,7 +191,7 @@ describe('Comments API', () => {
       commentData.id,
       updateComment,
       {
-        Cookie: cookies,
+        Authorization: bearer,
       }
     );
     // * ========================
@@ -223,7 +223,7 @@ describe('Comments API', () => {
     expect(signUpUserResponse.body.data.token).toBeDefined();
     expect(signUpUserResponse.body.data.token).toBeString();
     const token = signUpUserResponse.body.data.token;
-    const cookies = [`auth=${token}`];
+    const bearer = `Bearer ${token}`;
     const newPost = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
@@ -231,7 +231,7 @@ describe('Comments API', () => {
       authorId: user.id,
     };
     const postCreateResponse = await helper.createPost(newPost, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     const postData = postCreateResponse.body.data.post;
     const newComment = {
@@ -240,14 +240,14 @@ describe('Comments API', () => {
       authorId: user.id,
     };
     const commentCreateResponse = await helper.createComment(newComment, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     const commentData = commentCreateResponse.body.data.comment;
     // * ========================
     // * Act
     // * ========================
     const commentDeleteResponse = await helper.deleteComment(commentData.id, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     // * ========================
     // * Assert

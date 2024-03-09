@@ -37,20 +37,5 @@ describe('Signout API', () => {
     // * Assert
     // * ========================
     expect(signOutResponse.status).toBe(200);
-    expect(signOutResponse.headers).toBeObject();
-    expect(signOutResponse.headers['set-cookie']).not.toBeUndefined();
-    const signOutCookies = signOutResponse.headers['set-cookie'];
-    let authCookie = '';
-    for (const cookie of signOutCookies) {
-      if (cookie.includes('auth=')) {
-        authCookie = cookie;
-      }
-    }
-    expect(authCookie).not.toBeEmpty();
-    const authCookieArray = authCookie.split('; ');
-    expect(authCookieArray.includes('auth=')).toBeTrue();
-    expect(authCookieArray.includes('Max-Age=0')).toBeTrue();
-    expect(authCookieArray.includes('Path=/')).toBeTrue();
-    expect(authCookieArray.includes('HttpOnly')).toBeTrue();
   });
 });

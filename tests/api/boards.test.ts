@@ -85,7 +85,7 @@ describe('Boards API', () => {
     expect(signUpUserResponse.body.data.token).toBeDefined();
     expect(signUpUserResponse.body.data.token).toBeString();
     const token = signUpUserResponse.body.data.token;
-    const cookies = [`auth=${token}`];
+    const bearer = `Bearer ${token}`;
     const newPost1 = {
       subject: 'test-post-subject2',
       text: 'test-post-text2',
@@ -99,10 +99,10 @@ describe('Boards API', () => {
       authorId: user.id,
     };
     const postCreateResponse1 = await helper.createPost(newPost1, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     const postCreateResponse2 = await helper.createPost(newPost2, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     // * ========================
     // * Act

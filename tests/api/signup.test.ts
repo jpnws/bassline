@@ -140,7 +140,7 @@ describe('Signup API', () => {
     expect(signUpUserResponse.body.data.token).toBeDefined();
     expect(signUpUserResponse.body.data.token).toBeString();
     const token = signUpUserResponse.body.data.token;
-    const cookies = [`auth=${token}`];
+    const bearer = `Bearer ${token}`;
     // * ========================
     // * Act
     // * ========================
@@ -149,7 +149,7 @@ describe('Signup API', () => {
       password: 'password',
     };
     const newUserResponse2 = await helper.signUpUser(newUser2, {
-      Cookie: cookies,
+      Authorization: bearer,
     });
     // * ========================
     // * Assert

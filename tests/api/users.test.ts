@@ -118,12 +118,12 @@ describe('Users API', () => {
     expect(signUpUserResponse.body.data.token).toBeDefined();
     expect(signUpUserResponse.body.data.token).toBeString();
     const token = signUpUserResponse.body.data.token;
-    const cookies = [`auth=${token}`];
+    const bearer = `Bearer ${token}`;
     // * ========================
     // * Act
     // * ========================
     const getCurrentUserResponse = await helper.getCurrentUser({
-      Cookie: cookies,
+      Authorization: bearer,
     });
     // * ========================
     // * Assert
