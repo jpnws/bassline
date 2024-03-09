@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Elysia, t } from 'elysia';
 import jwt from '@elysiajs/jwt';
-import cookie from '@elysiajs/cookie';
+import bearer from '@elysiajs/bearer';
 
 /**
  * Signin route.
@@ -34,7 +34,6 @@ export const signin = (prisma: PrismaClient) => {
             secret: process.env.APP_JWT_SECRET,
           })
         )
-        .use(cookie())
         .post(
           '/signin',
           async ({ body, set, jwt }) => {

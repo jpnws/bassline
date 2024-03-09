@@ -1,6 +1,6 @@
 import { Elysia } from 'elysia';
 import jwt from '@elysiajs/jwt';
-import cookie from '@elysiajs/cookie';
+import bearer from '@elysiajs/bearer';
 
 /**
  * Signout route.
@@ -22,32 +22,23 @@ export const signout = () => {
         secret: process.env.APP_JWT_SECRET,
       })
     )
-    .use(cookie())
+    .use(bearer())
     .post(
       '/signout',
-      async ({ jwt, set, cookie: { auth }, setCookie }) => {
+      async ({ jwt, set, bearer }) => {
         // * ================================================
         // * Ensure that the user is already authenticated.
         // * ================================================
-        if (!auth) {
+        if (!bearer) {
           set.status = 400;
         }
         // * ================================================
         // * Verify the user's JWT.
         // * ================================================
-        const user = await jwt.verify(auth);
+        const user = await jwt.verify(bearer);
         if (!user) {
           set.status = 401;
         }
-        // * ================================================
-        // * Clear client cookie.
-        // * ================================================
-        setCookie('auth', '', {
-          httpOnly: true,
-          maxAge: 0,
-          path: '/',
-          secure: process.env.NODE_ENV === 'production',
-        });
         set.status = 200;
       },
       {

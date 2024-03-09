@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Elysia, t } from 'elysia';
 import jwt from '@elysiajs/jwt';
-import cookie from '@elysiajs/cookie';
+import bearer from '@elysiajs/bearer';
 
 /**
  * Signup route.
@@ -34,14 +34,14 @@ export const signup = (prisma: PrismaClient) => {
             secret: process.env.APP_JWT_SECRET,
           })
         )
-        .use(cookie())
+        .use(bearer())
         .post(
           '/signup',
-          async ({ body, set, jwt, cookie: { auth } }) => {
+          async ({ body, set, jwt, bearer }) => {
             // * ================================================
             // * Check if user is already authenticated.
             // * ================================================
-            if (auth) {
+            if (bearer) {
               set.status = 409;
               return {
                 message: 'You are already authenticated.',

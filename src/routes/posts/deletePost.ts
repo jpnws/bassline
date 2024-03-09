@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Elysia, t } from 'elysia';
 import jwt from '@elysiajs/jwt';
-import cookie from '@elysiajs/cookie';
+import bearer from '@elysiajs/bearer';
 
 /**
  * Delete a post by its ID.
@@ -27,21 +27,21 @@ export const deletePost = (prisma: PrismaClient) => {
             secret: process.env.APP_JWT_SECRET,
           })
         )
-        .use(cookie())
+        .use(bearer())
         .delete(
           '/posts/:id',
-          async ({ params: { id }, jwt, set, cookie: { auth } }) => {
+          async ({ params: { id }, jwt, set, bearer }) => {
             // * ================================================
             // * Ensure that the user is already authenticated.
             // * ================================================
-            if (!auth) {
+            if (!bearer) {
               set.status = 400;
               return;
             }
             // * ================================================
             // * Verify the user's JWT.
             // * ================================================
-            const user = (await jwt.verify(auth)) as UserBody;
+            const user = (await jwt.verify(bearer)) as UserBody;
             if (!user) {
               set.status = 401;
               return;
