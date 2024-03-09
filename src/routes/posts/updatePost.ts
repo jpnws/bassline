@@ -57,9 +57,9 @@ export const updatePost = (prisma: PrismaClient) => {
             // * ================================================
             const { subject, text, boardId, authorId } = body as PostBody;
             // * ================================================
-            // * Verify the user updating is the author.
+            // * Verify the user updating is the author or admin.
             // * ================================================
-            if (user.id !== authorId) {
+            if (user.id !== authorId && user.role !== 'ADMIN') {
               set.status = 401;
               return;
             }

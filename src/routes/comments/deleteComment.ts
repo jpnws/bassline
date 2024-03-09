@@ -47,7 +47,7 @@ export const deleteComment = (prisma: PrismaClient) => {
               return;
             }
             // * ================================================
-            // * Verify the user deleting the comment is author.
+            // * Verify user deleting comment is author or admin.
             // * ================================================
             try {
               const comment = await prisma.comment.findUnique({
@@ -58,7 +58,7 @@ export const deleteComment = (prisma: PrismaClient) => {
                   authorId: true,
                 },
               });
-              if (user.id !== comment?.authorId) {
+              if (user.id !== comment?.authorId && user.role !== 'ADMIN') {
                 set.status = 401;
                 return;
               }

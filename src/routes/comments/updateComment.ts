@@ -56,9 +56,9 @@ export const updateComment = (prisma: PrismaClient) => {
             // * ================================================
             const { text, postId, authorId } = body as CommentBody;
             // * ================================================
-            // * Verify the user updating the comment is author.
+            // * Verify user updating comment is author or admin.
             // * ================================================
-            if (user.id !== authorId) {
+            if (user.id !== authorId && user.role !== 'ADMIN') {
               set.status = 401;
               return;
             }
