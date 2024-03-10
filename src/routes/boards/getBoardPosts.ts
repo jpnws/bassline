@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Elysia } from 'elysia';
+import { Elysia, t } from 'elysia';
 
 /**
  * Boards board posts.
@@ -16,7 +16,7 @@ export const getBoardPosts = (prisma: PrismaClient) => {
       try {
         const board = await prisma.board.findUnique({
           where: {
-            id: parseInt(id),
+            id: id,
           },
           select: {
             id: true,
@@ -49,6 +49,9 @@ export const getBoardPosts = (prisma: PrismaClient) => {
       }
     },
     {
+      params: t.Object({
+        id: t.Numeric(),
+      }),
       detail: {
         tags: ['Boards'],
         // OpenAPIV3.ResponsesObject
