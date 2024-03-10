@@ -37,7 +37,7 @@ export const deletePost = (prisma: PrismaClient) => {
             if (!bearer) {
               set.status = 400;
               return {
-                error: 'User not authenticated',
+                error: 'User Not Authenticated',
                 message: 'Authentication token was missing.',
               };
             }
@@ -48,7 +48,7 @@ export const deletePost = (prisma: PrismaClient) => {
             if (!user) {
               set.status = 401;
               return {
-                error: 'User unauthorized',
+                error: 'User Unauthorized',
                 message: 'Authentication toekn was missing or incorrect',
               };
             }
@@ -67,7 +67,7 @@ export const deletePost = (prisma: PrismaClient) => {
               if (user.id !== post?.authorId && user.role !== 'ADMIN') {
                 set.status = 401;
                 return {
-                  error: 'User unauthorized',
+                  error: 'User Unauthorized',
                   message: 'User is not authorized to delete the post.',
                 };
               }
@@ -75,7 +75,7 @@ export const deletePost = (prisma: PrismaClient) => {
               console.error('Failed retrieve the post:', error);
               set.status = 500;
               return {
-                error: 'Internal server error',
+                error: 'Internal Server Error',
                 message: 'Failed to retrieve the post from the database.',
               };
             }
@@ -90,13 +90,13 @@ export const deletePost = (prisma: PrismaClient) => {
               });
               set.status = 202;
               return {
-                message: 'Post deleted successfully',
+                message: 'Post deleted successfully.',
               };
             } catch (error) {
-              console.error('Failed to delete post:', error);
+              console.error('Failed to delete a post:', error);
               set.status = 500;
               return {
-                error: 'Internal server error',
+                error: 'Internal Server Error',
                 message: 'Failed to delete the post from the database.',
               };
             }
@@ -110,13 +110,13 @@ export const deletePost = (prisma: PrismaClient) => {
                   description: 'Post deleted successfully',
                 },
                 400: {
-                  description: 'User not authenticated',
+                  description: 'User Not Authenticated',
                 },
                 401: {
-                  description: 'User unauthorized',
+                  description: 'User Unauthorized',
                 },
                 500: {
-                  description: 'Internal server error',
+                  description: 'Internal Server Error',
                 },
               },
             },
