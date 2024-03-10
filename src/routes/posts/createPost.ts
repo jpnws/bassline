@@ -40,7 +40,8 @@ export const createPost = (prisma: PrismaClient) => {
             if (!bearer) {
               set.status = 400;
               return {
-                error: 'Bearer token is required.',
+                error: 'User not authenticated',
+                message: 'Authentication token was missing.',
               };
             }
             // * ================================================
@@ -50,7 +51,8 @@ export const createPost = (prisma: PrismaClient) => {
             if (!user) {
               set.status = 401;
               return {
-                error: 'Invalid JWT.',
+                error: 'User unauthorized',
+                message: 'Authentication toekn was missing or incorrect',
               };
             }
             // * ================================================
@@ -63,7 +65,9 @@ export const createPost = (prisma: PrismaClient) => {
             if (user.id !== authorId) {
               set.status = 401;
               return {
-                error: 'Unauthorized to create a post.',
+                error: 'Unauthorized',
+                message:
+                  'User creating the post is not specified as the author of the post.',
               };
             }
             // * ================================================
@@ -87,10 +91,11 @@ export const createPost = (prisma: PrismaClient) => {
                 },
               };
             } catch (error) {
-              console.error('Failed to create post:', error);
+              console.error('Failed to create the post:', error);
               set.status = 500;
               return {
-                error: 'Internal server error.',
+                error: 'Internal server error',
+                message: 'Failed to create the post in the database.',
               };
             }
           },
@@ -100,7 +105,7 @@ export const createPost = (prisma: PrismaClient) => {
               // OpenAPIV3.ResponsesObject
               responses: {
                 201: {
-                  description: 'Post created',
+                  description: 'Post created successfully',
                   content: {
                     'application/json': {
                       schema: {
@@ -123,10 +128,10 @@ export const createPost = (prisma: PrismaClient) => {
                   },
                 },
                 400: {
-                  description: 'Bad request',
+                  description: 'User not authenticated',
                 },
                 401: {
-                  description: 'Unauthorized',
+                  description: 'User unauthorized',
                 },
                 500: {
                   description: 'Internal server error',
