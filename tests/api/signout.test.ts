@@ -26,12 +26,12 @@ describe('Signout API', () => {
     };
     const newUserResponse = await helper.signUpUser(newUser);
     expect(newUserResponse.status).toBe(201);
-    const signUpCookies = newUserResponse.get('Set-Cookie');
+    const { token } = newUserResponse.body.data;
     // * ========================
     // * Act
     // * ========================
     const signOutResponse = await helper.signOutUser({
-      Cookie: signUpCookies,
+      Authorization: `Bearer ${token}`,
     });
     // * ========================
     // * Assert
