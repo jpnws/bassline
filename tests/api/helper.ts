@@ -234,8 +234,10 @@ export default class Helper {
     return await req.send(user);
   }
 
-  async getUser(id: number) {
-    return await request(this.url).get(`/users/${id}`);
+  async getUser(id: number, headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).get(`/users/${id}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send();
   }
 
   async updateUser(id: number, user: UserBody) {

@@ -23,7 +23,7 @@ describe('Users API', () => {
     // * Arrange
     // * ========================
     const adminUser = {
-      username: 'admin-user-username',
+      username: 'admin-user-username1',
       password: 'password',
     };
     await helper.prisma?.user.create({
@@ -53,32 +53,61 @@ describe('Users API', () => {
     expect(userCreateResponse.body.data).toBeDefined();
     expect(userCreateResponse.body.data.user).toBeDefined();
     const user = userCreateResponse.body.data.user;
+    expect(user.id).toBeDefined();
     expect(user.username).toBe('test-user-username1');
     expect(user.role).toBe('MEMBER');
   });
 
-  // it('should return a user', async () => {
-  //   // * ========================
-  //   // * Arrange
-  //   // * ========================
-  //   const newUser = {
-  //     username: 'test-user-username2',
-  //     password: 'password',
-  //   };
-  //   const userCreateResponse = await helper.createUser(newUser);
-  //   const { id: userId } = userCreateResponse.body;
-  //   // * ========================
-  //   // * Act
-  //   // * ========================
-  //   const getUserResponse = await helper.getUser(userId);
-  //   // * ========================
-  //   // * Assert
-  //   // * ========================
-  //   expect(userCreateResponse.status).toBe(201);
-  //   expect(getUserResponse.status).toBe(200);
-  //   const user = getUserResponse.body;
-  //   expect(user.username).toBe('test-user-username2');
-  // });
+  it('should return a user', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const adminUser = {
+      username: 'admin-user-username2',
+      password: 'password',
+    };
+    await helper.prisma?.user.create({
+      data: {
+        username: adminUser.username,
+        hash: await Bun.password.hash(adminUser.password),
+        role: UserRole.ADMIN,
+      },
+    });
+    const signInUserResponse = await helper.signInUser(adminUser);
+    const token = signInUserResponse.body.data.token;
+    const newUser = {
+      username: 'test-user-username2',
+      password: 'password',
+    };
+    const createUserResponse = await helper.createUser(newUser, {
+      Authorization: `Bearer ${token}`,
+    });
+    expect(createUserResponse.status).toBe(201);
+    expect(createUserResponse.body).toBeDefined();
+    expect(createUserResponse.body.data).toBeDefined();
+    expect(createUserResponse.body.data.user).toBeDefined();
+    const createUserData = createUserResponse.body.data.user;
+    expect(createUserData.id).toBeDefined();
+    expect(createUserData.username).toBe(newUser.username);
+    expect(createUserData.role).toBe('MEMBER');
+    // * ========================
+    // * Act
+    // * ========================
+    const getUserResponse = await helper.getUser(createUserData.id, {
+      Authorization: `Bearer ${token}`,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(getUserResponse.status).toBe(200);
+    expect(getUserResponse.body).toBeDefined();
+    expect(getUserResponse.body.data).toBeDefined();
+    expect(getUserResponse.body.data.user).toBeDefined();
+    const user = getUserResponse.body.data.user;
+    expect(user.id).toBe(createUserData.id);
+    expect(user.username).toBe(newUser.username);
+    expect(user.role).toBe('MEMBER');
+  });
 
   // it('should update a user', async () => {
   //   // * ========================
