@@ -39,7 +39,9 @@ export const createPost = (prisma: PrismaClient) => {
             // * ================================================
             if (!bearer) {
               set.status = 400;
-              return;
+              return {
+                error: 'Bearer token is required.',
+              };
             }
             // * ================================================
             // * Verify the user's JWT.
@@ -47,18 +49,22 @@ export const createPost = (prisma: PrismaClient) => {
             const user = (await jwt.verify(bearer)) as UserBody;
             if (!user) {
               set.status = 401;
-              return;
+              return {
+                error: 'Invalid JWT.',
+              };
             }
             // * ================================================
             // * Extract the data from the request body.
             // * ================================================
             const { subject, text, boardId, authorId } = body as PostBody;
             // * ================================================
-            // * Verify that the user updating is the author.
+            // * Verify that the user creating is the author.
             // * ================================================
             if (user.id !== authorId) {
               set.status = 401;
-              return;
+              return {
+                error: 'Unauthorized to create a post.',
+              };
             }
             // * ================================================
             // * Create a new post.
@@ -83,6 +89,9 @@ export const createPost = (prisma: PrismaClient) => {
             } catch (error) {
               console.error('Failed to create post:', error);
               set.status = 500;
+              return {
+                error: 'Internal server error.',
+              };
             }
           },
           {
