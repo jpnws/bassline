@@ -31,13 +31,21 @@ export const signout = () => {
         // * ================================================
         if (!bearer) {
           set.status = 400;
+          return {
+            error: 'User Not Authenticated',
+            message: 'Authentication token was missing.',
+          };
         }
         // * ================================================
         // * Verify the user's JWT.
         // * ================================================
-        const user = await jwt.verify(bearer);
+        const user = (await jwt.verify(bearer)) as UserBody;
         if (!user) {
           set.status = 401;
+          return {
+            error: 'User Unauthorized',
+            message: 'Authentication toekn was missing or incorrect',
+          };
         }
         set.status = 200;
       },
@@ -47,13 +55,13 @@ export const signout = () => {
           // OpenAPIV3.ResponseObject
           responses: {
             200: {
-              description: 'OK',
+              description: 'Signout successful',
             },
             400: {
-              description: 'Bad Request',
+              description: 'User Not Authenticated',
             },
             401: {
-              description: 'Unauthorized',
+              description: 'User Unauthorized',
             },
           },
         },
