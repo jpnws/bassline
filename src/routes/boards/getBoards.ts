@@ -24,6 +24,10 @@ export const getBoards = (prisma: PrismaClient) => {
       } catch (error) {
         console.error('Failed to retrieve boards:', error);
         set.status = 500;
+        return {
+          error: 'Internal Server Error',
+          message: 'Failed to retrieve boards.',
+        };
       }
     },
     {
@@ -32,7 +36,7 @@ export const getBoards = (prisma: PrismaClient) => {
         // OpenAPIV3.ResponsesObject
         responses: {
           200: {
-            description: 'Retrieved all boards',
+            description: 'Retrieved All Boards',
             content: {
               'application/json': {
                 schema: {
@@ -59,7 +63,7 @@ export const getBoards = (prisma: PrismaClient) => {
             },
           },
           500: {
-            description: 'Server error occurred.',
+            description: 'Internal Server Error',
           },
         },
       },
