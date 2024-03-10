@@ -86,7 +86,9 @@ export const deleteComment = (prisma: PrismaClient) => {
                 },
               });
               set.status = 202;
-              return;
+              return {
+                message: 'Comment deleted successfully.',
+              };
             } catch (error) {
               console.error('Failed to delete comment:', error);
               set.status = 500;
