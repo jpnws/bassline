@@ -228,8 +228,10 @@ export default class Helper {
   // * User API request methods
   // * ==============================
 
-  async createUser(user: { username: string; password: string }) {
-    return await request(this.url).post('/users').send(user);
+  async createUser(user: UserBody, headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).post(`/users`);
+    req = headers ? req.set(headers) : req;
+    return await req.send(user);
   }
 
   async getUser(id: number) {
