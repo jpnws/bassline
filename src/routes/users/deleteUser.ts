@@ -16,7 +16,7 @@ export const deleteUser = (prisma: PrismaClient) => {
     '',
     {
       params: t.Object({
-        id: t.Number(),
+        id: t.Numeric(),
       }),
     },
     (app) => {
