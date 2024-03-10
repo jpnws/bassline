@@ -240,12 +240,20 @@ export default class Helper {
     return await req.send();
   }
 
-  async updateUser(id: number, user: UserBody) {
-    return await request(this.url).put(`/users/${id}`).send(user);
+  async updateUser(
+    id: number,
+    user: UserBody,
+    headers?: { [key: string]: string } | {}
+  ) {
+    let req = request(this.url).put(`/users/${id}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send(user);
   }
 
-  async deleteUser(id: number) {
-    return await request(this.url).delete(`/users/${id}`);
+  async deleteUser(id: number, headers?: { [key: string]: string } | {}) {
+    let req = request(this.url).delete(`/users/${id}`);
+    req = headers ? req.set(headers) : req;
+    return await req.send();
   }
 
   // * ==============================
