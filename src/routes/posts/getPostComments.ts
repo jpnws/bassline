@@ -53,6 +53,10 @@ export const getPostComments = (prisma: PrismaClient) => {
           } catch (error) {
             console.error('Failed to retrieve comments:', error);
             set.status = 500;
+            return {
+              error: 'Internal Server Error',
+              message: 'Failed to retrieve comments.',
+            };
           }
         },
         {
@@ -61,7 +65,7 @@ export const getPostComments = (prisma: PrismaClient) => {
             // OpenAPIV3.ResponsesObject
             responses: {
               200: {
-                description: 'The comments were successfully retrieved',
+                description: 'Comments Retrieved',
                 content: {
                   'application/json': {
                     schema: {
@@ -101,6 +105,9 @@ export const getPostComments = (prisma: PrismaClient) => {
                     },
                   },
                 },
+              },
+              500: {
+                description: 'Internal Server Error',
               },
             },
           },

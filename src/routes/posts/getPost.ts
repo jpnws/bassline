@@ -67,7 +67,7 @@ export const getPost = (prisma: PrismaClient) => {
             set.status = 500;
             return {
               error: 'Internal Server Error',
-              message: 'Failed to retrieve the post from the database.',
+              message: 'Failed to retrieve the post.',
             };
           }
         },
@@ -77,7 +77,7 @@ export const getPost = (prisma: PrismaClient) => {
             // OpenAPIV3.ResponsesObject
             responses: {
               200: {
-                description: 'Post retrieved successfully',
+                description: 'Post Retrieved',
                 content: {
                   'application/json': {
                     schema: {

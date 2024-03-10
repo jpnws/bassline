@@ -36,7 +36,10 @@ export const deleteComment = (prisma: PrismaClient) => {
             // * ================================================
             if (!bearer) {
               set.status = 400;
-              return;
+              return {
+                error: 'User Not Authenticated',
+                message: 'Authentication token was missing.',
+              };
             }
             // * ================================================
             // * Verify the user's JWT.
@@ -44,7 +47,10 @@ export const deleteComment = (prisma: PrismaClient) => {
             const user = (await jwt.verify(bearer)) as UserBody;
             if (!user) {
               set.status = 401;
-              return;
+              return {
+                error: 'User Unauthorized',
+                message: 'Authentication toekn was missing or incorrect',
+              };
             }
             // * ================================================
             // * Verify user deleting comment is author or admin.
@@ -65,7 +71,10 @@ export const deleteComment = (prisma: PrismaClient) => {
             } catch (error) {
               console.error('Failed retrieve the comment:', error);
               set.status = 500;
-              return;
+              return {
+                error: 'Internal Server Error',
+                message: 'Failed to retrieve the comment.',
+              };
             }
             // * ================================================
             // * Delete the comment from the database.
@@ -81,6 +90,10 @@ export const deleteComment = (prisma: PrismaClient) => {
             } catch (error) {
               console.error('Failed to delete comment:', error);
               set.status = 500;
+              return {
+                error: 'Internal Server Error',
+                message: 'Failed to delete the comment.',
+              };
             }
           },
           {
@@ -89,16 +102,16 @@ export const deleteComment = (prisma: PrismaClient) => {
               // OpenAPIV3.ResponsesObject
               responses: {
                 202: {
-                  description: 'Comment deleted successfully',
+                  description: 'Comment Deleted',
                 },
                 400: {
-                  description: 'User not authenticated',
+                  description: 'User Not Authenticated',
                 },
                 401: {
-                  description: 'User not authorized',
+                  description: 'User Not Authorized',
                 },
                 500: {
-                  description: 'An unexpected error occurred',
+                  description: 'Internal Server Error',
                 },
               },
             },

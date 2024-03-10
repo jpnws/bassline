@@ -42,7 +42,10 @@ export const updatePost = (prisma: PrismaClient) => {
             // * ================================================
             if (!bearer) {
               set.status = 400;
-              return;
+              return {
+                error: 'User not authenticated',
+                message: 'Authentication token was missing.',
+              };
             }
             // * ================================================
             // * Verify the user's JWT.
@@ -50,7 +53,10 @@ export const updatePost = (prisma: PrismaClient) => {
             const user = (await jwt.verify(bearer)) as UserBody;
             if (!user) {
               set.status = 401;
-              return;
+              return {
+                error: 'User unauthorized',
+                message: 'Authentication token was missing or incorrect',
+              };
             }
             // * ================================================
             // * Extract the post data from the request body.
@@ -61,7 +67,10 @@ export const updatePost = (prisma: PrismaClient) => {
             // * ================================================
             if (user.id !== authorId && user.role !== 'ADMIN') {
               set.status = 401;
-              return;
+              return {
+                error: 'Unauthorized',
+                message: 'User is not the author of the post.',
+              };
             }
             // * ================================================
             // * Update the post in the database.
@@ -82,6 +91,10 @@ export const updatePost = (prisma: PrismaClient) => {
             } catch (error) {
               console.error('Failed to update post:', error);
               set.status = 500;
+              return {
+                error: 'Internal Server Error',
+                message: 'Failed to update post.',
+              };
             }
           },
           {
@@ -90,16 +103,16 @@ export const updatePost = (prisma: PrismaClient) => {
               // OpenAPIV3.ResponsesObject
               responses: {
                 200: {
-                  description: 'Post updated successfully',
+                  description: 'Post Updated',
                 },
                 400: {
-                  description: 'User not authenticated',
+                  description: 'User Not Authenticated',
                 },
                 401: {
-                  description: 'User not authorized',
+                  description: 'User Not Authorized',
                 },
                 500: {
-                  description: 'Failed to update post',
+                  description: 'Internal Server Error',
                 },
               },
             },

@@ -38,7 +38,10 @@ export const createComment = (prisma: PrismaClient) => {
             // * ================================================
             if (!bearer) {
               set.status = 400;
-              return;
+              return {
+                error: 'User Not Authenticated',
+                message: 'Authentication token was missing.',
+              };
             }
             // * ================================================
             // * Verify the user's JWT.
@@ -46,7 +49,10 @@ export const createComment = (prisma: PrismaClient) => {
             const user = (await jwt.verify(bearer)) as UserBody;
             if (!user) {
               set.status = 401;
-              return;
+              return {
+                error: 'User Unauthorized',
+                message: 'Authentication toekn was missing or incorrect',
+              };
             }
             // * ================================================
             // * Extract the data from the request body.
@@ -57,7 +63,10 @@ export const createComment = (prisma: PrismaClient) => {
             // * ================================================
             if (user.id !== authorId) {
               set.status = 401;
-              return;
+              return {
+                error: 'Unauthorized',
+                message: 'User is not the author of the comment.',
+              };
             }
             // * ================================================
             // * Create a new comment.
@@ -84,6 +93,10 @@ export const createComment = (prisma: PrismaClient) => {
             } catch (error) {
               console.error('Failed to create comment:', error);
               set.status = 500;
+              return {
+                error: 'Internal Server Error',
+                message: 'Failed to create the comment.',
+              };
             }
           },
           {
@@ -92,7 +105,7 @@ export const createComment = (prisma: PrismaClient) => {
               // OpenAPIV3.ResponsesObject
               responses: {
                 201: {
-                  description: 'Comment created',
+                  description: 'Comment Created',
                   content: {
                     'application/json': {
                       schema: {
@@ -115,13 +128,13 @@ export const createComment = (prisma: PrismaClient) => {
                   },
                 },
                 400: {
-                  description: 'Bad request',
+                  description: 'User Not Authenticated',
                 },
                 401: {
-                  description: 'Unauthorized',
+                  description: 'User Unauthorized',
                 },
                 500: {
-                  description: 'Internal server error',
+                  description: 'Internal Server Error',
                 },
               },
             },

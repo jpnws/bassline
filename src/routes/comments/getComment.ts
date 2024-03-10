@@ -49,7 +49,10 @@ export const getComment = (prisma: PrismaClient) => {
             });
             if (!comment) {
               set.status = 404;
-              return;
+              return {
+                error: 'Comment Not Found',
+                message: 'Failed to find a comment with the given ID.',
+              };
             }
             set.status = 200;
             return {
@@ -61,8 +64,8 @@ export const getComment = (prisma: PrismaClient) => {
             console.error('Failed to retrieve comment:', error);
             set.status = 500;
             return {
-              status: 'error',
-              message: 'Failed to retrieve comment',
+              error: 'Internal Server Error',
+              message: 'Failed to retrieve the comment.',
             };
           }
         },
@@ -72,7 +75,7 @@ export const getComment = (prisma: PrismaClient) => {
             // OpenAPIV3.ResponsesObject
             responses: {
               200: {
-                description: 'Comment retrieved',
+                description: 'Comment Retrieved',
                 content: {
                   'application/json': {
                     schema: {
@@ -111,10 +114,10 @@ export const getComment = (prisma: PrismaClient) => {
                 },
               },
               404: {
-                description: 'Comment not found',
+                description: 'Comment Not Found',
               },
               500: {
-                description: 'An unexpected error occurred',
+                description: 'Internal Server Error',
               },
             },
           },

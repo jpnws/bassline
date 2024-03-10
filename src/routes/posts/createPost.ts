@@ -95,7 +95,7 @@ export const createPost = (prisma: PrismaClient) => {
               set.status = 500;
               return {
                 error: 'Internal server error',
-                message: 'Failed to create the post in the database.',
+                message: 'Failed to create the post.',
               };
             }
           },
@@ -105,7 +105,7 @@ export const createPost = (prisma: PrismaClient) => {
               // OpenAPIV3.ResponsesObject
               responses: {
                 201: {
-                  description: 'Post created successfully',
+                  description: 'Post Created',
                   content: {
                     'application/json': {
                       schema: {
@@ -128,13 +128,13 @@ export const createPost = (prisma: PrismaClient) => {
                   },
                 },
                 400: {
-                  description: 'User not authenticated',
+                  description: 'User Not Authenticated',
                 },
                 401: {
-                  description: 'User unauthorized',
+                  description: 'User Unauthorized',
                 },
                 500: {
-                  description: 'Internal server error',
+                  description: 'Internal Server Error',
                 },
               },
             },
