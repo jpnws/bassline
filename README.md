@@ -10,4 +10,4 @@ allows its administrators to delete any posts or comments.
 
 ## Disco Bassline Data Model
 
-![Disco Bassline Data Model](./doc/disco-bassline-data-model.png)
+<img src="./doc/disco-bassline-data-model.png" style="border-radius:15px">
