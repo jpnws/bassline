@@ -54,7 +54,7 @@ export const createUser = (prisma: PrismaClient) => {
               };
             }
             // * ================================================
-            // * Verify that the user creating is the admin.
+            // * Verify that the user is an admin.
             // * ================================================
             if (user.role !== 'ADMIN') {
               set.status = 401;
