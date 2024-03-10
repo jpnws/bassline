@@ -51,7 +51,10 @@ export const getPost = (prisma: PrismaClient) => {
             });
             if (!post) {
               set.status = 404;
-              return;
+              return {
+                error: 'Post Not Found',
+                message: 'Failed to find a post with the given ID.',
+              };
             }
             set.status = 200;
             return {
@@ -63,8 +66,8 @@ export const getPost = (prisma: PrismaClient) => {
             console.error('Failed to retrieve post:', error);
             set.status = 500;
             return {
-              status: 'error',
-              message: 'Failed to retrieve post',
+              error: 'Internal Server Error',
+              message: 'Failed to retrieve the post from the database.',
             };
           }
         },
@@ -74,7 +77,7 @@ export const getPost = (prisma: PrismaClient) => {
             // OpenAPIV3.ResponsesObject
             responses: {
               200: {
-                description: 'Post retrieved',
+                description: 'Post retrieved successfully',
                 content: {
                   'application/json': {
                     schema: {
@@ -115,10 +118,10 @@ export const getPost = (prisma: PrismaClient) => {
                 },
               },
               404: {
-                description: 'Post not found',
+                description: 'Post Not Found',
               },
               500: {
-                description: 'An unexpected error occurred',
+                description: 'Internal Server Error',
               },
             },
           },
