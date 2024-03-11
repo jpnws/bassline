@@ -30,60 +30,60 @@ export const getUser = (prisma: PrismaClient) => {
           })
         )
         .use(bearer())
-        .get('/users/:id', userController.getUserById, {
-          detail: {
-            tags: ['Users'],
-            responses: {
-              200: {
-                description: 'User Retrieved',
-                content: {
-                  'application/json': {
-                    schema: {
-                      type: 'object',
-                      properties: {
-                        data: {
-                          type: 'object',
-                          properties: {
-                            user: {
-                              type: 'object',
-                              properties: {
-                                id: {
-                                  type: 'number',
-                                },
-                                username: {
-                                  type: 'string',
-                                },
-                                role: {
-                                  type: 'string',
-                                },
-                              },
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              400: {
-                description: 'User Not Authenticated',
-              },
-              401: {
-                description: 'User Not Authorized',
-              },
-              404: {
-                description: 'User Not Found',
-              },
-              500: {
-                description: 'Internal Server Error',
-              },
-            },
-          },
-        });
+        .get('/users/:id', userController.getUserById, openApiSpec);
 
       return app;
     }
   );
 
   return app;
+};
+
+const openApiSpec = {
+  detail: {
+    tags: ['Users'],
+    responses: {
+      200: {
+        description: 'User Retrieved',
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  user: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'number',
+                      },
+                      username: {
+                        type: 'string',
+                      },
+                      role: {
+                        type: 'string',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      400: {
+        description: 'User Not Authenticated',
+      },
+      401: {
+        description: 'User Not Authorized',
+      },
+      404: {
+        description: 'User Not Found',
+      },
+      500: {
+        description: 'Internal Server Error',
+      },
+    },
+  },
 };
