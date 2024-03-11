@@ -7,7 +7,7 @@ interface JWTPayload extends JWTPayloadSpec {
   role?: string;
 }
 
-interface GetUserContext {
+interface UserGetContext {
   params: { id: number };
   set: { status: number };
   bearer: string;
@@ -28,7 +28,7 @@ export default class UserController {
     jwt,
     set,
     bearer,
-  }: GetUserContext) => {
+  }: UserGetContext) => {
     // * ================================================
     // * Ensure that the user is already authenticated.
     // * ================================================
