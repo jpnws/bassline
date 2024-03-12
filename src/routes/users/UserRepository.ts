@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 
 export interface IUserRepository {
-  findById: (id: number) => Promise<any>;
+  findUserById: (id: number) => Promise<any>;
   createUser: (username: string, password: string) => Promise<any>;
+  deleteUserById: (id: number) => Promise<any>;
 }
 
 export default class UserRepository implements IUserRepository {
@@ -12,7 +13,7 @@ export default class UserRepository implements IUserRepository {
     this.prisma = prisma;
   }
 
-  public findById = async (id: number) => {
+  public findUserById = async (id: number) => {
     return this.prisma.user.findUnique({
       where: {
         id: id,
@@ -35,6 +36,14 @@ export default class UserRepository implements IUserRepository {
         id: true,
         username: true,
         role: true,
+      },
+    });
+  };
+
+  public deleteUserById = async (id: number) => {
+    return this.prisma.user.delete({
+      where: {
+        id,
       },
     });
   };
