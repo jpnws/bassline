@@ -1,7 +1,12 @@
+import { OpenAPIV3 } from 'openapi-types';
+import { Elysia, t } from 'elysia';
 import bearer from '@elysiajs/bearer';
 import jwt from '@elysiajs/jwt';
-import { PrismaClient, User } from '@prisma/client';
-import { Elysia, t } from 'elysia';
+
+import { PrismaClient } from '@prisma/client';
+
+import UserController from 'src/routes/users/UserController';
+import UserRepository from 'src/routes/users/UserRepository';
 
 /**
  * Update an existing user by its ID.
@@ -11,6 +16,9 @@ import { Elysia, t } from 'elysia';
  */
 export const updateUser = (prisma: PrismaClient) => {
   const app = new Elysia();
+
+  const userRepository = new UserRepository(prisma);
+  const userController = new UserController(userRepository);
 
   app.group(
     '',
@@ -32,123 +40,49 @@ export const updateUser = (prisma: PrismaClient) => {
           })
         )
         .use(bearer())
-        .put(
-          '/users/:id',
-          async ({ params: { id }, body, jwt, set, bearer }) => {
-            // * ================================================
-            // * Ensure that the user is already authenticated.
-            // * ================================================
-            if (!bearer) {
-              set.status = 400;
-              return {
-                error: 'User not authenticated',
-                message: 'Authentication token was missing.',
-              };
-            }
-            // * ================================================
-            // * Verify the user's JWT.
-            // * ================================================
-            const user = (await jwt.verify(bearer)) as UserBody;
-            if (!user) {
-              set.status = 401;
-              return {
-                error: 'User unauthorized',
-                message: 'Authentication token was missing or incorrect',
-              };
-            }
-            // * ================================================
-            // * Verify that the user is an admin.
-            // * ================================================
-            if (user.role !== 'ADMIN') {
-              set.status = 401;
-              return {
-                error: 'User Unauthorized',
-                message:
-                  'Only administrators are allowed to retrieve user information.',
-              };
-            }
-            // * ================================================
-            // * Extract the data from the request body.
-            // * ================================================
-            const { username, role } = body as {
-              username: string;
-              role: string;
-            } as User;
-            // * ================================================
-            // * Create the user.
-            // * ================================================
-            try {
-              const user = await prisma.user.update({
-                where: {
-                  id,
-                },
-                data: {
-                  username,
-                  role,
-                },
-                select: {
-                  id: true,
-                  username: true,
-                  role: true,
-                },
-              });
-              set.status = 200;
-              return {
-                data: {
-                  user,
-                },
-              };
-            } catch (error) {
-              console.error('Failed to update user:', error);
-              set.status = 500;
-              return {
-                error: 'Internal Server Error',
-                message: 'Failed to update user',
-              };
-            }
-          },
-          {
-            detail: {
-              tags: ['Users'],
-              // OpenAPIV3.ResponsesObject
-              responses: {
-                200: {
-                  description: 'User Updated',
-                  content: {
-                    'application/json': {
-                      schema: {
-                        type: 'object',
-                        properties: {
-                          data: {
-                            type: 'object',
-                            properties: {
-                              id: { type: 'number' },
-                              username: { type: 'string' },
-                              role: { type: 'string' },
-                            },
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                400: {
-                  description: 'User Not Authenticated',
-                },
-                401: {
-                  description: 'User Unauthorized',
-                },
-                500: {
-                  description: 'Internal Server Error',
-                },
-              },
-            },
-          }
-        );
+        .put('/users/:id', userController.updateUser, openApiSpec);
 
       return app;
     }
   );
 
   return app;
+};
+
+const openApiSpec = {
+  detail: {
+    tags: ['Users'],
+    // OpenAPIV3.ResponsesObject
+    responses: {
+      200: {
+        description: 'User Updated',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                data: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number' },
+                    username: { type: 'string' },
+                    role: { type: 'string' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      400: {
+        description: 'User Not Authenticated',
+      },
+      401: {
+        description: 'User Unauthorized',
+      },
+      500: {
+        description: 'Internal Server Error',
+      },
+    },
+  } as OpenAPIV3.OperationObject,
 };
