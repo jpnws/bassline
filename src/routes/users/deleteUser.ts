@@ -1,3 +1,4 @@
+import { OpenAPIV3 } from 'openapi-types';
 import { Elysia, t } from 'elysia';
 import bearer from '@elysiajs/bearer';
 import jwt from '@elysiajs/jwt';
@@ -50,12 +51,14 @@ const openApiSpec = {
     responses: {
       202: {
         description: 'User Deleted',
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              message: {
-                type: 'string',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                message: {
+                  type: 'string',
+                },
               },
             },
           },
@@ -71,5 +74,5 @@ const openApiSpec = {
         description: 'Internal Server Error',
       },
     },
-  },
+  } as OpenAPIV3.OperationObject,
 };

@@ -1,3 +1,4 @@
+import { OpenAPIV3 } from 'openapi-types';
 import { Elysia, t } from 'elysia';
 import bearer from '@elysiajs/bearer';
 import jwt from '@elysiajs/jwt';
@@ -50,24 +51,26 @@ const openApiSpec = {
     responses: {
       200: {
         description: 'User Retrieved',
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              data: {
-                type: 'object',
-                properties: {
-                  user: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'number',
-                      },
-                      username: {
-                        type: 'string',
-                      },
-                      role: {
-                        type: 'string',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                data: {
+                  type: 'object',
+                  properties: {
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'number',
+                        },
+                        username: {
+                          type: 'string',
+                        },
+                        role: {
+                          type: 'string',
+                        },
                       },
                     },
                   },
@@ -90,5 +93,5 @@ const openApiSpec = {
         description: 'Internal Server Error',
       },
     },
-  },
+  } as OpenAPIV3.OperationObject,
 };
