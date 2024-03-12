@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import { IUserRepository } from 'src/routes/users/UserRepository';
 
 export default class UserController {
-  private prisma: PrismaClient;
+  private userRepository: IUserRepository;
 
-  constructor(prisma: PrismaClient) {
-    this.prisma = prisma;
+  constructor(userRepository: IUserRepository) {
+    this.userRepository = userRepository;
   }
 
   public getUserById = async ({
@@ -26,8 +26,8 @@ export default class UserController {
     // * ================================================
     // * Verify the user's JWT.
     // * ================================================
-    const user = (await jwt.verify(bearer)) as JWTPayload;
-    if (!user) {
+    const currentUser = (await jwt.verify(bearer)) as JWTPayload;
+    if (!currentUser) {
       set.status = 401;
       return {
         error: 'User Unauthorized',
@@ -35,9 +35,9 @@ export default class UserController {
       };
     }
     // * ================================================
-    // * Verify that the user is an admin.
+    // * Verify that the current user is an admin.
     // * ================================================
-    if (user.role !== 'ADMIN') {
+    if (currentUser.role !== 'ADMIN') {
       set.status = 401;
       return {
         error: 'User Unauthorized',
@@ -46,9 +46,10 @@ export default class UserController {
       };
     }
     // * ================================================
-    // * Retrieve the user.
+    // * Retrieve the user information.
     // * ================================================
     try {
+      const user = await this.userRepository.findById(id);
       if (!user) {
         set.status = 404;
         return {
