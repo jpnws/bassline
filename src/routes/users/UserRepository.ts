@@ -1,10 +1,15 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import { PrismaClient, User, UserRole } from '@prisma/client';
 
 export interface IUserRepository {
   findUserById: (id: number) => Promise<any>;
   createUser: (username: string, password: string) => Promise<any>;
   deleteUserById: (id: number) => Promise<any>;
   findUserByIdUsernameRole: (
+    id: number,
+    username: string,
+    role: UserRole
+  ) => Promise<any>;
+  updateUserById: (
     id: number,
     username: string,
     role: UserRole
@@ -63,6 +68,23 @@ export default class UserRepository implements IUserRepository {
         id: id,
         username: username,
         role: role,
+      },
+      select: {
+        id: true,
+        username: true,
+        role: true,
+      },
+    });
+  }
+
+  public updateUserById(id: number, username: string, role: UserRole) {
+    return this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        username,
+        role,
       },
       select: {
         id: true,
