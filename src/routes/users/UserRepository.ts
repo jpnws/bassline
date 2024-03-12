@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 
-interface IUserRepoistory {
+export interface IUserRepository {
   findById: (id: number) => Promise<any>;
 }
 
-export class UserRepository implements IUserRepoistory {
+export class UserRepository implements IUserRepository {
   private prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
