@@ -1,20 +1,4 @@
-import { JWTPayloadSpec } from '@elysiajs/jwt';
 import { PrismaClient } from '@prisma/client';
-
-interface JWTPayload extends JWTPayloadSpec {
-  id?: number;
-  username?: string;
-  role?: string;
-}
-
-interface UserGetContext {
-  params: { id: number };
-  set: { status: number };
-  bearer: string;
-  jwt: {
-    verify: (token: string) => Promise<JWTPayload | false>;
-  };
-}
 
 export default class UserController {
   private prisma: PrismaClient;
@@ -28,7 +12,7 @@ export default class UserController {
     jwt,
     set,
     bearer,
-  }: UserGetContext) => {
+  }: ElysiaContext) => {
     // * ================================================
     // * Ensure that the user is already authenticated.
     // * ================================================
@@ -65,16 +49,6 @@ export default class UserController {
     // * Retrieve the user.
     // * ================================================
     try {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          id: id,
-        },
-        select: {
-          id: true,
-          username: true,
-          role: true,
-        },
-      });
       if (!user) {
         set.status = 404;
         return {
