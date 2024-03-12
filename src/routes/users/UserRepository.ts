@@ -1,4 +1,4 @@
-import { PrismaClient, User, UserRole } from '@prisma/client';
+import { PrismaClient, UserRole } from '@prisma/client';
 
 export interface IUserRepository {
   findUserById: (id: number) => Promise<any>;
@@ -9,11 +9,7 @@ export interface IUserRepository {
     username: string,
     role: UserRole
   ) => Promise<any>;
-  updateUserById: (
-    id: number,
-    username: string,
-    role: UserRole
-  ) => Promise<any>;
+  updateUserById: (id: number, username: string, role: string) => Promise<any>;
 }
 
 export default class UserRepository implements IUserRepository {
@@ -77,14 +73,14 @@ export default class UserRepository implements IUserRepository {
     });
   }
 
-  public updateUserById(id: number, username: string, role: UserRole) {
+  public updateUserById(id: number, username: string, role: string) {
     return this.prisma.user.update({
       where: {
         id,
       },
       data: {
         username,
-        role,
+        role: role as UserRole,
       },
       select: {
         id: true,
