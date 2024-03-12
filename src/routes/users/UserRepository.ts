@@ -1,7 +1,8 @@
 import { PrismaClient, UserRole } from '@prisma/client';
+import { User } from 'src/routes/users/UserEntity';
 
 export interface IUserRepository {
-  findUserById: (id: number) => Promise<any>;
+  findUserById: (id: number) => Promise<User>;
   createUser: (username: string, password: string) => Promise<any>;
   deleteUserById: (id: number) => Promise<any>;
   findUserByIdUsernameRole: (
@@ -19,16 +20,32 @@ export default class UserRepository implements IUserRepository {
     this.prisma = prisma;
   }
 
-  public findUserById = async (id: number) => {
-    return this.prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-      select: {
-        id: true,
-        username: true,
-        role: true,
-      },
+  public findUserById = async (id: number): Promise<User> => {
+    return new Promise<User>(async (resolve, reject) => {
+      try {
+        const user = await this.prisma.user.findUnique({
+          where: {
+            id: id,
+          },
+          select: {
+            id: true,
+            username: true,
+            role: true,
+          },
+        });
+
+        if (!user) {
+          reject(new Error('User not found'));
+        } else {
+          resolve({
+            id: user.id,
+            username: user.username,
+            role: user.role,
+          } as User);
+        }
+      } catch (error) {
+        reject(error);
+      }
     });
   };
 
