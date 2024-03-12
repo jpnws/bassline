@@ -46,7 +46,6 @@ export const createUser = (prisma: PrismaClient) => {
 const openApiSpec = {
   detail: {
     tags: ['Users'],
-    // OpenAPIV3.ResponsesObject
     responses: {
       201: {
         description: 'User Created',
