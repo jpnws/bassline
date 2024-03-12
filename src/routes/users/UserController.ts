@@ -1,4 +1,33 @@
+import { JWTPayloadSpec } from '@elysiajs/jwt';
+
 import { IUserRepository } from 'src/routes/users/UserRepository';
+
+interface JWTPayload extends JWTPayloadSpec {
+  id?: number;
+  username?: string;
+  role?: string;
+}
+
+interface UserGetContext {
+  params: { id: number };
+  set: { status: number };
+  bearer: string;
+  jwt: {
+    verify: (token: string) => Promise<JWTPayload | false>;
+  };
+}
+
+interface UserCreateContext {
+  body: {
+    username: string;
+    password: string;
+  };
+  jwt: {
+    verify: (token: string) => Promise<JWTPayload | false>;
+  };
+  set: { status: number };
+  bearer: string;
+}
 
 export default class UserController {
   private userRepository: IUserRepository;
@@ -12,7 +41,7 @@ export default class UserController {
     jwt,
     set,
     bearer,
-  }: ElysiaContext) => {
+  }: UserGetContext) => {
     // * ================================================
     // * Ensure that the user is already authenticated.
     // * ================================================
@@ -69,6 +98,66 @@ export default class UserController {
       return {
         error: 'Internal Server Error',
         message: 'Failed to retrieve user.',
+      };
+    }
+  };
+
+  public createUser = async ({ body, jwt, set, bearer }: UserCreateContext) => {
+    // * ================================================
+    // * Ensure that the user is already authenticated.
+    // * ================================================
+    if (!bearer) {
+      set.status = 400;
+      return {
+        error: 'User Not Authenticated',
+        message: 'Authentication token was missing.',
+      };
+    }
+    // * ================================================
+    // * Verify the user's JWT.
+    // * ================================================
+    const user = (await jwt.verify(bearer)) as UserBody;
+    if (!user) {
+      set.status = 401;
+      return {
+        error: 'User Unauthorized',
+        message: 'Authentication toekn was missing or incorrect',
+      };
+    }
+    // * ================================================
+    // * Verify that the user is an admin.
+    // * ================================================
+    if (user.role !== 'ADMIN') {
+      set.status = 401;
+      return {
+        error: 'User Unauthorized',
+        message: 'Only administrators are allowed to create new users.',
+      };
+    }
+    // * ================================================
+    // * Extract the data from the request body.
+    // * ================================================
+    const { username, password } = body as {
+      username: string;
+      password: string;
+    };
+    // * ================================================
+    // * Create a new user.
+    // * ================================================
+    try {
+      const user = await this.userRepository.createUser(username, password);
+      set.status = 201;
+      return {
+        data: {
+          user,
+        },
+      };
+    } catch (error) {
+      console.error('Failed to create user:', error);
+      set.status = 500;
+      return {
+        error: 'Internal Server Error',
+        message: 'Failed to create user.',
       };
     }
   };
