@@ -8,6 +8,14 @@ interface JWTPayload extends JWTPayloadSpec {
   role?: string;
 }
 
+interface CurrentUserGetContext {
+  set: { status: number };
+  bearer: string;
+  jwt: {
+    verify: (token: string) => Promise<JWTPayload | false>;
+  };
+}
+
 interface UserDeleteContext {
   params: { id: number };
   set: { status: number };
@@ -224,6 +232,61 @@ export default class UserController {
         error: 'Internal Server Error',
         message: 'Failed to delete user.',
       };
+    }
+  };
+
+  public getCurrentUser = async ({
+    jwt,
+    set,
+    bearer,
+  }: CurrentUserGetContext) => {
+    // * ================================================
+    // * Ensure that the user is already authenticated.
+    // * ================================================
+    if (!bearer) {
+      set.status = 400;
+      return;
+    }
+    // * ================================================
+    // * Verify the user's JWT.
+    // * ================================================
+    const authUser = (await jwt.verify(bearer)) as UserBody;
+    if (!authUser) {
+      set.status = 401;
+      return;
+    }
+    // * ================================================
+    // * Ensure that the user's JWT has valid data.
+    // * ================================================
+    if (
+      authUser.id === undefined ||
+      authUser.username === undefined ||
+      authUser.role === undefined
+    ) {
+      set.status = 401;
+      return;
+    }
+    // * ================================================
+    // * Check user existence and respond with user data.
+    // * ================================================
+    try {
+      const user = await this.userRepository.findUserByIdUsernameRole(
+        authUser.id,
+        authUser.username,
+        authUser.role
+      );
+      if (!user) {
+        set.status = 404;
+        return { message: 'User not found' };
+      }
+      return {
+        data: {
+          user,
+        },
+      };
+    } catch (error) {
+      console.error('Failed to retrieve user:', error);
+      set.status = 500;
     }
   };
 }
