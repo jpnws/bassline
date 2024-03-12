@@ -1,7 +1,11 @@
+import { Elysia, t } from 'elysia';
 import bearer from '@elysiajs/bearer';
 import jwt from '@elysiajs/jwt';
+
 import { PrismaClient } from '@prisma/client';
-import { Elysia, t } from 'elysia';
+
+import UserController from 'src/routes/users/UserController';
+import UserRepository from 'src/routes/users/UserRepository';
 
 /**
  * Delete a user by its ID.
@@ -11,6 +15,9 @@ import { Elysia, t } from 'elysia';
  */
 export const deleteUser = (prisma: PrismaClient) => {
   const app = new Elysia();
+
+  const userRepository = new UserRepository(prisma);
+  const userController = new UserController(userRepository);
 
   app.group(
     '',
@@ -28,99 +35,41 @@ export const deleteUser = (prisma: PrismaClient) => {
           })
         )
         .use(bearer())
-        .delete(
-          '/users/:id',
-          async ({ params: { id }, jwt, set, bearer }) => {
-            // * ================================================
-            // * Ensure that the user is already authenticated.
-            // * ================================================
-            if (!bearer) {
-              set.status = 400;
-              return {
-                error: 'User Not Authenticated',
-                message: 'Authentication token was missing.',
-              };
-            }
-            // * ================================================
-            // * Verify the user's JWT.
-            // * ================================================
-            const user = (await jwt.verify(bearer)) as UserBody;
-            if (!user) {
-              set.status = 401;
-              return {
-                error: 'User Unauthorized',
-                message: 'Authentication toekn was missing or incorrect',
-              };
-            }
-            // * ================================================
-            // * Verify that the user is an admin.
-            // * ================================================
-            if (user.role !== 'ADMIN') {
-              set.status = 401;
-              return {
-                error: 'User Unauthorized',
-                message: 'Only administrators are allowed to create new users.',
-              };
-            }
-            // * ================================================
-            // * Delete the user.
-            // * ================================================
-            try {
-              await prisma.user.delete({
-                where: {
-                  id,
-                },
-              });
-              set.status = 202;
-              return {
-                message: 'User deleted successfully.',
-              };
-            } catch (error) {
-              console.error('Failed to delete user:', error);
-              set.status = 500;
-              return {
-                error: 'Internal Server Error',
-                message: 'Failed to delete user.',
-              };
-            }
-          },
-          {
-            detail: {
-              tags: ['Users'],
-              // OpenAPIV3.ResponsesObject
-              responses: {
-                202: {
-                  description: 'User Deleted',
-                  content: {
-                    'application/json': {
-                      schema: {
-                        type: 'object',
-                        properties: {
-                          message: {
-                            type: 'string',
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                400: {
-                  description: 'User Not Authenticated',
-                },
-                401: {
-                  description: 'User Unauthorized',
-                },
-                500: {
-                  description: 'Internal Server Error',
-                },
-              },
-            },
-          }
-        );
+        .delete('/users/:id', userController.deleteUserById, openApiSpec);
 
       return app;
     }
   );
 
   return app;
+};
+
+const openApiSpec = {
+  detail: {
+    tags: ['Users'],
+    responses: {
+      202: {
+        description: 'User Deleted',
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              message: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      },
+      400: {
+        description: 'User Not Authenticated',
+      },
+      401: {
+        description: 'User Unauthorized',
+      },
+      500: {
+        description: 'Internal Server Error',
+      },
+    },
+  },
 };
