@@ -1,4 +1,5 @@
 import { JWTPayloadSpec } from '@elysiajs/jwt';
+import { UserRole } from '@prisma/client';
 
 import { IUserRepository } from 'src/routes/users/UserRepository';
 
@@ -6,6 +7,19 @@ interface JWTPayload extends JWTPayloadSpec {
   id?: number;
   username?: string;
   role?: string;
+}
+
+interface UserUpdateContext {
+  params: { id: number };
+  body: {
+    username: string;
+    role: string;
+  };
+  set: { status: number };
+  bearer: string;
+  jwt: {
+    verify: (token: string) => Promise<JWTPayload | false>;
+  };
 }
 
 interface CurrentUserGetContext {
@@ -287,6 +301,74 @@ export default class UserController {
     } catch (error) {
       console.error('Failed to retrieve user:', error);
       set.status = 500;
+    }
+  };
+
+  public updateUser = async ({
+    params: { id },
+    body,
+    jwt,
+    set,
+    bearer,
+  }: UserUpdateContext) => {
+    // * ================================================
+    // * Ensure that the user is already authenticated.
+    // * ================================================
+    if (!bearer) {
+      set.status = 400;
+      return {
+        error: 'User not authenticated',
+        message: 'Authentication token was missing.',
+      };
+    }
+    // * ================================================
+    // * Verify the user's JWT.
+    // * ================================================
+    const user = (await jwt.verify(bearer)) as UserBody;
+    if (!user) {
+      set.status = 401;
+      return {
+        error: 'User unauthorized',
+        message: 'Authentication token was missing or incorrect',
+      };
+    }
+    // * ================================================
+    // * Verify that the user is an admin.
+    // * ================================================
+    if (user.role !== 'ADMIN') {
+      set.status = 401;
+      return {
+        error: 'User Unauthorized',
+        message:
+          'Only administrators are allowed to retrieve user information.',
+      };
+    }
+    // * ================================================
+    // * Extract the data from the request body.
+    // * ================================================
+    const { username, role } = body;
+    // * ================================================
+    // * Create the user.
+    // * ================================================
+    try {
+      const user = await this.userRepository.updateUserById(
+        id,
+        username,
+        role as UserRole
+      );
+      set.status = 200;
+      return {
+        data: {
+          user,
+        },
+      };
+    } catch (error) {
+      console.error('Failed to update user:', error);
+      set.status = 500;
+      return {
+        error: 'Internal Server Error',
+        message: 'Failed to update user',
+      };
     }
   };
 }
