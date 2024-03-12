@@ -8,6 +8,15 @@ interface JWTPayload extends JWTPayloadSpec {
   role?: string;
 }
 
+interface UserDeleteContext {
+  params: { id: number };
+  set: { status: number };
+  bearer: string;
+  jwt: {
+    verify: (token: string) => Promise<JWTPayload | false>;
+  };
+}
+
 interface UserGetContext {
   params: { id: number };
   set: { status: number };
@@ -78,7 +87,7 @@ export default class UserController {
     // * Retrieve the user information.
     // * ================================================
     try {
-      const user = await this.userRepository.findById(id);
+      const user = await this.userRepository.findUserById(id);
       if (!user) {
         set.status = 404;
         return {
@@ -158,6 +167,62 @@ export default class UserController {
       return {
         error: 'Internal Server Error',
         message: 'Failed to create user.',
+      };
+    }
+  };
+
+  public deleteUserById = async ({
+    params: { id },
+    jwt,
+    set,
+    bearer,
+  }: UserDeleteContext) => {
+    // * ================================================
+    // * Ensure that the user is already authenticated.
+    // * ================================================
+    if (!bearer) {
+      set.status = 400;
+      return {
+        error: 'User Not Authenticated',
+        message: 'Authentication token was missing.',
+      };
+    }
+    // * ================================================
+    // * Verify the user's JWT.
+    // * ================================================
+    const user = (await jwt.verify(bearer)) as UserBody;
+    if (!user) {
+      set.status = 401;
+      return {
+        error: 'User Unauthorized',
+        message: 'Authentication toekn was missing or incorrect',
+      };
+    }
+    // * ================================================
+    // * Verify that the user is an admin.
+    // * ================================================
+    if (user.role !== 'ADMIN') {
+      set.status = 401;
+      return {
+        error: 'User Unauthorized',
+        message: 'Only administrators are allowed to create new users.',
+      };
+    }
+    // * ================================================
+    // * Delete the user.
+    // * ================================================
+    try {
+      await this.userRepository.deleteUserById(id);
+      set.status = 202;
+      return {
+        message: 'User deleted successfully.',
+      };
+    } catch (error) {
+      console.error('Failed to delete user:', error);
+      set.status = 500;
+      return {
+        error: 'Internal Server Error',
+        message: 'Failed to delete user.',
       };
     }
   };
