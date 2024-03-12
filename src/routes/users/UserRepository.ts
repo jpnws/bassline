@@ -4,7 +4,7 @@ export interface IUserRepository {
   findById: (id: number) => Promise<any>;
 }
 
-export class UserRepository implements IUserRepository {
+export default class UserRepository implements IUserRepository {
   private prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {
