@@ -1,5 +1,4 @@
 import { JWTPayloadSpec } from '@elysiajs/jwt';
-import { UserRole } from '@prisma/client';
 
 import { IUserRepository } from 'src/routes/users/UserRepository';
 
@@ -351,11 +350,7 @@ export default class UserController {
     // * Create the user.
     // * ================================================
     try {
-      const user = await this.userRepository.updateUserById(
-        id,
-        username,
-        role as UserRole
-      );
+      const user = await this.userRepository.updateUserById(id, username, role);
       set.status = 200;
       return {
         data: {
