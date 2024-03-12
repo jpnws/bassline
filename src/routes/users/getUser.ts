@@ -1,9 +1,11 @@
+import { Elysia, t } from 'elysia';
 import bearer from '@elysiajs/bearer';
 import jwt from '@elysiajs/jwt';
+
 import { PrismaClient } from '@prisma/client';
-import { Elysia, t } from 'elysia';
+
 import UserController from 'src/routes/users/UserController';
-import { UserRepository } from 'src/routes/users/UserRepository';
+import UserRepository from 'src/routes/users/UserRepository';
 
 /**
  * Retrieve a single user by its ID.
