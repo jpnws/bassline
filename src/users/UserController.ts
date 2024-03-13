@@ -1,6 +1,6 @@
 import { JWTPayloadSpec } from '@elysiajs/jwt';
 
-import { IUserService } from 'src/routes/users/UserService';
+import { IUserService } from 'src/users/UserService';
 
 interface JWTPayload extends JWTPayloadSpec {
   id?: number;
@@ -108,7 +108,7 @@ export default class UserController {
     // * Retrieve the user information.
     // * ================================================
     try {
-      const user = await this.userService.getUserById(id);
+      const user = await this.userService.getUser(id);
       set.status = 200;
       return {
         data: {
@@ -117,12 +117,9 @@ export default class UserController {
       };
     } catch (error) {
       console.error('Failed to retrieve user:', error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to retrieve user.';
-      set.status = errorMessage === 'User not found' ? 404 : 500;
       return {
         error: 'Internal Server Error',
-        message: errorMessage,
+        message: 'Failed to retrieve user information.',
       };
     }
   };
@@ -141,8 +138,8 @@ export default class UserController {
     // * ================================================
     // * Verify the user's JWT.
     // * ================================================
-    const user = (await jwt.verify(bearer)) as UserBody;
-    if (!user) {
+    const currentUser = (await jwt.verify(bearer)) as UserBody;
+    if (!currentUser) {
       set.status = 401;
       return {
         error: 'User Unauthorized',
@@ -152,7 +149,7 @@ export default class UserController {
     // * ================================================
     // * Verify that the user is an admin.
     // * ================================================
-    if (user.role !== 'ADMIN') {
+    if (currentUser.role !== 'ADMIN') {
       set.status = 401;
       return {
         error: 'User Unauthorized',
@@ -167,10 +164,10 @@ export default class UserController {
       password: string;
     };
     // * ================================================
-    // * Create a new user.
+    // * Add a new user.
     // * ================================================
     try {
-      const user = await this.userService.createUser(username, password);
+      const user = await this.userService.addUser(username, password);
       set.status = 201;
       return {
         data: {
@@ -178,11 +175,11 @@ export default class UserController {
         },
       };
     } catch (error) {
-      console.error('Failed to create user:', error);
+      console.error('Failed to add user:', error);
       set.status = 500;
       return {
         error: 'Internal Server Error',
-        message: 'Failed to create user.',
+        message: 'Failed to add user.',
       };
     }
   };
@@ -206,8 +203,8 @@ export default class UserController {
     // * ================================================
     // * Verify the user's JWT.
     // * ================================================
-    const user = (await jwt.verify(bearer)) as UserBody;
-    if (!user) {
+    const currentUser = (await jwt.verify(bearer)) as UserBody;
+    if (!currentUser) {
       set.status = 401;
       return {
         error: 'User Unauthorized',
@@ -217,7 +214,7 @@ export default class UserController {
     // * ================================================
     // * Verify that the user is an admin.
     // * ================================================
-    if (user.role !== 'ADMIN') {
+    if (currentUser.role !== 'ADMIN') {
       set.status = 401;
       return {
         error: 'User Unauthorized',
@@ -228,7 +225,7 @@ export default class UserController {
     // * Delete the user.
     // * ================================================
     try {
-      await this.userService.deleteUserById(id);
+      await this.userService.removeUser(id);
       set.status = 202;
       return {
         message: 'User deleted successfully.',
@@ -258,8 +255,8 @@ export default class UserController {
     // * ================================================
     // * Verify the user's JWT.
     // * ================================================
-    const authUser = (await jwt.verify(bearer)) as UserBody;
-    if (!authUser) {
+    const currentUser = (await jwt.verify(bearer)) as UserBody;
+    if (!currentUser) {
       set.status = 401;
       return;
     }
@@ -267,9 +264,9 @@ export default class UserController {
     // * Ensure that the user's JWT has valid data.
     // * ================================================
     if (
-      authUser.id === undefined ||
-      authUser.username === undefined ||
-      authUser.role === undefined
+      currentUser.id === undefined ||
+      currentUser.username === undefined ||
+      currentUser.role === undefined
     ) {
       set.status = 401;
       return;
@@ -278,11 +275,7 @@ export default class UserController {
     // * Check user existence and respond with user data.
     // * ================================================
     try {
-      const user = await this.userService.findUserByIdUsernameRole(
-        authUser.id,
-        authUser.username,
-        authUser.role
-      );
+      const user = await this.userService.getUser(currentUser.id);
       if (!user) {
         set.status = 404;
         return { message: 'User not found' };
@@ -345,7 +338,7 @@ export default class UserController {
     // * Create the user.
     // * ================================================
     try {
-      const user = await this.userService.updateUserById(id, username, role);
+      const user = await this.userService.updateUser(id, username, role);
       set.status = 200;
       return {
         data: {

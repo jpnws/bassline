@@ -5,20 +5,18 @@ import jwt from '@elysiajs/jwt';
 
 import { PrismaClient } from '@prisma/client';
 
-import UserController from 'src/routes/users/UserController';
-import UserRepository from 'src/routes/users/UserRepository';
+import UserController from 'src/users/UserController';
+import UserRepository from 'src/users/UserRepository';
+import UserService from 'src/users/UserService';
 
 /**
- * Update an existing user by its ID.
+ * Delete a user by its ID.
  *
  * @param prisma - The Prisma client.
  * @returns The Elysia app.
  */
-export const updateUser = (prisma: PrismaClient) => {
+export const deleteUser = (prisma: PrismaClient) => {
   const app = new Elysia();
-
-  const userRepository = new UserRepository(prisma);
-  const userController = new UserController(userRepository);
 
   app.group(
     '',
@@ -26,12 +24,12 @@ export const updateUser = (prisma: PrismaClient) => {
       params: t.Object({
         id: t.Numeric(),
       }),
-      body: t.Object({
-        username: t.String(),
-        role: t.String(),
-      }),
     },
     (app) => {
+      const userRepository = new UserRepository(prisma);
+      const userService = new UserService(userRepository);
+      const userController = new UserController(userService);
+
       app
         .use(
           jwt({
@@ -40,7 +38,7 @@ export const updateUser = (prisma: PrismaClient) => {
           })
         )
         .use(bearer())
-        .put('/users/:id', userController.updateUser, openApiSpec);
+        .delete('/users/:id', userController.deleteUserById, openApiSpec);
 
       return app;
     }
@@ -52,22 +50,16 @@ export const updateUser = (prisma: PrismaClient) => {
 const openApiSpec = {
   detail: {
     tags: ['Users'],
-    // OpenAPIV3.ResponsesObject
     responses: {
-      200: {
-        description: 'User Updated',
+      202: {
+        description: 'User Deleted',
         content: {
           'application/json': {
             schema: {
               type: 'object',
               properties: {
-                data: {
-                  type: 'object',
-                  properties: {
-                    id: { type: 'number' },
-                    username: { type: 'string' },
-                    role: { type: 'string' },
-                  },
+                message: {
+                  type: 'string',
                 },
               },
             },

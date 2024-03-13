@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
 
-import { createUser } from 'src/routes/users/createUser';
-import { deleteUser } from 'src/routes/users/deleteUser';
-import { getCurrentUser } from 'src/routes/users/getCurrentUser';
-import { getUser } from 'src/routes/users/getUser';
-import { updateUser } from 'src/routes/users/updateUser';
+import { createUser } from 'src/users/routes/createUser';
+import { deleteUser } from 'src/users/routes/deleteUser';
+import { getCurrentUser } from 'src/users/routes/getCurrentUser';
+import { getUser } from 'src/users/routes/getUser';
+import { updateUser } from 'src/users/routes/updateUser';
 
 /**
  * Users routes.

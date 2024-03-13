@@ -5,8 +5,9 @@ import jwt from '@elysiajs/jwt';
 
 import { PrismaClient } from '@prisma/client';
 
-import UserController from 'src/routes/users/UserController';
-import UserRepository from 'src/routes/users/UserRepository';
+import UserController from 'src/users/UserController';
+import UserRepository from 'src/users/UserRepository';
+import UserService from 'src/users/UserService';
 
 /**
  * Retrieve a single user by its ID.
@@ -17,9 +18,6 @@ import UserRepository from 'src/routes/users/UserRepository';
 export const getUser = (prisma: PrismaClient) => {
   const app = new Elysia();
 
-  const userRepository = new UserRepository(prisma);
-  const userController = new UserController(userRepository);
-
   app.group(
     '',
     {
@@ -28,6 +26,10 @@ export const getUser = (prisma: PrismaClient) => {
       }),
     },
     (app) => {
+      const userRepository = new UserRepository(prisma);
+      const userService = new UserService(userRepository);
+      const userController = new UserController(userService);
+
       app
         .use(
           jwt({

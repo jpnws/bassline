@@ -5,20 +5,18 @@ import jwt from '@elysiajs/jwt';
 
 import { PrismaClient } from '@prisma/client';
 
-import UserController from 'src/routes/users/UserController';
-import UserRepository from 'src/routes/users/UserRepository';
+import UserController from 'src/users/UserController';
+import UserRepository from 'src/users/UserRepository';
+import UserService from 'src/users/UserService';
 
 /**
- * Delete a user by its ID.
+ * Update an existing user by its ID.
  *
  * @param prisma - The Prisma client.
  * @returns The Elysia app.
  */
-export const deleteUser = (prisma: PrismaClient) => {
+export const updateUser = (prisma: PrismaClient) => {
   const app = new Elysia();
-
-  const userRepository = new UserRepository(prisma);
-  const userController = new UserController(userRepository);
 
   app.group(
     '',
@@ -26,8 +24,16 @@ export const deleteUser = (prisma: PrismaClient) => {
       params: t.Object({
         id: t.Numeric(),
       }),
+      body: t.Object({
+        username: t.String(),
+        role: t.String(),
+      }),
     },
     (app) => {
+      const userRepository = new UserRepository(prisma);
+      const userService = new UserService(userRepository);
+      const userController = new UserController(userService);
+
       app
         .use(
           jwt({
@@ -36,7 +42,7 @@ export const deleteUser = (prisma: PrismaClient) => {
           })
         )
         .use(bearer())
-        .delete('/users/:id', userController.deleteUserById, openApiSpec);
+        .put('/users/:id', userController.updateUser, openApiSpec);
 
       return app;
     }
@@ -48,16 +54,22 @@ export const deleteUser = (prisma: PrismaClient) => {
 const openApiSpec = {
   detail: {
     tags: ['Users'],
+    // OpenAPIV3.ResponsesObject
     responses: {
-      202: {
-        description: 'User Deleted',
+      200: {
+        description: 'User Updated',
         content: {
           'application/json': {
             schema: {
               type: 'object',
               properties: {
-                message: {
-                  type: 'string',
+                data: {
+                  type: 'object',
+                  properties: {
+                    id: { type: 'number' },
+                    username: { type: 'string' },
+                    role: { type: 'string' },
+                  },
                 },
               },
             },

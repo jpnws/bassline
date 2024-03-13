@@ -5,8 +5,9 @@ import bearer from '@elysiajs/bearer';
 
 import { PrismaClient } from '@prisma/client';
 
-import UserController from 'src/routes/users/UserController';
-import UserRepository from 'src/routes/users/UserRepository';
+import UserController from 'src/users/UserController';
+import UserRepository from 'src/users/UserRepository';
+import UserService from 'src/users/UserService';
 
 /**
  * Get the current logged in user.
@@ -17,10 +18,11 @@ import UserRepository from 'src/routes/users/UserRepository';
 export const getCurrentUser = (prisma: PrismaClient) => {
   const app = new Elysia();
 
-  const userRepository = new UserRepository(prisma);
-  const userController = new UserController(userRepository);
-
   app.group('', {}, (app) => {
+    const userRepository = new UserRepository(prisma);
+    const userService = new UserService(userRepository);
+    const userController = new UserController(userService);
+
     app
       .use(
         jwt({
