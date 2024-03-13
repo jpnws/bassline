@@ -1,9 +1,11 @@
 import { Elysia } from 'elysia';
 import UserController from 'src/users/UserController';
-import { getCurrentUserSpec } from 'src/users/openApiSpec';
+import { getCurrentUserRouteSpec } from 'src/users/routes/routeSpecs';
 
 export const getCurrentUser = (userController: UserController) => {
-  const app = new Elysia();
-  app.get('/users/current', userController.getCurrentUser, getCurrentUserSpec);
-  return app;
+  return new Elysia().get(
+    '/users/current',
+    userController.getCurrentUser,
+    getCurrentUserRouteSpec
+  );
 };
