@@ -8,10 +8,11 @@ interface JWTPayload extends JWTPayloadSpec {
   role?: string;
 }
 
-interface UserUpdateContext {
+interface RouteContext {
   params: { id: number };
   body: {
     username: string;
+    password: string;
     role: string;
   };
   set: { status: number };
@@ -19,44 +20,6 @@ interface UserUpdateContext {
   jwt: {
     verify: (token: string) => Promise<JWTPayload | false>;
   };
-}
-
-interface CurrentUserGetContext {
-  set: { status: number };
-  bearer: string;
-  jwt: {
-    verify: (token: string) => Promise<JWTPayload | false>;
-  };
-}
-
-interface UserDeleteContext {
-  params: { id: number };
-  set: { status: number };
-  bearer: string;
-  jwt: {
-    verify: (token: string) => Promise<JWTPayload | false>;
-  };
-}
-
-interface UserGetContext {
-  params: { id: number };
-  set: { status: number };
-  bearer: string;
-  jwt: {
-    verify: (token: string) => Promise<JWTPayload | false>;
-  };
-}
-
-interface UserCreateContext {
-  body: {
-    username: string;
-    password: string;
-  };
-  jwt: {
-    verify: (token: string) => Promise<JWTPayload | false>;
-  };
-  set: { status: number };
-  bearer: string;
 }
 
 export default class UserController {
@@ -71,7 +34,7 @@ export default class UserController {
     jwt,
     set,
     bearer,
-  }: UserGetContext) => {
+  }: RouteContext) => {
     // * ================================================
     // * Ensure that the user is already authenticated.
     // * ================================================
@@ -124,7 +87,7 @@ export default class UserController {
     }
   };
 
-  public createUser = async ({ body, jwt, set, bearer }: UserCreateContext) => {
+  public createUser = async ({ body, jwt, set, bearer }: RouteContext) => {
     // * ================================================
     // * Ensure that the user is already authenticated.
     // * ================================================
@@ -189,7 +152,7 @@ export default class UserController {
     jwt,
     set,
     bearer,
-  }: UserDeleteContext) => {
+  }: RouteContext) => {
     // * ================================================
     // * Ensure that the user is already authenticated.
     // * ================================================
@@ -240,11 +203,7 @@ export default class UserController {
     }
   };
 
-  public getCurrentUser = async ({
-    jwt,
-    set,
-    bearer,
-  }: CurrentUserGetContext) => {
+  public getCurrentUser = async ({ jwt, set, bearer }: RouteContext) => {
     // * ================================================
     // * Ensure that the user is already authenticated.
     // * ================================================
@@ -297,7 +256,7 @@ export default class UserController {
     jwt,
     set,
     bearer,
-  }: UserUpdateContext) => {
+  }: RouteContext) => {
     // * ================================================
     // * Ensure that the user is already authenticated.
     // * ================================================
