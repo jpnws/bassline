@@ -21,32 +21,24 @@ export default class UserRepository implements IUserRepository {
   }
 
   public findUserById = async (id: number): Promise<User> => {
-    return new Promise<User>(async (resolve, reject) => {
-      try {
-        const user = await this.prisma.user.findUnique({
-          where: {
-            id: id,
-          },
-          select: {
-            id: true,
-            username: true,
-            role: true,
-          },
-        });
-
-        if (!user) {
-          reject(new Error('User not found'));
-        } else {
-          resolve({
-            id: user.id,
-            username: user.username,
-            role: user.role,
-          } as User);
-        }
-      } catch (error) {
-        reject(error);
-      }
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        username: true,
+        role: true,
+      },
     });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    };
   };
 
   public createUser = async (username: string, password: string) => {

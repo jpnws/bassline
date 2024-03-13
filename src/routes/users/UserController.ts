@@ -1,6 +1,6 @@
 import { JWTPayloadSpec } from '@elysiajs/jwt';
 
-import { IUserRepository } from 'src/routes/users/UserRepository';
+import { IUserService } from 'src/routes/users/UserService';
 
 interface JWTPayload extends JWTPayloadSpec {
   id?: number;
@@ -60,10 +60,10 @@ interface UserCreateContext {
 }
 
 export default class UserController {
-  private userRepository: IUserRepository;
+  private userService: IUserService;
 
-  constructor(userRepository: IUserRepository) {
-    this.userRepository = userRepository;
+  constructor(userService: IUserService) {
+    this.userService = userService;
   }
 
   public getUserById = async ({
@@ -108,14 +108,7 @@ export default class UserController {
     // * Retrieve the user information.
     // * ================================================
     try {
-      const user = await this.userRepository.findUserById(id);
-      if (!user) {
-        set.status = 404;
-        return {
-          error: 'User Not Found',
-          message: 'The user with the specified ID does not exist.',
-        };
-      }
+      const user = await this.userService.getUserById(id);
       set.status = 200;
       return {
         data: {
@@ -124,10 +117,12 @@ export default class UserController {
       };
     } catch (error) {
       console.error('Failed to retrieve user:', error);
-      set.status = 500;
+      const errorMessage =
+        error instanceof Error ? error.message : 'Failed to retrieve user.';
+      set.status = errorMessage === 'User not found' ? 404 : 500;
       return {
         error: 'Internal Server Error',
-        message: 'Failed to retrieve user.',
+        message: errorMessage,
       };
     }
   };
@@ -175,7 +170,7 @@ export default class UserController {
     // * Create a new user.
     // * ================================================
     try {
-      const user = await this.userRepository.createUser(username, password);
+      const user = await this.userService.createUser(username, password);
       set.status = 201;
       return {
         data: {
@@ -233,7 +228,7 @@ export default class UserController {
     // * Delete the user.
     // * ================================================
     try {
-      await this.userRepository.deleteUserById(id);
+      await this.userService.deleteUserById(id);
       set.status = 202;
       return {
         message: 'User deleted successfully.',
@@ -283,7 +278,7 @@ export default class UserController {
     // * Check user existence and respond with user data.
     // * ================================================
     try {
-      const user = await this.userRepository.findUserByIdUsernameRole(
+      const user = await this.userService.findUserByIdUsernameRole(
         authUser.id,
         authUser.username,
         authUser.role
@@ -350,7 +345,7 @@ export default class UserController {
     // * Create the user.
     // * ================================================
     try {
-      const user = await this.userRepository.updateUserById(id, username, role);
+      const user = await this.userService.updateUserById(id, username, role);
       set.status = 200;
       return {
         data: {

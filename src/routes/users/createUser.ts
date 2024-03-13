@@ -7,6 +7,7 @@ import { PrismaClient } from '@prisma/client';
 
 import UserController from 'src/routes/users/UserController';
 import UserRepository from 'src/routes/users/UserRepository';
+import UserService from 'src/routes/users/UserService';
 
 /**
  * Create a new user.
@@ -18,7 +19,8 @@ export const createUser = (prisma: PrismaClient) => {
   const app = new Elysia();
 
   const userRepository = new UserRepository(prisma);
-  const userController = new UserController(userRepository);
+  const userService = new UserService(userRepository);
+  const userController = new UserController(userService);
 
   app.group(
     '',

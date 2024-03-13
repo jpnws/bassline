@@ -1,11 +1,11 @@
 import { User } from 'src/routes/users/UserEntity';
 import { IUserRepository } from 'src/routes/users/UserRepository';
 
-interface IUserService {
+export interface IUserService {
   getUserById: (id: number) => Promise<User>;
 }
 
-export default class UserService {
+export default class UserService implements IUserService {
   userRepository: IUserRepository;
 
   constructor(userRepository: IUserRepository) {
@@ -14,12 +14,10 @@ export default class UserService {
 
   public getUserById = async (id: number) => {
     try {
-      const foundUser = await this.userRepository.findUserById(id);
-      const user = {
-        foundUser.
-      }
+      return await this.userRepository.findUserById(id);
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      throw error;
     }
   };
 }
