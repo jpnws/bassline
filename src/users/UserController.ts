@@ -1,12 +1,4 @@
-import { JWTPayloadSpec } from '@elysiajs/jwt';
-
 import { IUserService } from 'src/users/UserService';
-
-interface JWTPayload extends JWTPayloadSpec {
-  id?: number;
-  username?: string;
-  role?: string;
-}
 
 interface RouteContext {
   params: { id: number };
@@ -16,10 +8,6 @@ interface RouteContext {
     role: string;
   };
   set: { status: number };
-  bearer: string;
-  jwt: {
-    verify: (token: string) => Promise<JWTPayload | false>;
-  };
   currentUser: {
     id: number;
     username: string;
@@ -34,14 +22,7 @@ export default class UserController {
     this.userService = userService;
   }
 
-  public createUser = async ({ body, set, currentUser }: RouteContext) => {
-    if (currentUser.role !== 'ADMIN') {
-      set.status = 401;
-      return {
-        error: 'User Unauthorized',
-        message: 'Only administrators are allowed to create new users.',
-      };
-    }
+  public createUser = async ({ body, set }: RouteContext) => {
     const { username, password } = body as {
       username: string;
       password: string;
@@ -64,19 +45,7 @@ export default class UserController {
     }
   };
 
-  public getUserById = async ({
-    params: { id },
-    set,
-    currentUser,
-  }: RouteContext) => {
-    if (currentUser.role !== 'ADMIN') {
-      set.status = 401;
-      return {
-        error: 'User Unauthorized',
-        message:
-          'Only administrators are allowed to retrieve user information.',
-      };
-    }
+  public getUserById = async ({ params: { id }, set }: RouteContext) => {
     try {
       const user = await this.userService.getUser(id);
       set.status = 200;
@@ -94,20 +63,7 @@ export default class UserController {
     }
   };
 
-  public updateUser = async ({
-    params: { id },
-    body,
-    set,
-    currentUser,
-  }: RouteContext) => {
-    if (currentUser.role !== 'ADMIN') {
-      set.status = 401;
-      return {
-        error: 'User Unauthorized',
-        message:
-          'Only administrators are allowed to retrieve user information.',
-      };
-    }
+  public updateUser = async ({ params: { id }, body, set }: RouteContext) => {
     const { username, role } = body;
     try {
       const user = await this.userService.updateUser(id, username, role);
@@ -127,18 +83,7 @@ export default class UserController {
     }
   };
 
-  public deleteUserById = async ({
-    params: { id },
-    set,
-    currentUser,
-  }: RouteContext) => {
-    if (currentUser.role !== 'ADMIN') {
-      set.status = 401;
-      return {
-        error: 'User Unauthorized',
-        message: 'Only administrators are allowed to create new users.',
-      };
-    }
+  public deleteUserById = async ({ params: { id }, set }: RouteContext) => {
     try {
       await this.userService.removeUser(id);
       set.status = 202;
