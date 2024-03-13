@@ -7,6 +7,10 @@ import { getCurrentUser } from 'src/users/routes/getCurrentUser';
 import { getUser } from 'src/users/routes/getUser';
 import { updateUser } from 'src/users/routes/updateUser';
 
+import UserController from 'src/users/UserController';
+import UserRepository from 'src/users/UserRepository';
+import UserService from 'src/users/UserService';
+
 /**
  * Users routes.
  *
@@ -16,11 +20,15 @@ import { updateUser } from 'src/users/routes/updateUser';
 export const users = (prisma: PrismaClient) => {
   const app = new Elysia();
 
-  app.use(createUser(prisma));
-  app.use(getUser(prisma));
-  app.use(updateUser(prisma));
-  app.use(deleteUser(prisma));
-  app.use(getCurrentUser(prisma));
+  const userRepository = new UserRepository(prisma);
+  const userService = new UserService(userRepository);
+  const userController = new UserController(userService);
+
+  app.use(createUser(userController));
+  app.use(getUser(userController));
+  app.use(updateUser(userController));
+  app.use(deleteUser(userController));
+  app.use(getCurrentUser(userController));
 
   return app;
 };

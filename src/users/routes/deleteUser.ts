@@ -1,27 +1,17 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Elysia, t } from 'elysia';
 
-import { PrismaClient } from '@prisma/client';
-
 import UserController from 'src/users/UserController';
-import UserRepository from 'src/users/UserRepository';
-import UserService from 'src/users/UserService';
 
 /**
  * Delete a user by its ID.
  *
- * @param prisma - The Prisma client.
+ * @param userController - UserController class.
  * @returns The Elysia app.
  */
-export const deleteUser = (prisma: PrismaClient) => {
+export const deleteUser = (userController: UserController) => {
   const app = new Elysia();
-
-  const userRepository = new UserRepository(prisma);
-  const userService = new UserService(userRepository);
-  const userController = new UserController(userService);
-
   app.delete('/users/:id', userController.deleteUserById, routeSpec);
-
   return app;
 };
 

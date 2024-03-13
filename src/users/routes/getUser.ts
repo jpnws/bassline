@@ -1,27 +1,17 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Elysia, t } from 'elysia';
 
-import { PrismaClient } from '@prisma/client';
-
 import UserController from 'src/users/UserController';
-import UserRepository from 'src/users/UserRepository';
-import UserService from 'src/users/UserService';
 
 /**
  * Retrieve a single user by its ID.
  *
- * @param prisma - The Prisma client.
+ * @param userController - UserController class.
  * @returns The Elysia app.
  */
-export const getUser = (prisma: PrismaClient) => {
+export const getUser = (userController: UserController) => {
   const app = new Elysia();
-
-  const userRepository = new UserRepository(prisma);
-  const userService = new UserService(userRepository);
-  const userController = new UserController(userService);
-
   app.get('/users/:id', userController.getUserById, routeSpec);
-
   return app;
 };
 
