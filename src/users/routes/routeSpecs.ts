@@ -106,7 +106,6 @@ export const updateUserRouteSpec = {
   }),
   detail: {
     tags: ['Users'],
-    // OpenAPIV3.ResponsesObject
     responses: {
       200: {
         description: 'User Updated',
