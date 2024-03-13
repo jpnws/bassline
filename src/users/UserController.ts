@@ -34,6 +34,36 @@ export default class UserController {
     this.userService = userService;
   }
 
+  public createUser = async ({ body, set, currentUser }: RouteContext) => {
+    if (currentUser.role !== 'ADMIN') {
+      set.status = 401;
+      return {
+        error: 'User Unauthorized',
+        message: 'Only administrators are allowed to create new users.',
+      };
+    }
+    const { username, password } = body as {
+      username: string;
+      password: string;
+    };
+    try {
+      const user = await this.userService.addUser(username, password);
+      set.status = 201;
+      return {
+        data: {
+          user,
+        },
+      };
+    } catch (error) {
+      console.error('Failed to add user:', error);
+      set.status = 500;
+      return {
+        error: 'Internal Server Error',
+        message: 'Failed to add user.',
+      };
+    }
+  };
+
   public getUserById = async ({
     params: { id },
     set,
@@ -64,32 +94,35 @@ export default class UserController {
     }
   };
 
-  public createUser = async ({ body, set, currentUser }: RouteContext) => {
+  public updateUser = async ({
+    params: { id },
+    body,
+    set,
+    currentUser,
+  }: RouteContext) => {
     if (currentUser.role !== 'ADMIN') {
       set.status = 401;
       return {
         error: 'User Unauthorized',
-        message: 'Only administrators are allowed to create new users.',
+        message:
+          'Only administrators are allowed to retrieve user information.',
       };
     }
-    const { username, password } = body as {
-      username: string;
-      password: string;
-    };
+    const { username, role } = body;
     try {
-      const user = await this.userService.addUser(username, password);
-      set.status = 201;
+      const user = await this.userService.updateUser(id, username, role);
+      set.status = 200;
       return {
         data: {
           user,
         },
       };
     } catch (error) {
-      console.error('Failed to add user:', error);
+      console.error('Failed to update user:', error);
       set.status = 500;
       return {
         error: 'Internal Server Error',
-        message: 'Failed to add user.',
+        message: 'Failed to update user',
       };
     }
   };
@@ -137,39 +170,6 @@ export default class UserController {
     } catch (error) {
       console.error('Failed to retrieve user:', error);
       set.status = 500;
-    }
-  };
-
-  public updateUser = async ({
-    params: { id },
-    body,
-    set,
-    currentUser,
-  }: RouteContext) => {
-    if (currentUser.role !== 'ADMIN') {
-      set.status = 401;
-      return {
-        error: 'User Unauthorized',
-        message:
-          'Only administrators are allowed to retrieve user information.',
-      };
-    }
-    const { username, role } = body;
-    try {
-      const user = await this.userService.updateUser(id, username, role);
-      set.status = 200;
-      return {
-        data: {
-          user,
-        },
-      };
-    } catch (error) {
-      console.error('Failed to update user:', error);
-      set.status = 500;
-      return {
-        error: 'Internal Server Error',
-        message: 'Failed to update user',
-      };
     }
   };
 }
