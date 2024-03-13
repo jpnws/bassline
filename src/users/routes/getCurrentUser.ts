@@ -1,7 +1,5 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Elysia } from 'elysia';
-import jwt from '@elysiajs/jwt';
-import bearer from '@elysiajs/bearer';
 
 import { PrismaClient } from '@prisma/client';
 
@@ -18,23 +16,11 @@ import UserService from 'src/users/UserService';
 export const getCurrentUser = (prisma: PrismaClient) => {
   const app = new Elysia();
 
-  app.group('', {}, (app) => {
-    const userRepository = new UserRepository(prisma);
-    const userService = new UserService(userRepository);
-    const userController = new UserController(userService);
+  const userRepository = new UserRepository(prisma);
+  const userService = new UserService(userRepository);
+  const userController = new UserController(userService);
 
-    app
-      .use(
-        jwt({
-          name: 'jwt',
-          secret: process.env.APP_JWT_SECRET,
-        })
-      )
-      .use(bearer())
-      .get('/users/current', userController.getCurrentUser, openApiSpec);
-
-    return app;
-  });
+  app.get('/users/current', userController.getCurrentUser, openApiSpec);
 
   return app;
 };

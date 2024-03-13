@@ -1,7 +1,5 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Elysia, t } from 'elysia';
-import bearer from '@elysiajs/bearer';
-import jwt from '@elysiajs/jwt';
 
 import { PrismaClient } from '@prisma/client';
 
@@ -18,37 +16,20 @@ import UserService from 'src/users/UserService';
 export const createUser = (prisma: PrismaClient) => {
   const app = new Elysia();
 
-  app.group(
-    '',
-    {
-      body: t.Object({
-        username: t.String(),
-        password: t.String(),
-      }),
-    },
-    (app) => {
-      const userRepository = new UserRepository(prisma);
-      const userService = new UserService(userRepository);
-      const userController = new UserController(userService);
+  const userRepository = new UserRepository(prisma);
+  const userService = new UserService(userRepository);
+  const userController = new UserController(userService);
 
-      app
-        .use(
-          jwt({
-            name: 'jwt',
-            secret: process.env.APP_JWT_SECRET,
-          })
-        )
-        .use(bearer())
-        .post('/users', userController.createUser, openApiSpec);
-
-      return app;
-    }
-  );
+  app.post('/users', userController.createUser, routeSpec);
 
   return app;
 };
 
-const openApiSpec = {
+const routeSpec = {
+  body: t.Object({
+    username: t.String(),
+    password: t.String(),
+  }),
   detail: {
     tags: ['Users'],
     responses: {
