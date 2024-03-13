@@ -34,6 +34,24 @@ export const users = (prisma: PrismaClient) => {
       })
     )
     .use(bearer())
+    .derive(async ({ jwt, bearer, set }) => {
+      if (!bearer) {
+        set.status = 400;
+        return {
+          error: 'User Not Authenticated',
+          message: 'Authentication token was missing.',
+        };
+      }
+      const currentUser = (await jwt.verify(bearer)) as UserBody;
+      if (!currentUser) {
+        set.status = 401;
+        return {
+          error: 'User Unauthorized',
+          message: 'Authentication toekn was missing or incorrect',
+        };
+      }
+      return { currentUser };
+    })
     .use(createUser(userController))
     .use(getUser(userController))
     .use(updateUser(userController))
