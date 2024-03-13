@@ -1,5 +1,7 @@
 import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
+import bearer from '@elysiajs/bearer';
+import jwt from '@elysiajs/jwt';
 
 import { boards } from 'src/routes/boards/boards';
 import { posts } from 'src/routes/posts/posts';
@@ -52,11 +54,19 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   // Define various routes for handling HTTP requests.
-  app.use(boards(prisma));
-  app.use(posts(prisma));
-  app.use(comments(prisma));
-  app.use(users(prisma));
-  app.use(auth(prisma));
+  app
+    .use(
+      jwt({
+        name: 'jwt',
+        secret: process.env.APP_JWT_SECRET,
+      })
+    )
+    .use(bearer())
+    .use(boards(prisma))
+    .use(posts(prisma))
+    .use(comments(prisma))
+    .use(users(prisma))
+    .use(auth(prisma));
 
   return app;
 };
