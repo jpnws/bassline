@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
+import bearer from '@elysiajs/bearer';
+import jwt from '@elysiajs/jwt';
 
 import { createUser } from 'src/users/routes/createUser';
 import { deleteUser } from 'src/users/routes/deleteUser';
@@ -24,11 +26,19 @@ export const users = (prisma: PrismaClient) => {
   const userService = new UserService(userRepository);
   const userController = new UserController(userService);
 
-  app.use(createUser(userController));
-  app.use(getUser(userController));
-  app.use(updateUser(userController));
-  app.use(deleteUser(userController));
-  app.use(getCurrentUser(userController));
+  app
+    .use(
+      jwt({
+        name: 'jwt',
+        secret: process.env.APP_JWT_SECRET,
+      })
+    )
+    .use(bearer())
+    .use(createUser(userController))
+    .use(getUser(userController))
+    .use(updateUser(userController))
+    .use(deleteUser(userController))
+    .use(getCurrentUser(userController));
 
   return app;
 };
