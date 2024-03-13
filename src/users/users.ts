@@ -43,19 +43,36 @@ export const users = (prisma: PrismaClient) => {
         };
       }
       const currentUser = (await jwt.verify(bearer)) as UserBody;
-      if (!currentUser) {
-        set.status = 401;
-        return {
-          error: 'User Unauthorized',
-          message: 'Authentication toekn was missing or incorrect',
-        };
-      }
       return { currentUser };
     })
-    .use(createUser(userController))
-    .use(getUser(userController))
-    .use(updateUser(userController))
-    .use(deleteUser(userController))
+    .guard(
+      {
+        beforeHandle({ currentUser, set }) {
+          if (!currentUser) {
+            set.status = 401;
+            return {
+              error: 'User Unauthorized',
+              message: 'Authentication toekn was missing or incorrect',
+            };
+          }
+          if (currentUser.role !== 'ADMIN') {
+            set.status = 401;
+            return {
+              error: 'User Unauthorized',
+              message: 'Only admins are allowed to access this resource.',
+            };
+          }
+        },
+      },
+      (app) => {
+        app
+          .use(createUser(userController))
+          .use(getUser(userController))
+          .use(updateUser(userController))
+          .use(deleteUser(userController));
+        return app;
+      }
+    )
     .use(getCurrentUser(userController));
 
   return app;
