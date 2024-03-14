@@ -43,7 +43,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
 
   // Add CORS to allow requests from any origin.
   if (cors) {
-    app.use(cors());
+    app.use(cors({ methods: ['POST', 'GET', 'PUT', 'DELETE'] }));
   }
 
   // Define a health check route.
