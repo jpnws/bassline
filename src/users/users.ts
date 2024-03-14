@@ -9,9 +9,9 @@ import { getCurrentUser } from 'src/users/routes/getCurrentUser';
 import { getUser } from 'src/users/routes/getUser';
 import { updateUser } from 'src/users/routes/updateUser';
 
-import UserController from 'src/users/UserController';
 import UserRepository from 'src/users/UserRepository';
 import UserService from 'src/users/UserService';
+import UserController from 'src/users/UserController';
 
 /**
  * Users routes.
@@ -52,7 +52,7 @@ export const users = (prisma: PrismaClient) => {
             set.status = 401;
             return {
               error: 'User Unauthorized',
-              message: 'Authentication toekn was missing or incorrect',
+              message: 'Authentication token was missing or incorrect',
             };
           }
           if (currentUser.role !== 'ADMIN') {
@@ -64,14 +64,12 @@ export const users = (prisma: PrismaClient) => {
           }
         },
       },
-      (app) => {
+      (app) =>
         app
           .use(createUser(userController))
           .use(getUser(userController))
           .use(updateUser(userController))
-          .use(deleteUser(userController));
-        return app;
-      }
+          .use(deleteUser(userController))
     )
     .use(getCurrentUser(userController));
 
