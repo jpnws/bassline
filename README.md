@@ -14,6 +14,10 @@ its administrators to delete any posts or comments.
 
 ![OpenAPI Documentation](./doc/bassline-openapi-api-doc.png)
 
-## Disco Bassline Data Model
+## Data Model
 
 ![Disco Bassline Data Model](./doc/disco-bassline-data-model.png)
+
+## Architecture
+
+![Disco Bassline Architecture](./doc/architecture.png)
