@@ -3,11 +3,11 @@ import { Elysia } from 'elysia';
 import bearer from '@elysiajs/bearer';
 import jwt from '@elysiajs/jwt';
 
-import { createPost } from 'src/routes/posts/createPost';
-import { deletePost } from 'src/routes/posts/deletePost';
-import { getPost } from 'src/routes/posts/getPost';
-import { getPostComments } from 'src/routes/posts/getPostComments';
-import { updatePost } from 'src/routes/posts/updatePost';
+import { createPost } from 'src/posts/routes/createPost';
+import { deletePost } from 'src/posts/routes/deletePost';
+import { getPost } from 'src/posts/routes/getPost';
+import { getPostComments } from 'src/posts/routes/getPostComments';
+import { updatePost } from 'src/posts/routes/updatePost';
 
 import PostRepository from 'src/posts/PostRepository';
 import PostService from 'src/posts/PostService';
@@ -34,20 +34,20 @@ export const posts = (prisma: PrismaClient) => {
       })
     )
     .use(bearer())
-    .derive(async ({ jwt, bearer, set }) => {
-      if (!bearer) {
-        set.status = 400;
-        return {
-          error: 'User Not Authenticated',
-          message: 'Authentication token was missing.',
-        };
-      }
+    .derive(async ({ jwt, bearer }) => {
       const currentUser = (await jwt.verify(bearer)) as UserBody;
       return { currentUser };
     })
     .guard(
       {
-        beforeHandle({ currentUser, set }) {
+        beforeHandle({ currentUser, bearer, set }) {
+          if (!bearer) {
+            set.status = 400;
+            return {
+              error: 'User Not Authenticated',
+              message: 'Authentication token was missing.',
+            };
+          }
           if (!currentUser) {
             set.status = 401;
             return {
