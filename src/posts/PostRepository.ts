@@ -3,21 +3,21 @@ import { PrismaClient } from '@prisma/client';
 import PostEntity, { IPostEntity } from 'src/posts/PostEntity';
 
 export interface IPostRepository {
-  get: (id: number) => Promise<IPostEntity>;
-  add: (
-    subject: string,
-    text: string,
-    boardId: number,
-    authorId: number
-  ) => Promise<IPostEntity>;
-  delete: (id: number) => Promise<void>;
-  update: (
-    id: number,
-    subject: string,
-    text: string,
-    boardId: number,
-    authorId: number
-  ) => Promise<IPostEntity>;
+  get: (id: any) => Promise<IPostEntity>;
+  // add: (
+  //   subject: string,
+  //   text: string,
+  //   boardId: number,
+  //   authorId: number
+  // ) => Promise<IPostEntity>;
+  // delete: (id: number) => Promise<void>;
+  // update: (
+  //   id: number,
+  //   subject: string,
+  //   text: string,
+  //   boardId: number,
+  //   authorId: number
+  // ) => Promise<IPostEntity>;
 }
 
 export default class PostRepository implements IPostRepository {
@@ -55,6 +55,14 @@ export default class PostRepository implements IPostRepository {
     if (!post) {
       throw new Error('Post not found');
     }
-    return new PostEntity(post);
+    return new PostEntity(
+      post.id,
+      post.subject,
+      post.text,
+      post.createdAt.toString(),
+      post.updatedAt.toString(),
+      post.board,
+      post.author
+    );
   };
 }
