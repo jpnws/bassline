@@ -1,3 +1,4 @@
+import { AuthorizationError } from 'src/posts/AuthorizationError';
 import { IPostService } from 'src/posts/PostService';
 
 interface RouteContext {
@@ -26,21 +27,13 @@ export default class PostController {
   public createPost = async ({ body, set, currentUser }: RouteContext) => {
     const { subject, text, boardId, authorId } = body;
 
-    if (currentUser.id !== authorId) {
-      set.status = 401;
-      return {
-        error: 'Unauthorized',
-        message:
-          'User creating the post is not specified as the author of the post.',
-      };
-    }
-
     try {
       const post = await this.postService.addPost(
         subject,
         text,
         boardId,
-        authorId
+        authorId,
+        currentUser
       );
       set.status = 201;
       return {
@@ -51,6 +44,13 @@ export default class PostController {
         },
       };
     } catch (error) {
+      if (error instanceof AuthorizationError) {
+        set.status = 401;
+        return {
+          error: 'Unauthorized',
+          message: error.message,
+        };
+      }
       console.error('Failed to create the post:', error);
       set.status = 500;
       return {
