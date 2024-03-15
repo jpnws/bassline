@@ -18,6 +18,11 @@ export const updateComment = (prisma: PrismaClient) => {
       params: t.Object({
         id: t.Numeric(),
       }),
+      body: t.Object({
+        text: t.String(),
+        postId: t.Numeric(),
+        authorId: t.Numeric(),
+      }),
     },
     (app) => {
       app
@@ -55,9 +60,7 @@ export const updateComment = (prisma: PrismaClient) => {
             // * ================================================
             // * Extract the comment data from the request body.
             // * ================================================
-            const { text, postId, authorId } = JSON.parse(
-              body as string
-            ) as CommentBody;
+            const { text, postId, authorId } = body as CommentBody;
             // * ================================================
             // * Verify user updating comment is author or admin.
             // * ================================================
@@ -95,6 +98,7 @@ export const updateComment = (prisma: PrismaClient) => {
           {
             detail: {
               tags: ['Comments'],
+              // OpenAPIV3.ResponsesObject
               responses: {
                 200: {
                   description: 'Comment Updated',
