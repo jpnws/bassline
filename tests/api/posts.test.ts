@@ -369,4 +369,52 @@ describe('Posts API', () => {
       expect(comment.updatedAt).toBeDefined();
     }
   });
+
+  it('should prevent creating a post if logged in user (currentUser.id) does not match authorId', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name12',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser0 = {
+      username: 'test-user-username14',
+      password: 'password',
+    };
+    const signUpUserResponse0 = await helper.signUpUser(newUser0);
+    const user0 = signUpUserResponse0.body.data.user;
+    const newUser = {
+      username: 'test-user-username15',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: board.id,
+      authorId: user0.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postCreateResponse.status).toBe(401);
+    expect(postCreateResponse.body.data).not.toBeDefined();
+  });
 });
