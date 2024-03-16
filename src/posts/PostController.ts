@@ -95,19 +95,24 @@ export default class PostController {
     currentUser,
   }: RouteContext) => {
     const { subject, text, boardId, authorId } = body;
-
-    if (currentUser.id !== authorId && currentUser.role !== 'ADMIN') {
-      set.status = 401;
-      return {
-        error: 'Unauthorized',
-        message: 'User is not the author of the post.',
-      };
-    }
-
     try {
-      await this.postService.updatePost(id, subject, text, boardId, authorId);
+      await this.postService.updatePost(
+        id,
+        subject,
+        text,
+        boardId,
+        authorId,
+        currentUser
+      );
       set.status = 200;
     } catch (error) {
+      if (error instanceof AuthorizationError) {
+        set.status = 401;
+        return {
+          error: 'Unauthorized',
+          message: 'User is not the author of the post.',
+        };
+      }
       console.error('Failed to update post:', error);
       set.status = 500;
       return {

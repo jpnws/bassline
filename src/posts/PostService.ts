@@ -24,7 +24,8 @@ export interface IPostService {
     subject: string,
     text: string,
     boardId: number,
-    authorId: number
+    authorId: number,
+    currentUser: CurrentUser
   ) => Promise<IPostEntity>;
   getPostComments: (id: number) => Promise<IPostCommentEntity>;
 }
@@ -79,8 +80,15 @@ export default class PostService implements IPostService {
     subject: string,
     text: string,
     boardId: number,
-    authorId: number
+    authorId: number,
+    currentUser: CurrentUser
   ) => {
+    if (currentUser.id !== authorId && currentUser.role !== 'ADMIN') {
+      throw new AuthorizationError(
+        'User updating the post is not the author of the post or is not an admin.'
+      );
+    }
+
     try {
       return await this.postRepository.update(
         id,
