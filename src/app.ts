@@ -1,7 +1,7 @@
 import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 
-import { boards } from 'src/routes/boards/boards';
+import { boards } from 'src/boards/boards';
 import { posts } from 'src/posts/posts';
 import { users } from 'src/users/users';
 import { comments } from 'src/comments/comments';
