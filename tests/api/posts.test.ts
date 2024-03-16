@@ -417,4 +417,74 @@ describe('Posts API', () => {
     expect(postCreateResponse.status).toBe(401);
     expect(postCreateResponse.body.data).not.toBeDefined();
   });
+
+  it('should prevent updating a post if logged in user is not the author', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name13',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'test-user-username16',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    const newPost = {
+      subject: 'test-post-subject3',
+      text: 'test-post-text3',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    const newUser2 = {
+      username: 'test-user-username17',
+      password: 'password',
+    };
+    const postData = postCreateResponse.body.data.post;
+    const signUpUserResponse2 = await helper.signUpUser(newUser2);
+    expect(signUpUserResponse2.body.data.token).toBeDefined();
+    expect(signUpUserResponse2.body.data.token).toBeString();
+    const token2 = signUpUserResponse2.body.data.token;
+    const bearer2 = `Bearer ${token2}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const updatedPost = {
+      subject: 'updated-post-subject3',
+      text: 'updated-post-text3',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postUpdateResponse = await helper.updatePost(
+      postData.id,
+      updatedPost,
+      {
+        Authorization: bearer2,
+      }
+    );
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postUpdateResponse.status).toBe(401);
+  });
 });
+
+const newUser = {
+  username: 'test-user-username17',
+  password: 'password',
+};
