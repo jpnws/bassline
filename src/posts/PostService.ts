@@ -1,7 +1,7 @@
 import { IPostEntity } from 'src/posts/PostEntity';
 import { IPostCommentEntity } from 'src/posts/PostCommentEntity';
 import { IPostRepository } from 'src/posts/PostRepository';
-import { AuthorizationError } from 'src/AuthorizationError';
+import { AuthorizationError } from 'src/errors/AuthorizationError';
 
 type CurrentUser = {
   id: number;

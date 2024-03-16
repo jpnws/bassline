@@ -1,5 +1,5 @@
-import { AuthorizationError } from 'src/AuthorizationError';
-import { ItemNotFoundError } from 'src/ItemNotFoundError';
+import { AuthorizationError } from 'src/errors/AuthorizationError';
+import { ItemNotFoundError } from 'src/errors/ItemNotFoundError';
 import { ICommentService } from 'src/comments/CommentService';
 
 interface RouteContext {

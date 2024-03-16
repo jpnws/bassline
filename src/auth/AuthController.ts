@@ -1,7 +1,8 @@
-import { AuthorizationError } from 'src/AuthorizationError';
-import { InvalidInputError } from 'src/InvalidInputError';
-import { ItemAlreadyExistsError } from 'src/ItemAlreadyExistsError';
-import { ItemNotFoundError } from 'src/ItemNotFoundError';
+import { AuthorizationError } from 'src/errors/AuthorizationError';
+import { InvalidInputError } from 'src/errors/InvalidInputError';
+import { ItemAlreadyExistsError } from 'src/errors/ItemAlreadyExistsError';
+import { ItemNotFoundError } from 'src/errors/ItemNotFoundError';
+
 import { IAuthService } from 'src/auth/AuthService';
 
 export interface IJwt {

@@ -1,7 +1,8 @@
-import { InvalidInputError } from 'src/InvalidInputError';
-import { InvalidPasswordError } from 'src/InvalidPasswordError';
-import { ItemAlreadyExistsError } from 'src/ItemAlreadyExistsError';
-import { ItemNotFoundError } from 'src/ItemNotFoundError';
+import { InvalidInputError } from 'src/errors/InvalidInputError';
+import { InvalidPasswordError } from 'src/errors/InvalidPasswordError';
+import { ItemAlreadyExistsError } from 'src/errors/ItemAlreadyExistsError';
+import { ItemNotFoundError } from 'src/errors/ItemNotFoundError';
+
 import { IJwt } from 'src/auth/AuthController';
 import { IAuthEntity } from 'src/auth/AuthEntity';
 import { IAuthRepository } from 'src/auth/AuthRepository';

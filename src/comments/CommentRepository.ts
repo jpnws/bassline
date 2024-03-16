@@ -1,5 +1,6 @@
+import { ItemNotFoundError } from 'src/errors/ItemNotFoundError';
+
 import { PrismaClient } from '@prisma/client';
-import { ItemNotFoundError } from 'src/ItemNotFoundError';
 
 import CommentEntity, { ICommentEntity } from 'src/comments/CommentEntity';
 

@@ -1,4 +1,4 @@
-import { AuthorizationError } from 'src/AuthorizationError';
+import { AuthorizationError } from 'src/errors/AuthorizationError';
 import { IPostService } from 'src/posts/PostService';
 
 interface RouteContext {
