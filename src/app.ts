@@ -5,7 +5,7 @@ import { boards } from 'src/boards/boards';
 import { posts } from 'src/posts/posts';
 import { users } from 'src/users/users';
 import { comments } from 'src/comments/comments';
-import { auth } from 'src/routes/auth/auth';
+import { auth } from 'src/auth/auth';
 
 /**
  * Creates an instance of the Elysia app and defines various routes for handling HTTP requests.
