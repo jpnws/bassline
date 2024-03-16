@@ -482,9 +482,59 @@ describe('Posts API', () => {
     // * ========================
     expect(postUpdateResponse.status).toBe(401);
   });
-});
 
-const newUser = {
-  username: 'test-user-username17',
-  password: 'password',
-};
+  it('should prevent deleting a post when non-author attempts to delete it', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name14',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'test-user-username18',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    const postData = postCreateResponse.body.data.post;
+    const newUser2 = {
+      username: 'test-user-username29',
+      password: 'password',
+    };
+    const signUpUserResponse2 = await helper.signUpUser(newUser2);
+    expect(signUpUserResponse2.body.data.token).toBeDefined();
+    expect(signUpUserResponse2.body.data.token).toBeString();
+    const token2 = signUpUserResponse2.body.data.token;
+    const bearer2 = `Bearer ${token2}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const postDeleteResponse = await helper.deletePost(postData.id, {
+      Authorization: bearer2,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postDeleteResponse.status).toBe(401);
+  });
+});
