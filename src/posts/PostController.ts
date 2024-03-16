@@ -26,7 +26,6 @@ export default class PostController {
 
   public createPost = async ({ body, set, currentUser }: RouteContext) => {
     const { subject, text, boardId, authorId } = body;
-
     try {
       const post = await this.postService.addPost(
         subject,
@@ -128,31 +127,19 @@ export default class PostController {
     currentUser,
   }: RouteContext) => {
     try {
-      const post = await this.postService.getPost(id);
-      if (currentUser.id !== post.author.id && currentUser.role !== 'ADMIN') {
-        set.status = 401;
-        return {
-          error: 'User unauthorized',
-          message: 'User is not authorized to delete the post.',
-        };
-      }
-    } catch (error) {
-      console.error('Failed retrieve the post:', error);
-      set.status = 500;
-      return {
-        error: 'Internal Server Error',
-        message: 'Failed to retrieve the post.',
-      };
-    }
-
-    try {
-      await this.postService.removePost(id);
+      await this.postService.removePost(id, currentUser);
       set.status = 202;
       return {
         message: 'Post deleted successfully.',
       };
     } catch (error) {
-      console.error('Failed to delete a post:', error);
+      if (error instanceof AuthorizationError) {
+        set.status = 401;
+        return {
+          error: 'Unauthorized',
+          message: 'User is not authorized to delete the post.',
+        };
+      }
       set.status = 500;
       return {
         error: 'Internal Server Error',

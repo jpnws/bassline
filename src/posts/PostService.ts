@@ -18,7 +18,7 @@ export interface IPostService {
     authorId: number,
     currentUser: CurrentUser
   ) => Promise<IPostEntity>;
-  removePost: (id: number) => Promise<void>;
+  removePost: (id: number, currentUser: CurrentUser) => Promise<void>;
   updatePost: (
     id: number,
     subject: string,
@@ -54,10 +54,9 @@ export default class PostService implements IPostService {
   ) => {
     if (currentUser.id !== authorId) {
       throw new AuthorizationError(
-        'User creating the post is not specified as the author of the post.'
+        'The author ID of the post does not match the ID of the currently logged in user.'
       );
     }
-
     try {
       return await this.postRepository.add(subject, text, boardId, authorId);
     } catch (error) {
@@ -66,7 +65,13 @@ export default class PostService implements IPostService {
     }
   };
 
-  public removePost = async (id: number) => {
+  public removePost = async (id: number, currentUser: CurrentUser) => {
+    const post = await this.postRepository.get(id);
+    if (currentUser.id !== post.author.id && currentUser.role !== 'ADMIN') {
+      throw new AuthorizationError(
+        'User attempting to delete the post is not the author of the post or is not an admin.'
+      );
+    }
     try {
       return await this.postRepository.delete(id);
     } catch (error) {
@@ -85,10 +90,9 @@ export default class PostService implements IPostService {
   ) => {
     if (currentUser.id !== authorId && currentUser.role !== 'ADMIN') {
       throw new AuthorizationError(
-        'User updating the post is not the author of the post or is not an admin.'
+        'User attempting to update the post is not the author of the post or is not an admin.'
       );
     }
-
     try {
       return await this.postRepository.update(
         id,
