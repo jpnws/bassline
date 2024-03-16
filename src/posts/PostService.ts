@@ -1,7 +1,7 @@
 import { IPostEntity } from 'src/posts/PostEntity';
 import { IPostCommentEntity } from 'src/posts/PostCommentEntity';
 import { IPostRepository } from 'src/posts/PostRepository';
-import { AuthorizationError } from 'src/posts/AuthorizationError';
+import { AuthorizationError } from 'src/AuthorizationError';
 
 type CurrentUser = {
   id: number;
@@ -60,7 +60,6 @@ export default class PostService implements IPostService {
     try {
       return await this.postRepository.add(subject, text, boardId, authorId);
     } catch (error) {
-      console.error(error);
       throw error;
     }
   };
@@ -75,7 +74,6 @@ export default class PostService implements IPostService {
     try {
       return await this.postRepository.delete(id);
     } catch (error) {
-      console.error(error);
       throw error;
     }
   };
@@ -102,7 +100,6 @@ export default class PostService implements IPostService {
         authorId
       );
     } catch (error) {
-      console.error(error);
       throw error;
     }
   };
@@ -111,7 +108,6 @@ export default class PostService implements IPostService {
     try {
       return await this.postRepository.getPostComments(id);
     } catch (error) {
-      console.error(error);
       throw error;
     }
   };

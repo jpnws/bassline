@@ -1,4 +1,4 @@
-import { AuthorizationError } from 'src/posts/AuthorizationError';
+import { AuthorizationError } from 'src/AuthorizationError';
 import { IPostService } from 'src/posts/PostService';
 
 interface RouteContext {
@@ -50,7 +50,6 @@ export default class PostController {
           message: error.message,
         };
       }
-      console.error('Failed to create the post:', error);
       set.status = 500;
       return {
         error: 'Internal server error',
@@ -78,7 +77,6 @@ export default class PostController {
           };
         }
       }
-      console.error('Failed to retrieve post:', error);
       set.status = 500;
       return {
         error: 'Internal Server Error',
@@ -109,10 +107,9 @@ export default class PostController {
         set.status = 401;
         return {
           error: 'Unauthorized',
-          message: 'User is not the author of the post.',
+          message: error.message,
         };
       }
-      console.error('Failed to update post:', error);
       set.status = 500;
       return {
         error: 'Internal Server Error',
@@ -129,21 +126,18 @@ export default class PostController {
     try {
       await this.postService.removePost(id, currentUser);
       set.status = 202;
-      return {
-        message: 'Post deleted successfully.',
-      };
     } catch (error) {
       if (error instanceof AuthorizationError) {
         set.status = 401;
         return {
           error: 'Unauthorized',
-          message: 'User is not authorized to delete the post.',
+          message: error.message,
         };
       }
       set.status = 500;
       return {
         error: 'Internal Server Error',
-        message: 'Failed to delete the post from the database.',
+        message: 'Failed to delete the post.',
       };
     }
   };
@@ -158,7 +152,6 @@ export default class PostController {
         },
       };
     } catch (error) {
-      console.error('Failed to retrieve comments:', error);
       set.status = 500;
       return {
         error: 'Internal Server Error',
