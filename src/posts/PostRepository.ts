@@ -207,7 +207,7 @@ export default class PostRepository implements IPostRepository {
     if (!post) {
       throw new Error('Post comment not retrieved');
     }
-    const postComments = post.comments.map(item => {
+    const postComments = post.comments.map((item) => {
       return {
         id: item.id,
         text: item.text,

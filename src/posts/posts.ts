@@ -57,7 +57,7 @@ export const posts = (prisma: PrismaClient) => {
           }
         },
       },
-      app =>
+      (app) =>
         app
           .use(createPost(postController))
           .use(updatePost(postController))

@@ -94,7 +94,7 @@ export default class Helper {
     const app = createApp(prisma);
 
     // Start listening on the host and a dynamically chosen port.
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       app.listen({ hostname: process.env.APP_HOST, port: 0 }, () => {
         resolve(null);
       });

@@ -64,7 +64,7 @@ export const users = (prisma: PrismaClient) => {
           }
         },
       },
-      app =>
+      (app) =>
         app
           .use(createUser(userController))
           .use(getUser(userController))

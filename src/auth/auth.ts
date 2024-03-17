@@ -56,7 +56,7 @@ export const auth = (prisma: PrismaClient) => {
           }
         },
       },
-      app => app.use(signout(authController)),
+      (app) => app.use(signout(authController)),
     )
     .guard(
       {
@@ -70,7 +70,7 @@ export const auth = (prisma: PrismaClient) => {
           }
         },
       },
-      app =>
+      (app) =>
         app
           .use(signup(authController))
           .use(demoUserSignIn(authController))

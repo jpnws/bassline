@@ -56,7 +56,7 @@ export const comments = (prisma: PrismaClient) => {
           }
         },
       },
-      app =>
+      (app) =>
         app
           .use(createComment(commentController))
           .use(updateComment(commentController))

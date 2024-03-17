@@ -20,7 +20,7 @@ export default class PostCommentEntity implements IPostCommentEntity {
 
   constructor(id: number, comments: PostComment[]) {
     this.id = id;
-    this.comments = comments.map(comment => {
+    this.comments = comments.map((comment) => {
       return { ...comment };
     });
   }
