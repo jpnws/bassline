@@ -1,4 +1,5 @@
 import { PrismaClient, UserRole } from '@prisma/client';
+import argon2 from 'argon2';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +14,7 @@ async function main() {
     data: {
       username: 'alice',
       role: UserRole.MEMBER,
-      hash: await Bun.password.hash('password'),
+      hash: await argon2.hash('password'),
     },
   });
 
@@ -21,7 +22,7 @@ async function main() {
     data: {
       username: 'admin_user',
       role: UserRole.ADMIN,
-      hash: await Bun.password.hash('password'),
+      hash: await argon2.hash('password'),
     },
   });
 
