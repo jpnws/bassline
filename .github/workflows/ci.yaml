@@ -1,6 +1,16 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  statuses: write
 
 # Environment variables available to the application during CI tests.
 # No need for APP_PORT as the CI test will use a random application port.
