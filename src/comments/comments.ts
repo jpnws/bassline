@@ -30,7 +30,7 @@ export const comments = (prisma: PrismaClient) => {
       jwt({
         name: 'jwt',
         secret: process.env.APP_JWT_SECRET,
-      })
+      }),
     )
     .use(bearer())
     .derive(async ({ jwt, bearer }) => {
@@ -56,11 +56,11 @@ export const comments = (prisma: PrismaClient) => {
           }
         },
       },
-      (app) =>
+      app =>
         app
           .use(createComment(commentController))
           .use(updateComment(commentController))
-          .use(deleteComment(commentController))
+          .use(deleteComment(commentController)),
     )
     .use(getComment(commentController));
 

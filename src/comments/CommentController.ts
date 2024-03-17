@@ -31,7 +31,7 @@ export default class CommentController {
         text,
         postId,
         authorId,
-        currentUser
+        currentUser,
       );
       set.status = 201;
       return {
@@ -95,7 +95,7 @@ export default class CommentController {
         text,
         postId,
         authorId,
-        currentUser
+        currentUser,
       );
       set.status = 200;
     } catch (error) {

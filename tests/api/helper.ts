@@ -94,7 +94,7 @@ export default class Helper {
     const app = createApp(prisma);
 
     // Start listening on the host and a dynamically chosen port.
-    await new Promise((resolve) => {
+    await new Promise(resolve => {
       app.listen({ hostname: process.env.APP_HOST, port: 0 }, () => {
         resolve(null);
       });
@@ -151,13 +151,13 @@ export default class Helper {
   // * Post API request methods
   // * ==============================
 
-  async createPost(post: PostBody, headers?: { [key: string]: string } | {}) {
+  async createPost(post: PostBody, headers?: { [key: string]: string } | null) {
     let req = request(this.url).post(`/posts`);
     req = headers ? req.set(headers) : req;
     return await req.send(post);
   }
 
-  async getPost(postId: number, headers?: { [key: string]: string } | {}) {
+  async getPost(postId: number, headers?: { [key: string]: string } | null) {
     let req = request(this.url).get(`/posts/${postId}`);
     req = headers ? req.set(headers) : req;
     return await req.send();
@@ -166,14 +166,14 @@ export default class Helper {
   async updatePost(
     postId: number,
     post: PostBody,
-    headers?: { [key: string]: string } | {}
+    headers?: { [key: string]: string } | null,
   ) {
     let req = request(this.url).put(`/posts/${postId}`);
     req = headers ? req.set(headers) : req;
     return await req.send(post);
   }
 
-  async deletePost(postId: number, headers?: { [key: string]: string } | {}) {
+  async deletePost(postId: number, headers?: { [key: string]: string } | null) {
     let req = request(this.url).delete(`/posts/${postId}`);
     req = headers ? req.set(headers) : req;
     return await req.send();
@@ -189,7 +189,7 @@ export default class Helper {
 
   async createComment(
     comment: CommentBody,
-    headers?: { [key: string]: string } | {}
+    headers?: { [key: string]: string } | null,
   ) {
     let req = request(this.url).post(`/comments`);
     req = headers ? req.set(headers) : req;
@@ -198,7 +198,7 @@ export default class Helper {
 
   async getComment(
     commentId: number,
-    headers?: { [key: string]: string } | {}
+    headers?: { [key: string]: string } | null,
   ) {
     let req = request(this.url).get(`/comments/${commentId}`);
     req = headers ? req.set(headers) : req;
@@ -208,7 +208,7 @@ export default class Helper {
   async updateComment(
     commentId: number,
     comment: CommentBody,
-    headers?: { [key: string]: string } | {}
+    headers?: { [key: string]: string } | null,
   ) {
     let req = request(this.url).put(`/comments/${commentId}`);
     req = headers ? req.set(headers) : req;
@@ -217,7 +217,7 @@ export default class Helper {
 
   async deleteComment(
     commentId: number,
-    headers?: { [key: string]: string } | {}
+    headers?: { [key: string]: string } | null,
   ) {
     let req = request(this.url).delete(`/comments/${commentId}`);
     req = headers ? req.set(headers) : req;
@@ -228,13 +228,13 @@ export default class Helper {
   // * User API request methods
   // * ==============================
 
-  async createUser(user: UserBody, headers?: { [key: string]: string } | {}) {
+  async createUser(user: UserBody, headers?: { [key: string]: string } | null) {
     let req = request(this.url).post(`/users`);
     req = headers ? req.set(headers) : req;
     return await req.send(user);
   }
 
-  async getUser(id: number, headers?: { [key: string]: string } | {}) {
+  async getUser(id: number, headers?: { [key: string]: string } | null) {
     let req = request(this.url).get(`/users/${id}`);
     req = headers ? req.set(headers) : req;
     return await req.send();
@@ -243,14 +243,14 @@ export default class Helper {
   async updateUser(
     id: number,
     user: UserBody,
-    headers?: { [key: string]: string } | {}
+    headers?: { [key: string]: string } | null,
   ) {
     let req = request(this.url).put(`/users/${id}`);
     req = headers ? req.set(headers) : req;
     return await req.send(user);
   }
 
-  async deleteUser(id: number, headers?: { [key: string]: string } | {}) {
+  async deleteUser(id: number, headers?: { [key: string]: string } | null) {
     let req = request(this.url).delete(`/users/${id}`);
     req = headers ? req.set(headers) : req;
     return await req.send();
@@ -260,7 +260,7 @@ export default class Helper {
   // * Auth API request methods
   // * ==============================
 
-  async signUpUser(user: UserBody, headers?: { [key: string]: string } | {}) {
+  async signUpUser(user: UserBody, headers?: { [key: string]: string } | null) {
     let req = request(this.url).post(`/auth/signup`);
     req = headers ? req.set(headers) : req;
     return await req.send(user);
@@ -278,13 +278,13 @@ export default class Helper {
     return await request(this.url).post(`/auth/signin/demo-admin`).send();
   }
 
-  async signOutUser(headers?: { [key: string]: string } | {}) {
+  async signOutUser(headers?: { [key: string]: string } | null) {
     let req = request(this.url).post(`/auth/signout`);
     req = headers ? req.set(headers) : req;
     return await req.send();
   }
 
-  async getCurrentUser(headers?: { [key: string]: string } | {}) {
+  async getCurrentUser(headers?: { [key: string]: string } | null) {
     let req = request(this.url).get(`/users/current`);
     req = headers ? req.set(headers) : req;
     return await req.send();

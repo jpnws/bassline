@@ -32,7 +32,7 @@ export default class PostController {
         text,
         boardId,
         authorId,
-        currentUser
+        currentUser,
       );
       set.status = 201;
       return {
@@ -99,7 +99,7 @@ export default class PostController {
         text,
         boardId,
         authorId,
-        currentUser
+        currentUser,
       );
       set.status = 200;
     } catch (error) {

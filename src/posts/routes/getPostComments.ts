@@ -6,6 +6,6 @@ export const getPostComments = (postController: PostController) => {
   return new Elysia().get(
     '/posts/:id/comments',
     postController.getPostComments,
-    getPostCommentsRouteSpec
+    getPostCommentsRouteSpec,
   );
 };

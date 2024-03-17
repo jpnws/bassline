@@ -36,7 +36,7 @@ export default class PostEntity implements IPostEntity {
     createdAt: string,
     updatedAt: string,
     board: { id: number; name: string },
-    author: { id: number; username: string }
+    author: { id: number; username: string },
   ) {
     this.id = id;
     this.subject = subject;

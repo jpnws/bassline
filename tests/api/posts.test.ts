@@ -164,7 +164,7 @@ describe('Posts API', () => {
       updatedPost,
       {
         Authorization: bearer,
-      }
+      },
     );
     // * ========================
     // * Assert
@@ -475,7 +475,7 @@ describe('Posts API', () => {
       updatedPost,
       {
         Authorization: bearer2,
-      }
+      },
     );
     // * ========================
     // * Assert

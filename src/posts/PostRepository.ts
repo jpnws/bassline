@@ -13,7 +13,7 @@ export interface IPostRepository {
     subject: string,
     text: string,
     boardId: number,
-    authorId: number
+    authorId: number,
   ) => Promise<IPostEntity>;
   delete: (id: number) => Promise<void>;
   update: (
@@ -21,7 +21,7 @@ export interface IPostRepository {
     subject: string,
     text: string,
     boardId: number,
-    authorId: number
+    authorId: number,
   ) => Promise<IPostEntity>;
   getPostComments: (id: number) => Promise<IPostCommentEntity>;
 }
@@ -68,7 +68,7 @@ export default class PostRepository implements IPostRepository {
       post.createdAt.toString(),
       post.updatedAt.toString(),
       post.board,
-      post.author
+      post.author,
     );
   };
 
@@ -76,7 +76,7 @@ export default class PostRepository implements IPostRepository {
     subject: string,
     text: string,
     boardId: number,
-    authorId: number
+    authorId: number,
   ) => {
     const post = await this.prisma.post.create({
       data: {
@@ -115,7 +115,7 @@ export default class PostRepository implements IPostRepository {
       post.createdAt.toString(),
       post.updatedAt.toString(),
       post.board,
-      post.author
+      post.author,
     );
   };
 
@@ -135,7 +135,7 @@ export default class PostRepository implements IPostRepository {
     subject: string,
     text: string,
     boardId: number,
-    authorId: number
+    authorId: number,
   ) => {
     const post = await this.prisma.post.update({
       where: {
@@ -177,7 +177,7 @@ export default class PostRepository implements IPostRepository {
       post.createdAt.toString(),
       post.updatedAt.toString(),
       post.board,
-      post.author
+      post.author,
     );
   };
 
@@ -207,7 +207,7 @@ export default class PostRepository implements IPostRepository {
     if (!post) {
       throw new Error('Post comment not retrieved');
     }
-    const postComments = post.comments.map((item) => {
+    const postComments = post.comments.map(item => {
       return {
         id: item.id,
         text: item.text,

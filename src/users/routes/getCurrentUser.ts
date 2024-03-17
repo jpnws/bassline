@@ -6,6 +6,6 @@ export const getCurrentUser = (userController: UserController) => {
   return new Elysia().get(
     '/users/current',
     userController.getCurrentUser,
-    getCurrentUserRouteSpec
+    getCurrentUserRouteSpec,
   );
 };

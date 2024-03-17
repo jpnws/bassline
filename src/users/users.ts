@@ -31,7 +31,7 @@ export const users = (prisma: PrismaClient) => {
       jwt({
         name: 'jwt',
         secret: process.env.APP_JWT_SECRET,
-      })
+      }),
     )
     .use(bearer())
     .derive(async ({ jwt, bearer }) => {
@@ -64,12 +64,12 @@ export const users = (prisma: PrismaClient) => {
           }
         },
       },
-      (app) =>
+      app =>
         app
           .use(createUser(userController))
           .use(getUser(userController))
           .use(updateUser(userController))
-          .use(deleteUser(userController))
+          .use(deleteUser(userController)),
     )
     .use(getCurrentUser(userController));
 

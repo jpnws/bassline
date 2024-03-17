@@ -14,7 +14,7 @@ export interface ICommentService {
     text: string,
     postId: number,
     authorId: number,
-    currentUser: CurrentUser
+    currentUser: CurrentUser,
   ) => Promise<ICommentEntity>;
   removeComment: (id: number, currentUser: CurrentUser) => Promise<void>;
   updateComment: (
@@ -22,7 +22,7 @@ export interface ICommentService {
     text: string,
     postId: number,
     authorId: number,
-    currentUser: CurrentUser
+    currentUser: CurrentUser,
   ) => Promise<ICommentEntity>;
 }
 
@@ -34,43 +34,31 @@ export default class CommentService implements ICommentService {
   }
 
   public getComment = async (id: number) => {
-    try {
-      return await this.commentRepository.get(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.commentRepository.get(id);
   };
 
   public addComment = async (
     text: string,
     postId: number,
     authorId: number,
-    currentUser: CurrentUser
+    currentUser: CurrentUser,
   ) => {
     if (currentUser.id !== authorId) {
       throw new AuthorizationError(
-        'The author ID of the comment does not match the ID of the currently logged in user.'
+        'The author ID of the comment does not match the ID of the currently logged in user.',
       );
     }
-    try {
-      return await this.commentRepository.add(text, postId, authorId);
-    } catch (error) {
-      throw error;
-    }
+    return await this.commentRepository.add(text, postId, authorId);
   };
 
   public removeComment = async (id: number, currentUser: CurrentUser) => {
     const comment = await this.commentRepository.get(id);
     if (currentUser.id !== comment.author.id && currentUser.role !== 'ADMIN') {
       throw new AuthorizationError(
-        'User attempting to delete the comment is not the author of the comment or is not an admin.'
+        'User attempting to delete the comment is not the author of the comment or is not an admin.',
       );
     }
-    try {
-      return await this.commentRepository.delete(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.commentRepository.delete(id);
   };
 
   public updateComment = async (
@@ -78,17 +66,13 @@ export default class CommentService implements ICommentService {
     text: string,
     postId: number,
     authorId: number,
-    currentUser: CurrentUser
+    currentUser: CurrentUser,
   ) => {
     if (currentUser.id !== authorId && currentUser.role !== 'ADMIN') {
       throw new AuthorizationError(
-        'User attempting to update the comment is not the author of the comment or is not an admin.'
+        'User attempting to update the comment is not the author of the comment or is not an admin.',
       );
     }
-    try {
-      return await this.commentRepository.update(id, text, postId, authorId);
-    } catch (error) {
-      throw error;
-    }
+    return await this.commentRepository.update(id, text, postId, authorId);
   };
 }

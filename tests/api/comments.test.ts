@@ -192,7 +192,7 @@ describe('Comments API', () => {
       updateComment,
       {
         Authorization: bearer,
-      }
+      },
     );
     // * ========================
     // * Assert

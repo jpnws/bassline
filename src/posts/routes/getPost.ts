@@ -6,6 +6,6 @@ export const getPost = (postController: PostController) => {
   return new Elysia().get(
     '/posts/:id',
     postController.getPostById,
-    getPostRouteSpec
+    getPostRouteSpec,
   );
 };

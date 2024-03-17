@@ -6,6 +6,6 @@ export const updatePost = (postController: PostController) => {
   return new Elysia().put(
     '/posts/:id',
     postController.updatePost,
-    updatePostRouteSpec
+    updatePostRouteSpec,
   );
 };

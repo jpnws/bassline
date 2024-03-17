@@ -6,6 +6,6 @@ export const getComment = (commentController: CommentController) => {
   return new Elysia().get(
     '/comments/:id',
     commentController.getCommentbyId,
-    getCommentRouteSpec
+    getCommentRouteSpec,
   );
 };

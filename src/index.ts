@@ -12,7 +12,7 @@ app.listen(
     hostname: process.env.APP_HOST,
     port: process.env.APP_PORT,
   },
-  (server) => {
+  server => {
     console.log(`Listening on ${server.hostname}:${server.port}`);
-  }
+  },
 );

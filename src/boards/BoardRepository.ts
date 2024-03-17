@@ -53,7 +53,7 @@ export default class BoardRepository implements IBoardRepository {
     if (!board) {
       throw new Error('Failed to retrieve board posts');
     }
-    const posts = board.posts.map((post) => {
+    const posts = board.posts.map(post => {
       return {
         id: post.id,
         subject: post.subject,

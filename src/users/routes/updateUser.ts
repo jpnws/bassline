@@ -6,6 +6,6 @@ export const updateUser = (userController: UserController) => {
   return new Elysia().put(
     '/users/:id',
     userController.updateUser,
-    updateUserRouteSpec
+    updateUserRouteSpec,
   );
 };

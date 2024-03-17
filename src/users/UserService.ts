@@ -8,7 +8,7 @@ export interface IUserService {
   updateUser: (
     id: number,
     username: string,
-    role: string
+    role: string,
   ) => Promise<IUserEntity>;
 }
 

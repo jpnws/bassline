@@ -7,7 +7,7 @@ import { IAuthService } from 'src/auth/AuthService';
 
 export interface IJwt {
   verify: (
-    token: string
+    token: string,
   ) => Promise<{ id: number; username: string; role: string }>;
   sign: ({
     id,
@@ -40,7 +40,7 @@ export default class AuthController {
   public signin = async ({ body, set, jwt }: RouteContext) => {
     const { username, password } = body;
     try {
-      const user = await this.authService.signinUser(username, password, jwt);
+      const user = await this.authService.signInUser(username, password, jwt);
       set.status = 200;
       return {
         data: {
@@ -117,7 +117,7 @@ export default class AuthController {
 
   public signout = async ({ set }: RouteContext) => {
     try {
-      await this.authService.signoutUser();
+      await this.authService.signOutUser();
       set.status = 200;
     } catch (error) {
       if (error instanceof AuthorizationError) {
@@ -138,7 +138,7 @@ export default class AuthController {
   public signup = async ({ body, set, jwt }: RouteContext) => {
     const { username, password } = body;
     try {
-      const user = await this.authService.signupUser(username, password, jwt);
+      const user = await this.authService.signUpUser(username, password, jwt);
       set.status = 201;
       return {
         data: {

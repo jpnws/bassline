@@ -6,6 +6,6 @@ export const deleteUser = (userController: UserController) => {
   return new Elysia().delete(
     '/users/:id',
     userController.deleteUserById,
-    deleteUserRouteSpec
+    deleteUserRouteSpec,
   );
 };

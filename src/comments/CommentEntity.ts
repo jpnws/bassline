@@ -31,7 +31,7 @@ export default class CommentEntity implements ICommentEntity {
     createdAt: string,
     updatedAt: string,
     post: { id: number },
-    author: { id: number; username: string }
+    author: { id: number; username: string },
   ) {
     this.id = id;
     this.text = text;

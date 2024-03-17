@@ -6,6 +6,6 @@ export const deletePost = (postController: PostController) => {
   return new Elysia().delete(
     '/posts/:id',
     postController.deletePostById,
-    deletePostRouteSpec
+    deletePostRouteSpec,
   );
 };

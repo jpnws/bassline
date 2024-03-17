@@ -9,14 +9,14 @@ export interface ICommentRepository {
   add: (
     text: string,
     postId: number,
-    authorId: number
+    authorId: number,
   ) => Promise<ICommentEntity>;
   delete: (id: number) => Promise<void>;
   update: (
     id: number,
     text: string,
     postId: number,
-    authorId: number
+    authorId: number,
   ) => Promise<ICommentEntity>;
 }
 
@@ -59,7 +59,7 @@ export default class CommentRepository implements ICommentRepository {
       comment.createdAt.toString(),
       comment.updatedAt.toString(),
       comment.post,
-      comment.author
+      comment.author,
     );
   };
 
@@ -97,7 +97,7 @@ export default class CommentRepository implements ICommentRepository {
       comment.createdAt.toString(),
       comment.updatedAt.toString(),
       comment.post,
-      comment.author
+      comment.author,
     );
   };
 
@@ -116,7 +116,7 @@ export default class CommentRepository implements ICommentRepository {
     id: number,
     text: string,
     postId: number,
-    authorId: number
+    authorId: number,
   ) => {
     const comment = await this.prisma.comment.update({
       where: {
@@ -154,7 +154,7 @@ export default class CommentRepository implements ICommentRepository {
       comment.createdAt.toString(),
       comment.updatedAt.toString(),
       comment.post,
-      comment.author
+      comment.author,
     );
   };
 }

@@ -10,19 +10,19 @@ import { IAuthRepository } from 'src/auth/AuthRepository';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface IAuthService {
-  signinUser: (
+  signInUser: (
     username: string,
     password: string,
-    jwt: IJwt
-  ) => Promise<IAuthEntity>;
-  signoutUser: () => Promise<void>;
-  signupUser: (
-    username: string,
-    password: string,
-    jwt: IJwt
+    jwt: IJwt,
   ) => Promise<IAuthEntity>;
   signInDemoUser: (jwt: IJwt) => Promise<IAuthEntity>;
   signInDemoAdmin: (jwt: IJwt) => Promise<IAuthEntity>;
+  signUpUser: (
+    username: string,
+    password: string,
+    jwt: IJwt,
+  ) => Promise<IAuthEntity>;
+  signOutUser: () => Promise<void>;
 }
 
 export default class AuthService implements IAuthService {
@@ -32,94 +32,73 @@ export default class AuthService implements IAuthService {
     this.authRepository = authRepository;
   }
 
-  public signinUser = async (username: string, password: string, jwt: IJwt) => {
-    try {
-      if (!username || !password) {
-        throw new InvalidInputError('Either username or password was empty.');
-      }
-      const user = await this.authRepository.getUser(username);
-      if (!user) {
-        throw new ItemNotFoundError('User was not found.');
-      }
-      const isMatch = await Bun.password.verify(password, user.hash);
-      if (!isMatch) {
-        throw new InvalidPasswordError('User provided invalid password.');
-      }
-      const token = await jwt.sign({
-        id: user.id,
-        username: username,
-        role: user.role,
-      });
-      return {
-        id: user.id,
-        token,
-      };
-    } catch (error) {
-      throw error;
+  public signInUser = async (username: string, password: string, jwt: IJwt) => {
+    if (!username || !password) {
+      throw new InvalidInputError('Either username or password was empty.');
     }
+    const user = await this.authRepository.getUser(username);
+    if (!user) {
+      throw new ItemNotFoundError('User was not found.');
+    }
+    const isMatch = await Bun.password.verify(password, user.hash);
+    if (!isMatch) {
+      throw new InvalidPasswordError('User provided invalid password.');
+    }
+    const token = await jwt.sign({
+      id: user.id,
+      username: username,
+      role: user.role,
+    });
+    return {
+      id: user.id,
+      token,
+    };
   };
 
   public signInDemoUser = async (jwt: IJwt) => {
-    try {
-      const uuid = uuidv4();
-      const username = `user-${uuid.split('-')[0]}`;
-      const password = uuid;
-      return await this.signupUser(username, password, jwt);
-    } catch (error) {
-      throw error;
-    }
+    const uuid = uuidv4();
+    const username = `user-${uuid.split('-')[0]}`;
+    const password = uuid;
+    return await this.signUpUser(username, password, jwt);
   };
 
   public signInDemoAdmin = async (jwt: IJwt) => {
-    try {
-      const uuid = uuidv4();
-      const username = `admin-${uuid.split('-')[0]}`;
-      const password = uuid;
-      const hash = await Bun.password.hash(password);
-      const user = await this.authRepository.addAdmin(username, hash);
-      const token = await jwt.sign({
-        id: user.id,
-        username: user.username,
-        role: user.role,
-      });
-      return {
-        id: user.id,
-        token,
-      };
-    } catch (error) {
-      throw error;
-    }
+    const uuid = uuidv4();
+    const username = `admin-${uuid.split('-')[0]}`;
+    const password = uuid;
+    const hash = await Bun.password.hash(password);
+    const user = await this.authRepository.addAdmin(username, hash);
+    const token = await jwt.sign({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    });
+    return {
+      id: user.id,
+      token,
+    };
   };
 
-  public signoutUser = async () => {};
-
-  public signupUser = async (username: string, password: string, jwt: IJwt) => {
-    try {
-      if (!username || !password) {
-        throw new InvalidInputError('Either username or password was empty.');
-      }
-      const user = await this.authRepository.getUser(username);
-      if (user) {
-        throw new ItemAlreadyExistsError('Username already in use.');
-      }
-    } catch (error) {
-      throw error;
+  public signUpUser = async (username: string, password: string, jwt: IJwt) => {
+    if (!username || !password) {
+      throw new InvalidInputError('Either username or password was empty.');
     }
-
-    try {
-      const hash = await Bun.password.hash(password);
-      const user = await this.authRepository.addUser(username, hash);
-      const token = await jwt.sign({
-        id: user.id,
-        username: user.username,
-        role: user.role,
-      });
-      return {
-        id: user.id,
-        token,
-      };
-    } catch (error) {
-      throw error;
+    const userExists = await this.authRepository.getUser(username);
+    if (userExists) {
+      throw new ItemAlreadyExistsError('Username already in use.');
     }
+    const hash = await Bun.password.hash(password);
+    const user = await this.authRepository.addUser(username, hash);
+    const token = await jwt.sign({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    });
+    return {
+      id: user.id,
+      token,
+    };
   };
+
+  public signOutUser = async () => {};
 }

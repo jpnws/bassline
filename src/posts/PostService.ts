@@ -16,7 +16,7 @@ export interface IPostService {
     text: string,
     boardId: number,
     authorId: number,
-    currentUser: CurrentUser
+    currentUser: CurrentUser,
   ) => Promise<IPostEntity>;
   removePost: (id: number, currentUser: CurrentUser) => Promise<void>;
   updatePost: (
@@ -25,7 +25,7 @@ export interface IPostService {
     text: string,
     boardId: number,
     authorId: number,
-    currentUser: CurrentUser
+    currentUser: CurrentUser,
   ) => Promise<IPostEntity>;
   getPostComments: (id: number) => Promise<IPostCommentEntity>;
 }
@@ -38,11 +38,7 @@ export default class PostService implements IPostService {
   }
 
   public getPost = async (id: number) => {
-    try {
-      return await this.postRepository.get(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.postRepository.get(id);
   };
 
   public addPost = async (
@@ -50,32 +46,24 @@ export default class PostService implements IPostService {
     text: string,
     boardId: number,
     authorId: number,
-    currentUser: CurrentUser
+    currentUser: CurrentUser,
   ) => {
     if (currentUser.id !== authorId) {
       throw new AuthorizationError(
-        'The author ID of the post does not match the ID of the currently logged in user.'
+        'The author ID of the post does not match the ID of the currently logged in user.',
       );
     }
-    try {
-      return await this.postRepository.add(subject, text, boardId, authorId);
-    } catch (error) {
-      throw error;
-    }
+    return await this.postRepository.add(subject, text, boardId, authorId);
   };
 
   public removePost = async (id: number, currentUser: CurrentUser) => {
     const post = await this.postRepository.get(id);
     if (currentUser.id !== post.author.id && currentUser.role !== 'ADMIN') {
       throw new AuthorizationError(
-        'User attempting to delete the post is not the author of the post or is not an admin.'
+        'User attempting to delete the post is not the author of the post or is not an admin.',
       );
     }
-    try {
-      return await this.postRepository.delete(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.postRepository.delete(id);
   };
 
   public updatePost = async (
@@ -84,31 +72,23 @@ export default class PostService implements IPostService {
     text: string,
     boardId: number,
     authorId: number,
-    currentUser: CurrentUser
+    currentUser: CurrentUser,
   ) => {
     if (currentUser.id !== authorId && currentUser.role !== 'ADMIN') {
       throw new AuthorizationError(
-        'User attempting to update the post is not the author of the post or is not an admin.'
+        'User attempting to update the post is not the author of the post or is not an admin.',
       );
     }
-    try {
-      return await this.postRepository.update(
-        id,
-        subject,
-        text,
-        boardId,
-        authorId
-      );
-    } catch (error) {
-      throw error;
-    }
+    return await this.postRepository.update(
+      id,
+      subject,
+      text,
+      boardId,
+      authorId,
+    );
   };
 
   public getPostComments = async (id: number) => {
-    try {
-      return await this.postRepository.getPostComments(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.postRepository.getPostComments(id);
   };
 }

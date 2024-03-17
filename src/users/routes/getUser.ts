@@ -6,6 +6,6 @@ export const getUser = (userController: UserController) => {
   return new Elysia().get(
     '/users/:id',
     userController.getUserById,
-    getUserRouteSpec
+    getUserRouteSpec,
   );
 };

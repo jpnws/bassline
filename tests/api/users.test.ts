@@ -151,7 +151,7 @@ describe('Users API', () => {
     const updateUserResponse = await helper.updateUser(
       createUserData.id,
       updatedUser,
-      { Authorization: `Bearer ${token}` }
+      { Authorization: `Bearer ${token}` },
     );
     // * ========================
     // * Assert

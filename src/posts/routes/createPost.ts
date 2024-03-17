@@ -6,6 +6,6 @@ export const createPost = (postController: PostController) => {
   return new Elysia().post(
     '/posts',
     postController.createPost,
-    createPostRouteSpec
+    createPostRouteSpec,
   );
 };

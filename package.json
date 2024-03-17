@@ -26,6 +26,7 @@
     "@typescript-eslint/parser": "^7.2.0",
     "eslint": "^8.57.0",
     "pg": "^8.11.3",
+    "prettier": "3.2.5",
     "prisma": "^5.10.2",
     "supertest": "^6.3.4",
     "tsx": "^4.7.1",

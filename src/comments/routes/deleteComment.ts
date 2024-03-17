@@ -6,6 +6,6 @@ export const deleteComment = (commentController: CommentController) => {
   return new Elysia().delete(
     '/comments/:id',
     commentController.deleteCommentById,
-    deleteCommentRouteSpec
+    deleteCommentRouteSpec,
   );
 };

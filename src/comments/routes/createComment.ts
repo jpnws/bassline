@@ -6,6 +6,6 @@ export const createComment = (commentController: CommentController) => {
   return new Elysia().post(
     '/comments',
     commentController.createComment,
-    createCommentRouteSpec
+    createCommentRouteSpec,
   );
 };

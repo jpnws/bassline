@@ -15,18 +15,10 @@ export default class BoardService implements IBoardService {
   }
 
   public addBoard = async (name: string) => {
-    try {
-      return await this.boardRepository.add(name);
-    } catch (error) {
-      throw error;
-    }
+    return await this.boardRepository.add(name);
   };
 
   public getBoardPosts = async (id: number) => {
-    try {
-      return await this.boardRepository.getBoardPosts(id);
-    } catch (error) {
-      throw error;
-    }
+    return await this.boardRepository.getBoardPosts(id);
   };
 }

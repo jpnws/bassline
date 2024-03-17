@@ -30,7 +30,7 @@ export const auth = (prisma: PrismaClient) => {
       jwt({
         name: 'jwt',
         secret: process.env.APP_JWT_SECRET,
-      })
+      }),
     )
     .use(bearer())
     .derive(async ({ jwt, bearer }) => {
@@ -56,7 +56,7 @@ export const auth = (prisma: PrismaClient) => {
           }
         },
       },
-      (app) => app.use(signout(authController))
+      app => app.use(signout(authController)),
     )
     .guard(
       {
@@ -70,11 +70,11 @@ export const auth = (prisma: PrismaClient) => {
           }
         },
       },
-      (app) =>
+      app =>
         app
           .use(signup(authController))
           .use(demoUserSignIn(authController))
-          .use(demoAdminSignIn(authController))
+          .use(demoAdminSignIn(authController)),
     )
     .use(signin(authController));
 

@@ -6,6 +6,6 @@ export const createBoard = (boardController: BoardController) => {
   return new Elysia().post(
     '/boards',
     boardController.createBoard,
-    createBoardRouteSpec
+    createBoardRouteSpec,
   );
 };

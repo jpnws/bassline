@@ -6,6 +6,6 @@ export const updateComment = (commentController: CommentController) => {
   return new Elysia().put(
     '/comments/:id',
     commentController.updateComment,
-    updateCommentRouteSpec
+    updateCommentRouteSpec,
   );
 };

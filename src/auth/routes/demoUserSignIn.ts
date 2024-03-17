@@ -6,6 +6,6 @@ export const demoUserSignIn = (authController: AuthController) => {
   return new Elysia().post(
     '/signin/demo-user',
     authController.demoUserSignIn,
-    demoUserSignInRouteSpec
+    demoUserSignInRouteSpec,
   );
 };

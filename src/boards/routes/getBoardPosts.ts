@@ -6,6 +6,6 @@ export const getBoardPosts = (boardController: BoardController) => {
   return new Elysia().get(
     '/boards/:id/posts',
     boardController.getBoardPosts,
-    getBoardPostsRouteSpec
+    getBoardPostsRouteSpec,
   );
 };

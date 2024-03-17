@@ -6,6 +6,6 @@ export const signout = (authController: AuthController) => {
   return new Elysia().post(
     '/signout',
     authController.signout,
-    signoutRouteSpec
+    signoutRouteSpec,
   );
 };

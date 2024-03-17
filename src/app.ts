@@ -15,6 +15,7 @@ import { auth } from 'src/auth/auth';
  * @param cors - The CORS plugin instance.
  * @returns The Elysia app instance.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   const app = new Elysia({ prefix: '/api' });
 
@@ -37,7 +38,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
             { name: 'Auth', description: 'Auth API' },
           ],
         },
-      })
+      }),
     );
   }
 
