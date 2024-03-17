@@ -1,6 +1,6 @@
 # Use the official Bun image for the base stage
 # This is used to install dependencies and build the app
-FROM oven/bun:latest as base
+FROM oven/bun:1 as base
 
 RUN useradd -m appuser
 USER appuser
@@ -15,10 +15,8 @@ COPY bun.lockb ./
 COPY prisma/schema.prisma ./
 
 # Install all dependencies including devDependencies
-RUN bun install --frozen-lockfile
-
 # Generate Prisma client. Ensure you have prisma as a dev dependency and your prisma schema file is copied.
-RUN bunx prisma generate
+RUN bun install --frozen-lockfile && bunx prisma generate
 
 # Create a separate stage for building the production bundle
 # This can include transpilation, pruning of dev dependencies, or any build steps specific to your application
