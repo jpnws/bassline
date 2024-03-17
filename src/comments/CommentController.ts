@@ -1,6 +1,7 @@
 import { AuthorizationError } from 'src/errors/AuthorizationError';
 import { ItemNotFoundError } from 'src/errors/ItemNotFoundError';
 import { ICommentService } from 'src/comments/CommentService';
+import { InvalidInputError } from 'src/errors/InvalidInputError';
 
 interface RouteContext {
   params: { id: number };
@@ -46,6 +47,13 @@ export default class CommentController {
         set.status = 401;
         return {
           error: 'Unauthorized',
+          message: error.message,
+        };
+      }
+      if (error instanceof InvalidInputError) {
+        set.status = 400;
+        return {
+          error: 'Bad Request',
           message: error.message,
         };
       }
@@ -103,6 +111,13 @@ export default class CommentController {
         set.status = 401;
         return {
           error: 'Unauthorized',
+          message: error.message,
+        };
+      }
+      if (error instanceof InvalidInputError) {
+        set.status = 400;
+        return {
+          error: 'Bad Request',
           message: error.message,
         };
       }
