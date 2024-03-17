@@ -1,6 +1,6 @@
 name: ci
 
-on: [push, pull_request]
+on: [push]
 
 # Environment variables available to the application during CI tests.
 # No need for APP_PORT as the CI test will use a random application port.
