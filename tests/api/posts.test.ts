@@ -31,10 +31,14 @@ describe('Posts API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username1',
+      username: 'tuser1',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
+    if (signUpUserResponse.body.error) {
+      console.log(signUpUserResponse.body.error);
+      console.log(signUpUserResponse.body.message);
+    }
     const user = signUpUserResponse.body.data.user;
     expect(signUpUserResponse.body.data.token).toBeDefined();
     expect(signUpUserResponse.body.data.token).toBeString();
@@ -77,7 +81,7 @@ describe('Posts API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username2',
+      username: 'tuser2',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
@@ -131,7 +135,7 @@ describe('Posts API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username3',
+      username: 'tuser3',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
@@ -187,7 +191,7 @@ describe('Posts API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username4',
+      username: 'tuser4',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
@@ -307,7 +311,7 @@ describe('Posts API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username12',
+      username: 'tuser12',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
@@ -385,13 +389,13 @@ describe('Posts API', () => {
       return;
     }
     const newUser0 = {
-      username: 'test-user-username14',
+      username: 'tuser14',
       password: 'password',
     };
     const signUpUserResponse0 = await helper.signUpUser(newUser0);
     const user0 = signUpUserResponse0.body.data.user;
     const newUser = {
-      username: 'test-user-username15',
+      username: 'tuser15',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
@@ -433,7 +437,7 @@ describe('Posts API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username16',
+      username: 'tuser16',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
@@ -452,7 +456,7 @@ describe('Posts API', () => {
       Authorization: bearer,
     });
     const newUser2 = {
-      username: 'test-user-username17',
+      username: 'tuser17',
       password: 'password',
     };
     const postData = postCreateResponse.body.data.post;
@@ -498,7 +502,7 @@ describe('Posts API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username18',
+      username: 'tuser18',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);
@@ -518,7 +522,7 @@ describe('Posts API', () => {
     });
     const postData = postCreateResponse.body.data.post;
     const newUser2 = {
-      username: 'test-user-username29',
+      username: 'tuser29',
       password: 'password',
     };
     const signUpUserResponse2 = await helper.signUpUser(newUser2);
@@ -536,5 +540,201 @@ describe('Posts API', () => {
     // * Assert
     // * ========================
     expect(postDeleteResponse.status).toBe(401);
+  });
+
+  it('should prevent creating post if text length is less than 5', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name15',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'tuser19',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postCreateResponse.status).toBe(400);
+  });
+
+  it('should prevent creating post if text length is greater than 100', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name16',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'tuser20',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'a'.repeat(101),
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postCreateResponse.status).toBe(400);
+  });
+
+  it('should prevent updating post if text length is less than 5', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name17',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'tuser21',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    const postData = postCreateResponse.body.data.post;
+    // * ========================
+    // * Act
+    // * ========================
+    const updatedPost = {
+      subject: 'updated-post-subject3',
+      text: 'test',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postUpdateResponse = await helper.updatePost(
+      postData.id,
+      updatedPost,
+      {
+        Authorization: bearer,
+      },
+    );
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postUpdateResponse.status).toBe(400);
+  });
+
+  it('should prevent updating post if text length is greater than 100', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name18',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'tuser22',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    const postData = postCreateResponse.body.data.post;
+    // * ========================
+    // * Act
+    // * ========================
+    const updatedPost = {
+      subject: 'updated-post-subject3',
+      text: 'a'.repeat(101),
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postUpdateResponse = await helper.updatePost(
+      postData.id,
+      updatedPost,
+      {
+        Authorization: bearer,
+      },
+    );
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postUpdateResponse.status).toBe(400);
   });
 });
