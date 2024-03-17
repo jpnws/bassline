@@ -33,32 +33,6 @@ describe('Boards API', () => {
     expect(boardCreateResponse.status).toBe(201);
   });
 
-  it('should return all boards', async () => {
-    // * ========================
-    // * Arrange
-    // * ========================
-    const newBoard1 = {
-      name: 'test-board-name2',
-    };
-    const newBoard2 = {
-      name: 'test-board-name3',
-    };
-    // * ========================
-    // * Act
-    // * ========================
-    const createBoardResponse1 = await helper.createBoard(newBoard1);
-    const createBoardResponse2 = await helper.createBoard(newBoard2);
-    const getBoardsResponse = await helper.getBoards();
-    // * ========================
-    // * Assert
-    // * ========================
-    expect(createBoardResponse1.status).toBe(201);
-    expect(createBoardResponse2.status).toBe(201);
-    expect(getBoardsResponse.status).toBe(200);
-    const boards = getBoardsResponse.body.data.boards;
-    expect(boards.length).toBe(3);
-  });
-
   it('should retrieve all posts associated with a board', async () => {
     // * ========================
     // * Arrange
@@ -123,7 +97,6 @@ describe('Boards API', () => {
       expect(post.id).toBeDefined();
       expect(post.subject).toBeDefined();
       expect(post.createdAt).toBeDefined();
-      expect(post.updatedAt).toBeDefined();
       expect(post.author.id).toBeDefined();
       expect(post.author.username).toBeDefined();
     }

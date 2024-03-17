@@ -1,11 +1,11 @@
 import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 
-import { boards } from 'src/routes/boards/boards';
-import { posts } from 'src/routes/posts/posts';
-import { users } from 'src/routes/users/users';
-import { comments } from 'src/routes/comments/comments';
-import { auth } from 'src/routes/auth/auth';
+import { boards } from 'src/boards/boards';
+import { posts } from 'src/posts/posts';
+import { users } from 'src/users/users';
+import { comments } from 'src/comments/comments';
+import { auth } from 'src/auth/auth';
 
 /**
  * Creates an instance of the Elysia app and defines various routes for handling HTTP requests.
@@ -27,7 +27,7 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
             title: 'Bassline (Disco API)',
             version: '1.0.0',
             description:
-              'Bassline serves as the backend within a project named Disco. Disco is a blog/discussion board (SPA) that offers a basic yet functional platform for users to engage in discussions. Registered members have the capability to create posts and comments, as well as to edit and delete their own content. It also allows its administrators to delete any posts or comments.',
+              'Bassline serves as the backend within a project named Disco. Disco is a discussion board (SPA) that offers a basic yet functional platform for users to engage in discussions. Registered members have the capability to create posts and comments, as well as to edit and delete their own content. It also allows its administrators to delete any posts or comments.',
           },
           tags: [
             { name: 'Boards', description: 'Boards API' },
@@ -52,11 +52,12 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   });
 
   // Define various routes for handling HTTP requests.
-  app.use(boards(prisma));
-  app.use(posts(prisma));
-  app.use(comments(prisma));
-  app.use(users(prisma));
-  app.use(auth(prisma));
+  app
+    .use(boards(prisma))
+    .use(posts(prisma))
+    .use(comments(prisma))
+    .use(users(prisma))
+    .use(auth(prisma));
 
   return app;
 };

@@ -13,7 +13,15 @@ async function main() {
     data: {
       username: 'alice',
       role: UserRole.MEMBER,
-      hash: 'password',
+      hash: await Bun.password.hash('password'),
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      username: 'admin_user',
+      role: UserRole.ADMIN,
+      hash: await Bun.password.hash('password'),
     },
   });
 

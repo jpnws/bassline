@@ -270,6 +270,14 @@ export default class Helper {
     return await request(this.url).post(`/auth/signin`).send(user);
   }
 
+  async signInDemoUser() {
+    return await request(this.url).post(`/auth/signin/demo-user`).send();
+  }
+
+  async signInDemoAdmin() {
+    return await request(this.url).post(`/auth/signin/demo-admin`).send();
+  }
+
   async signOutUser(headers?: { [key: string]: string } | {}) {
     let req = request(this.url).post(`/auth/signout`);
     req = headers ? req.set(headers) : req;

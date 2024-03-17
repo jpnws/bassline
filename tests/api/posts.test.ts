@@ -369,4 +369,172 @@ describe('Posts API', () => {
       expect(comment.updatedAt).toBeDefined();
     }
   });
+
+  it('should prevent creating a post if logged in user (currentUser.id) does not match authorId', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name12',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser0 = {
+      username: 'test-user-username14',
+      password: 'password',
+    };
+    const signUpUserResponse0 = await helper.signUpUser(newUser0);
+    const user0 = signUpUserResponse0.body.data.user;
+    const newUser = {
+      username: 'test-user-username15',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: board.id,
+      authorId: user0.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postCreateResponse.status).toBe(401);
+    expect(postCreateResponse.body.data).not.toBeDefined();
+  });
+
+  it('should prevent updating a post if logged in user is not the author', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name13',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'test-user-username16',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    const newPost = {
+      subject: 'test-post-subject3',
+      text: 'test-post-text3',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    const newUser2 = {
+      username: 'test-user-username17',
+      password: 'password',
+    };
+    const postData = postCreateResponse.body.data.post;
+    const signUpUserResponse2 = await helper.signUpUser(newUser2);
+    expect(signUpUserResponse2.body.data.token).toBeDefined();
+    expect(signUpUserResponse2.body.data.token).toBeString();
+    const token2 = signUpUserResponse2.body.data.token;
+    const bearer2 = `Bearer ${token2}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const updatedPost = {
+      subject: 'updated-post-subject3',
+      text: 'updated-post-text3',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postUpdateResponse = await helper.updatePost(
+      postData.id,
+      updatedPost,
+      {
+        Authorization: bearer2,
+      }
+    );
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postUpdateResponse.status).toBe(401);
+  });
+
+  it('should prevent deleting a post when non-author attempts to delete it', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name14',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'test-user-username18',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    const postData = postCreateResponse.body.data.post;
+    const newUser2 = {
+      username: 'test-user-username29',
+      password: 'password',
+    };
+    const signUpUserResponse2 = await helper.signUpUser(newUser2);
+    expect(signUpUserResponse2.body.data.token).toBeDefined();
+    expect(signUpUserResponse2.body.data.token).toBeString();
+    const token2 = signUpUserResponse2.body.data.token;
+    const bearer2 = `Bearer ${token2}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const postDeleteResponse = await helper.deletePost(postData.id, {
+      Authorization: bearer2,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postDeleteResponse.status).toBe(401);
+  });
 });
