@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "build": "bun build src/index.ts",
-    "start": "bun src/index.ts"
+    "start": "bun src/index.ts",
+    "prettify": "prettier --write '**/*.{ts,js,json,md}'"
   },
   "dependencies": {
     "@elysiajs/bearer": "^0.8.0",
