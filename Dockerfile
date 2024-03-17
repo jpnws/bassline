@@ -24,7 +24,7 @@ FROM dependencies as builder
 COPY . .
 
 # Finally, prepare the runtime stage
-FROM oven/bun:latest as runtime
+FROM oven/bun:1 as runtime
 WORKDIR /app
 
 # Copy production dependencies
