@@ -47,6 +47,90 @@ export const signinRouteSpec = {
   } as OpenAPIV3.OperationObject,
 };
 
+export const demoUserSignInRouteSpec = {
+  detail: {
+    tags: ['Auth'],
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                data: {
+                  type: 'object',
+                  properties: {
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'number',
+                        },
+                      },
+                    },
+                    token: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      401: {
+        description: 'Unauthorized',
+      },
+      500: {
+        description: 'An unexpected error occurred',
+      },
+    },
+  } as OpenAPIV3.OperationObject,
+};
+
+export const demoAdminSignInRouteSpec = {
+  detail: {
+    tags: ['Auth'],
+    responses: {
+      200: {
+        description: 'OK',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                data: {
+                  type: 'object',
+                  properties: {
+                    user: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'number',
+                        },
+                      },
+                    },
+                    token: {
+                      type: 'string',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      401: {
+        description: 'Unauthorized',
+      },
+      500: {
+        description: 'An unexpected error occurred',
+      },
+    },
+  } as OpenAPIV3.OperationObject,
+};
+
 export const signoutRouteSpec = {
   detail: {
     tags: ['Auth'],

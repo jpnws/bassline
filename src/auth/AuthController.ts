@@ -73,6 +73,48 @@ export default class AuthController {
     }
   };
 
+  public demoUserSignIn = async ({ set, jwt }: RouteContext) => {
+    try {
+      const user = await this.authService.signInDemoUser(jwt);
+      set.status = 200;
+      return {
+        data: {
+          user: {
+            id: user.id,
+          },
+          token: user.token,
+        },
+      };
+    } catch (error) {
+      set.status = 500;
+      return {
+        status: 'Internal server error',
+        message: 'Failed to sign in user.',
+      };
+    }
+  };
+
+  public demoAdminSignIn = async ({ set, jwt }: RouteContext) => {
+    try {
+      const user = await this.authService.signInDemoAdmin(jwt);
+      set.status = 200;
+      return {
+        data: {
+          user: {
+            id: user.id,
+          },
+          token: user.token,
+        },
+      };
+    } catch (error) {
+      set.status = 500;
+      return {
+        status: 'Internal server error',
+        message: 'Failed to sign in user.',
+      };
+    }
+  };
+
   public signout = async ({ set }: RouteContext) => {
     try {
       await this.authService.signoutUser();

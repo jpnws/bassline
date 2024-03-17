@@ -10,6 +10,8 @@ import { signout } from 'src/auth/routes/signout';
 import AuthRepository from 'src/auth/AuthRepository';
 import AuthService from 'src/auth/AuthService';
 import AuthController from 'src/auth/AuthController';
+import { demoUserSignIn } from './routes/demoUserSignIn';
+import { demoAdminSignIn } from './routes/demoAdminSignIn';
 
 /**
  * Auth route.
@@ -68,7 +70,11 @@ export const auth = (prisma: PrismaClient) => {
           }
         },
       },
-      (app) => app.use(signup(authController))
+      (app) =>
+        app
+          .use(signup(authController))
+          .use(demoUserSignIn(authController))
+          .use(demoAdminSignIn(authController))
     )
     .use(signin(authController));
 

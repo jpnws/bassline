@@ -7,6 +7,8 @@ import { IJwt } from 'src/auth/AuthController';
 import { IAuthEntity } from 'src/auth/AuthEntity';
 import { IAuthRepository } from 'src/auth/AuthRepository';
 
+import { v4 as uuidv4 } from 'uuid';
+
 export interface IAuthService {
   signinUser: (
     username: string,
@@ -19,6 +21,8 @@ export interface IAuthService {
     password: string,
     jwt: IJwt
   ) => Promise<IAuthEntity>;
+  signInDemoUser: (jwt: IJwt) => Promise<IAuthEntity>;
+  signInDemoAdmin: (jwt: IJwt) => Promise<IAuthEntity>;
 }
 
 export default class AuthService implements IAuthService {
@@ -44,6 +48,38 @@ export default class AuthService implements IAuthService {
       const token = await jwt.sign({
         id: user.id,
         username: username,
+        role: user.role,
+      });
+      return {
+        id: user.id,
+        token,
+      };
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  public signInDemoUser = async (jwt: IJwt) => {
+    try {
+      const uuid = uuidv4();
+      const username = `user-${uuid.split('-')[0]}`;
+      const password = uuid;
+      return await this.signupUser(username, password, jwt);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  public signInDemoAdmin = async (jwt: IJwt) => {
+    try {
+      const uuid = uuidv4();
+      const username = `admin-${uuid.split('-')[0]}`;
+      const password = uuid;
+      const hash = await Bun.password.hash(password);
+      const user = await this.authRepository.addAdmin(username, hash);
+      const token = await jwt.sign({
+        id: user.id,
+        username: user.username,
         role: user.role,
       });
       return {
