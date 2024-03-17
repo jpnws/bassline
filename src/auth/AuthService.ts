@@ -68,14 +68,14 @@ export default class AuthService implements IAuthService {
 
   public signInDemoUser = async (jwt: IJwt) => {
     const uuid = uuidv4();
-    const username = `user-${uuid.split('-')[0]}`;
+    const username = `u_${uuid.split('-')[0]}`;
     const password = uuid;
     return await this.signUpUser(username, password, jwt);
   };
 
   public signInDemoAdmin = async (jwt: IJwt) => {
     const uuid = uuidv4();
-    const username = `admin-${uuid.split('-')[0]}`;
+    const username = `a_${uuid.split('-')[0]}`;
     const password = uuid;
     const hash = await Bun.password.hash(password);
     const user = await this.authRepository.addAdmin(username, hash);

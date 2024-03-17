@@ -23,7 +23,7 @@ describe('Users API', () => {
     // * Arrange
     // * ========================
     const adminUser = {
-      username: 'admin-user-username1',
+      username: 'admin_tuser1',
       password: 'password',
     };
     await helper.prisma?.user.create({
@@ -39,7 +39,7 @@ describe('Users API', () => {
     // * Act
     // * ========================
     const newUser = {
-      username: 'test-user-username1',
+      username: 'tuser1',
       password: 'password',
     };
     const userCreateResponse = await helper.createUser(newUser, {
@@ -54,7 +54,7 @@ describe('Users API', () => {
     expect(userCreateResponse.body.data.user).toBeDefined();
     const user = userCreateResponse.body.data.user;
     expect(user.id).toBeDefined();
-    expect(user.username).toBe('test-user-username1');
+    expect(user.username).toBe('tuser1');
     expect(user.role).toBe('MEMBER');
   });
 
@@ -63,7 +63,7 @@ describe('Users API', () => {
     // * Arrange
     // * ========================
     const adminUser = {
-      username: 'admin-user-username2',
+      username: 'admin_tuser2',
       password: 'password',
     };
     await helper.prisma?.user.create({
@@ -76,7 +76,7 @@ describe('Users API', () => {
     const signInUserResponse = await helper.signInUser(adminUser);
     const token = signInUserResponse.body.data.token;
     const newUser = {
-      username: 'test-user-username2',
+      username: 'tuser2',
       password: 'password',
     };
     const createUserResponse = await helper.createUser(newUser, {
@@ -114,7 +114,7 @@ describe('Users API', () => {
     // * Arrange
     // * ========================
     const adminUser = {
-      username: 'admin-user-username3',
+      username: 'admin_tuser3',
       password: 'password',
     };
     await helper.prisma?.user.create({
@@ -127,7 +127,7 @@ describe('Users API', () => {
     const signInUserResponse = await helper.signInUser(adminUser);
     const token = signInUserResponse.body.data.token;
     const newUser = {
-      username: 'test-user-username3',
+      username: 'tuser3',
       password: 'password',
     };
     const createUserResponse = await helper.createUser(newUser, {
@@ -145,7 +145,7 @@ describe('Users API', () => {
     // * Act
     // * ========================
     const updatedUser = {
-      username: 'test-user-username2-updated',
+      username: 'tuser2-updated',
       role: UserRole.ADMIN,
     };
     const updateUserResponse = await helper.updateUser(
@@ -171,7 +171,7 @@ describe('Users API', () => {
     // * Arrange
     // * ========================
     const adminUser = {
-      username: 'admin-user-username4',
+      username: 'admin_tuser4',
       password: 'password',
     };
     await helper.prisma?.user.create({
@@ -184,7 +184,7 @@ describe('Users API', () => {
     const signInUserResponse = await helper.signInUser(adminUser);
     const token = signInUserResponse.body.data.token;
     const newUser = {
-      username: 'test-user-username4',
+      username: 'tuser4',
       password: 'password',
     };
     const createUserResponse = await helper.createUser(newUser, {
