@@ -8,12 +8,16 @@ engage in discussions. Registered members have the capability to create posts
 and comments, as well as to edit and delete their own content. It also allows
 its administrators to delete any posts or comments.
 
-## OpenAPI API Documentation
+## API Documentation
 
-[OpenAPI Documentation](https://disco-app-7sxty.ondigitalocean.app/api/swagger)
+[API Documentation](https://disco-app-7sxty.ondigitalocean.app/api/swagger)
 
-![OpenAPI Documentation](./doc/bassline-openapi-api-doc.png)
+![API Documentation](./doc/bassline-openapi-api-doc.png)
 
 ## Data Model
 
 ![Disco Bassline Data Model](./doc/disco-bassline-data-model.png)
+
+## Architecture
+
+![Disco Bassline Architecture](./doc/disco-bassline-architecture.png)
