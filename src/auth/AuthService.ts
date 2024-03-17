@@ -94,6 +94,17 @@ export default class AuthService implements IAuthService {
     if (!username || !password) {
       throw new InvalidInputError('Either username or password was empty.');
     }
+    if (username.length > 12 || username.length < 6) {
+      throw new InvalidInputError(
+        'Username must be between 6 and 12 characters.',
+      );
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      throw new InvalidInputError('Username must be alphanumeric.');
+    }
+    if (password.length < 6) {
+      throw new InvalidInputError('Password must be at least 6 characters.');
+    }
     const userExists = await this.authRepository.getUser(username);
     if (userExists) {
       throw new ItemAlreadyExistsError('Username already in use.');

@@ -49,6 +49,78 @@ describe('Signup API', () => {
     }
   });
 
+  it('should deny username less than 6 characters', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newUser = {
+      username: 'ueser',
+      password: 'password',
+    };
+    // * ========================
+    // * Act
+    // * ========================
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(signUpUserResponse.status).toBe(400);
+  });
+
+  it('should deny username more than 12 characters', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newUser = {
+      username: 'usernamelongerthan12characters',
+      password: 'password',
+    };
+    // * ========================
+    // * Act
+    // * ========================
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(signUpUserResponse.status).toBe(400);
+  });
+
+  it('should deny username with special characters', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newUser = {
+      username: 'user@name',
+      password: 'password',
+    };
+    // * ========================
+    // * Act
+    // * ========================
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(signUpUserResponse.status).toBe(400);
+  });
+
+  it('should deny password less than 6 characters', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const newUser = {
+      username: 'username',
+      password: 'pass',
+    };
+    // * ========================
+    // * Act
+    // * ========================
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(signUpUserResponse.status).toBe(400);
+  });
+
   it('should deny when username already exists', async () => {
     // * ========================
     // * Arrange
