@@ -1,6 +1,6 @@
 # Bassline (Disco API)
 
-[![Test](https://github.com/jpnws/bassline/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/jpnws/bassline/actions/workflows/ci.yaml)
+[![Test](https://github.com/jpnws/bassline/actions/workflows/test.yaml/badge.svg)](https://github.com/jpnws/bassline/actions/workflows/test.yaml)
 [![Lint](https://github.com/jpnws/bassline/actions/workflows/lint.yaml/badge.svg)](https://github.com/jpnws/bassline/actions/workflows/lint.yaml)
 [![Prettier](https://github.com/jpnws/bassline/actions/workflows/prettier.yaml/badge.svg)](https://github.com/jpnws/bassline/actions/workflows/prettier.yaml)
 
