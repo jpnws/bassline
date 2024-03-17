@@ -1,6 +1,10 @@
 # Use the official Bun image for the base stage
 # This is used to install dependencies and build the app
 FROM oven/bun:latest as base
+
+RUN useradd -m appuser
+USER appuser
+
 WORKDIR /app
 
 # Install dependencies in a temporary directory to cache them
