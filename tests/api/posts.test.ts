@@ -1,3 +1,4 @@
+import argon2 from 'argon2';
 import { describe, afterAll, it, expect, beforeAll } from 'bun:test';
 
 import Helper from 'tests/api/helper';
@@ -64,6 +65,136 @@ describe('Posts API', () => {
     expect(postCreateResponse.body.data.post).toBeDefined();
     const post = postCreateResponse.body.data.post;
     expect(post.id).toBeDefined();
+  });
+
+  it('should allow non-author admin to delete a different author post', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name19',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'tuser23',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    const postData = postCreateResponse.body.data.post;
+    await helper.prisma?.user.create({
+      data: {
+        username: 'adminx',
+        hash: await argon2.hash('password'),
+        role: 'ADMIN',
+      },
+    });
+    // sign in admin
+    const adminSignInResponse = await helper.signInUser({
+      username: 'adminx',
+      password: 'password',
+    });
+    const adminToken = adminSignInResponse.body.data.token;
+    const adminBearer = `Bearer ${adminToken}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const postDeleteResponse = await helper.deletePost(postData.id, {
+      Authorization: adminBearer,
+    });
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postDeleteResponse.status).toBe(202);
+  });
+
+  it('should allow non-author admin to update an author post', async () => {
+    // * ========================
+    // * Arrange
+    // * ========================
+    const board = await helper.prisma?.board.create({
+      data: {
+        name: 'test-board-name20',
+      },
+    });
+    if (!board) {
+      expect(board).not.toBeNull();
+      expect(board).not.toBeUndefined();
+      return;
+    }
+    const newUser = {
+      username: 'tuser24',
+      password: 'password',
+    };
+    const signUpUserResponse = await helper.signUpUser(newUser);
+    const user = signUpUserResponse.body.data.user;
+    expect(signUpUserResponse.body.data.token).toBeDefined();
+    expect(signUpUserResponse.body.data.token).toBeString();
+    const token = signUpUserResponse.body.data.token;
+    const bearer = `Bearer ${token}`;
+    const newPost = {
+      subject: 'test-post-subject1',
+      text: 'test-post-text1',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postCreateResponse = await helper.createPost(newPost, {
+      Authorization: bearer,
+    });
+    const postData = postCreateResponse.body.data.post;
+    await helper.prisma?.user.create({
+      data: {
+        username: 'adminy',
+        hash: await argon2.hash('password'),
+        role: 'ADMIN',
+      },
+    });
+    // sign in admin
+    const adminSignInResponse = await helper.signInUser({
+      username: 'adminy',
+      password: 'password',
+    });
+    const adminToken = adminSignInResponse.body.data.token;
+    const adminBearer = `Bearer ${adminToken}`;
+    // * ========================
+    // * Act
+    // * ========================
+    const updatedPost = {
+      subject: 'updated-post-subject3',
+      text: 'updated-post-text3',
+      boardId: board.id,
+      authorId: user.id,
+    };
+    const postUpdateResponse = await helper.updatePost(
+      postData.id,
+      updatedPost,
+      {
+        Authorization: adminBearer,
+      },
+    );
+    // * ========================
+    // * Assert
+    // * ========================
+    expect(postUpdateResponse.status).toBe(200);
   });
 
   it('should retrieve a single post by id', async () => {
