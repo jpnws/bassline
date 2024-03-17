@@ -15,10 +15,8 @@ COPY bun.lockb ./
 COPY prisma/schema.prisma ./
 
 # Install all dependencies including devDependencies
-RUN bun install --frozen-lockfile
-
 # Generate Prisma client. Ensure you have prisma as a dev dependency and your prisma schema file is copied.
-RUN bunx prisma generate
+RUN bun install && bunx prisma generate
 
 # Create a separate stage for building the production bundle
 # This can include transpilation, pruning of dev dependencies, or any build steps specific to your application
