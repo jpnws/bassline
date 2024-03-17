@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   prettier:
-    name: Check Formatting
+    name: Prettier
     runs-on: ubuntu-latest
 
     steps:
