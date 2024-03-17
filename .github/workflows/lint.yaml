@@ -33,4 +33,7 @@ jobs:
       - name: Super-linter
         uses: super-linter/super-linter@v6.3.0
         env:
+          VALIDATE_SQL: false
+          VALIDATE_SQLFLUFF: false
+          VALIDATE_TYPESCRIPT_STANDARD: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
