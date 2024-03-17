@@ -51,7 +51,7 @@ describe('Boards API', () => {
       return;
     }
     const newUser = {
-      username: 'test-user-username2',
+      username: 'tuser2',
       password: 'password',
     };
     const signUpUserResponse = await helper.signUpUser(newUser);

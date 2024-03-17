@@ -2,6 +2,7 @@ import { IPostEntity } from 'src/posts/PostEntity';
 import { IPostCommentEntity } from 'src/posts/PostCommentEntity';
 import { IPostRepository } from 'src/posts/PostRepository';
 import { AuthorizationError } from 'src/errors/AuthorizationError';
+import { InvalidInputError } from 'src/errors/InvalidInputError';
 
 type CurrentUser = {
   id: number;
@@ -53,6 +54,11 @@ export default class PostService implements IPostService {
         'The author ID of the post does not match the ID of the currently logged in user.',
       );
     }
+    if (text.length > 100 || text.length < 5) {
+      throw new InvalidInputError(
+        'The length of the text must be between 5 and 100 characters.',
+      );
+    }
     return await this.postRepository.add(subject, text, boardId, authorId);
   };
 
@@ -77,6 +83,11 @@ export default class PostService implements IPostService {
     if (currentUser.id !== authorId && currentUser.role !== 'ADMIN') {
       throw new AuthorizationError(
         'User attempting to update the post is not the author of the post or is not an admin.',
+      );
+    }
+    if (text.length > 100 || text.length < 5) {
+      throw new InvalidInputError(
+        'The length of the text must be between 5 and 100 characters.',
       );
     }
     return await this.postRepository.update(

@@ -1,6 +1,7 @@
 import { AuthorizationError } from 'src/errors/AuthorizationError';
 import { ICommentEntity } from 'src/comments/CommentEntity';
 import { ICommentRepository } from 'src/comments/CommentRepository';
+import { InvalidInputError } from 'src/errors/InvalidInputError';
 
 type CurrentUser = {
   id: number;
@@ -16,7 +17,6 @@ export interface ICommentService {
     authorId: number,
     currentUser: CurrentUser,
   ) => Promise<ICommentEntity>;
-  removeComment: (id: number, currentUser: CurrentUser) => Promise<void>;
   updateComment: (
     id: number,
     text: string,
@@ -24,6 +24,7 @@ export interface ICommentService {
     authorId: number,
     currentUser: CurrentUser,
   ) => Promise<ICommentEntity>;
+  removeComment: (id: number, currentUser: CurrentUser) => Promise<void>;
 }
 
 export default class CommentService implements ICommentService {
@@ -48,17 +49,12 @@ export default class CommentService implements ICommentService {
         'The author ID of the comment does not match the ID of the currently logged in user.',
       );
     }
-    return await this.commentRepository.add(text, postId, authorId);
-  };
-
-  public removeComment = async (id: number, currentUser: CurrentUser) => {
-    const comment = await this.commentRepository.get(id);
-    if (currentUser.id !== comment.author.id && currentUser.role !== 'ADMIN') {
-      throw new AuthorizationError(
-        'User attempting to delete the comment is not the author of the comment or is not an admin.',
+    if (!text || text.length === 0 || text.length > 350) {
+      throw new InvalidInputError(
+        'The comment should be at least 1 character and at most 350 characters.',
       );
     }
-    return await this.commentRepository.delete(id);
+    return await this.commentRepository.add(text, postId, authorId);
   };
 
   public updateComment = async (
@@ -73,6 +69,21 @@ export default class CommentService implements ICommentService {
         'User attempting to update the comment is not the author of the comment or is not an admin.',
       );
     }
+    if (!text || text.length === 0 || text.length > 350) {
+      throw new InvalidInputError(
+        'The comment should be at least 1 character and at most 350 characters.',
+      );
+    }
     return await this.commentRepository.update(id, text, postId, authorId);
+  };
+
+  public removeComment = async (id: number, currentUser: CurrentUser) => {
+    const comment = await this.commentRepository.get(id);
+    if (currentUser.id !== comment.author.id && currentUser.role !== 'ADMIN') {
+      throw new AuthorizationError(
+        'User attempting to delete the comment is not the author of the comment or is not an admin.',
+      );
+    }
+    return await this.commentRepository.delete(id);
   };
 }

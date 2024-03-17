@@ -33,7 +33,7 @@ describe('Demo Admin Signin API', () => {
     expect(getCurrentUserResponse.status).toBe(200);
     const user = getCurrentUserResponse.body.data.user;
     expect(user.id).toBeDefined();
-    expect(user.username).toContain('admin-');
+    expect(user.username).toContain('a_');
     expect(user.role).toBeDefined();
     expect(user.role).toBe('ADMIN');
   });

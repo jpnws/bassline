@@ -33,7 +33,7 @@ describe('Demo User Signin API', () => {
     expect(getCurrentUserResponse.status).toBe(200);
     const user = getCurrentUserResponse.body.data.user;
     expect(user.id).toBeDefined();
-    expect(user.username).toContain('user-');
+    expect(user.username).toContain('u_');
     expect(user.role).toBeDefined();
     expect(user.role).toBe('MEMBER');
   });

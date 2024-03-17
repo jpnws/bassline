@@ -124,7 +124,7 @@ export default class AuthController {
         set.status = 401;
         return {
           error: 'User not authorized',
-          message: 'Authentication token was invalid',
+          message: error.message,
         };
       }
       set.status = 500;
@@ -153,14 +153,14 @@ export default class AuthController {
         set.status = 400;
         return {
           error: 'Bad input',
-          message: 'Username or password cannot be empty.',
+          message: error.message,
         };
       }
       if (error instanceof ItemAlreadyExistsError) {
         set.status = 400;
         return {
           error: 'Bad input',
-          message: 'User already exists.',
+          message: error.message,
         };
       }
       set.status = 500;

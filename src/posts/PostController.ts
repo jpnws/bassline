@@ -1,4 +1,5 @@
 import { AuthorizationError } from 'src/errors/AuthorizationError';
+import { InvalidInputError } from 'src/errors/InvalidInputError';
 import { IPostService } from 'src/posts/PostService';
 
 interface RouteContext {
@@ -47,6 +48,13 @@ export default class PostController {
         set.status = 401;
         return {
           error: 'Unauthorized',
+          message: error.message,
+        };
+      }
+      if (error instanceof InvalidInputError) {
+        set.status = 400;
+        return {
+          error: 'Bad request',
           message: error.message,
         };
       }
@@ -107,6 +115,13 @@ export default class PostController {
         set.status = 401;
         return {
           error: 'Unauthorized',
+          message: error.message,
+        };
+      }
+      if (error instanceof InvalidInputError) {
+        set.status = 400;
+        return {
+          error: 'Bad request',
           message: error.message,
         };
       }
