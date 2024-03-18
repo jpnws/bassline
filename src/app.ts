@@ -18,13 +18,7 @@ import { users } from 'src/users/users';
  * @param rateLimit - The rate limit plugin instance.
  * @returns The Elysia app instance.
  */
-
-export const createApp = (
-  prisma: PrismaClient,
-  swagger?: any,
-  cors?: any,
-  rateLimit?: any,
-) => {
+export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   const app = new Elysia({ prefix: '/api' });
 
   // Add the Swagger plugin to the app.
@@ -53,11 +47,6 @@ export const createApp = (
   // Add CORS to allow requests from any origin.
   if (cors) {
     app.use(cors({ methods: ['POST', 'GET', 'PUT', 'DELETE'] }));
-  }
-
-  // Add rate limit to the app.
-  if (rateLimit) {
-    app.use(rateLimit({ max: 200 }));
   }
 
   // Define a health check route.
