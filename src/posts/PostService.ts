@@ -1,8 +1,10 @@
-import { IPostEntity } from 'src/posts/PostEntity';
-import { IPostCommentEntity } from 'src/posts/PostCommentEntity';
-import { IPostRepository } from 'src/posts/PostRepository';
+import sanitizeHtml from 'sanitize-html';
+
 import { AuthorizationError } from 'src/errors/AuthorizationError';
 import { InvalidInputError } from 'src/errors/InvalidInputError';
+import { IPostCommentEntity } from 'src/posts/PostCommentEntity';
+import { IPostEntity } from 'src/posts/PostEntity';
+import { IPostRepository } from 'src/posts/PostRepository';
 
 type CurrentUser = {
   id: number;
@@ -59,7 +61,13 @@ export default class PostService implements IPostService {
         'The length of the text must be between 5 and 100 characters.',
       );
     }
-    return await this.postRepository.add(subject, text, boardId, authorId);
+    const sanitizedText = sanitizeHtml(text);
+    return await this.postRepository.add(
+      subject,
+      sanitizedText,
+      boardId,
+      authorId,
+    );
   };
 
   public removePost = async (id: number, currentUser: CurrentUser) => {
@@ -90,10 +98,11 @@ export default class PostService implements IPostService {
         'The length of the text must be between 5 and 100 characters.',
       );
     }
+    const sanitizedText = sanitizeHtml(text);
     return await this.postRepository.update(
       id,
       subject,
-      text,
+      sanitizedText,
       boardId,
       authorId,
     );
