@@ -16,7 +16,8 @@
     "@elysiajs/swagger": "^0.8.5",
     "@prisma/client": "^5.10.2",
     "argon2": "^0.40.1",
-    "elysia": "^0.8.17"
+    "elysia": "^0.8.17",
+    "elysia-rate-limit": "^2.2.0"
   },
   "devDependencies": {
     "@types/bun": "latest",

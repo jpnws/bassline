@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Elysia } from 'elysia';
 import { PrismaClient } from '@prisma/client';
 
@@ -15,8 +17,13 @@ import { auth } from 'src/auth/auth';
  * @param cors - The CORS plugin instance.
  * @returns The Elysia app instance.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
+
+export const createApp = (
+  prisma: PrismaClient,
+  swagger?: any,
+  cors?: any,
+  rateLimit?: any,
+) => {
   const app = new Elysia({ prefix: '/api' });
 
   // Add the Swagger plugin to the app.
@@ -45,6 +52,11 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   // Add CORS to allow requests from any origin.
   if (cors) {
     app.use(cors({ methods: ['POST', 'GET', 'PUT', 'DELETE'] }));
+  }
+
+  // Add rate limit to the app.
+  if (rateLimit) {
+    app.use(rateLimit());
   }
 
   // Define a health check route.
