@@ -71,7 +71,27 @@ export const users = (prisma: PrismaClient) => {
           .use(updateUser(userController))
           .use(deleteUser(userController)),
     )
-    .use(getCurrentUser(userController));
+    .guard(
+      {
+        beforeHandle({ currentUser, bearer, set }) {
+          if (!bearer) {
+            set.status = 400;
+            return {
+              error: 'User Not Authenticated',
+              message: 'Authentication token was missing.',
+            };
+          }
+          if (!currentUser) {
+            set.status = 401;
+            return {
+              error: 'User Unauthorized',
+              message: 'Authentication token was missing or incorrect',
+            };
+          }
+        },
+      },
+      (app) => app.use(getCurrentUser(userController)),
+    );
 
   return app;
 };
