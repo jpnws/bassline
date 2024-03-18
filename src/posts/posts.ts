@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-import { Elysia } from 'elysia';
 import bearer from '@elysiajs/bearer';
 import jwt from '@elysiajs/jwt';
+import { PrismaClient } from '@prisma/client';
+import { Elysia } from 'elysia';
 
 import { createPost } from 'src/posts/routes/createPost';
 import { deletePost } from 'src/posts/routes/deletePost';
@@ -9,9 +9,9 @@ import { getPost } from 'src/posts/routes/getPost';
 import { getPostComments } from 'src/posts/routes/getPostComments';
 import { updatePost } from 'src/posts/routes/updatePost';
 
+import PostController from 'src/posts/PostController';
 import PostRepository from 'src/posts/PostRepository';
 import PostService from 'src/posts/PostService';
-import PostController from 'src/posts/PostController';
 
 /**
  * Posts routes.

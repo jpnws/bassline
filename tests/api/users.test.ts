@@ -1,4 +1,4 @@
-import { describe, afterAll, it, expect, beforeAll } from 'bun:test';
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 
 import { UserRole } from '@prisma/client';
 

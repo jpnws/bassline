@@ -1,8 +1,8 @@
-import { createApp } from 'src/app';
-import { PrismaClient } from '@prisma/client';
-import { swagger } from '@elysiajs/swagger';
 import { cors } from '@elysiajs/cors';
+import { swagger } from '@elysiajs/swagger';
+import { PrismaClient } from '@prisma/client';
 import { rateLimit } from 'elysia-rate-limit';
+import { createApp } from 'src/app';
 
 const prisma = new PrismaClient();
 

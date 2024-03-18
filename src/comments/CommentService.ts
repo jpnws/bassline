@@ -1,6 +1,6 @@
-import { AuthorizationError } from 'src/errors/AuthorizationError';
 import { ICommentEntity } from 'src/comments/CommentEntity';
 import { ICommentRepository } from 'src/comments/CommentRepository';
+import { AuthorizationError } from 'src/errors/AuthorizationError';
 import { InvalidInputError } from 'src/errors/InvalidInputError';
 
 type CurrentUser = {

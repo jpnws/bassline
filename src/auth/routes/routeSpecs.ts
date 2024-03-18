@@ -1,5 +1,5 @@
-import { OpenAPIV3 } from 'openapi-types';
 import { t } from 'elysia';
+import { OpenAPIV3 } from 'openapi-types';
 
 export const signinRouteSpec = {
   body: t.Object({
