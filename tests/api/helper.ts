@@ -1,10 +1,10 @@
 import { execSync } from 'child_process';
 
+import { PrismaClient } from '@prisma/client';
+import { Elysia } from 'elysia';
 import pg from 'pg';
 import request from 'supertest';
 import { v4 as uuidv4 } from 'uuid';
-import { PrismaClient } from '@prisma/client';
-import { Elysia } from 'elysia';
 
 import { createApp } from 'src/app';
 

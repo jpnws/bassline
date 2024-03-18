@@ -1,5 +1,5 @@
 import argon2 from 'argon2';
-import { describe, afterAll, it, expect, beforeAll } from 'bun:test';
+import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 
 import Helper from 'tests/api/helper';
 

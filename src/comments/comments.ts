@@ -8,9 +8,9 @@ import { deleteComment } from 'src/comments/routes/deleteComment';
 import { getComment } from 'src/comments/routes/getComment';
 import { updateComment } from 'src/comments/routes/updateComment';
 
+import CommentController from 'src/comments/CommentController';
 import CommentRepository from 'src/comments/CommentRepository';
 import CommentService from 'src/comments/CommentService';
-import CommentController from 'src/comments/CommentController';
 
 /**
  * Comments routes.

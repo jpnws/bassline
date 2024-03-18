@@ -1,17 +1,17 @@
+import bearer from '@elysiajs/bearer';
+import jwt from '@elysiajs/jwt';
 import { PrismaClient } from '@prisma/client';
 import { Elysia } from 'elysia';
-import jwt from '@elysiajs/jwt';
-import bearer from '@elysiajs/bearer';
 
-import { signup } from 'src/auth/routes/signup';
 import { signin } from 'src/auth/routes/signin';
 import { signout } from 'src/auth/routes/signout';
+import { signup } from 'src/auth/routes/signup';
 
+import AuthController from 'src/auth/AuthController';
 import AuthRepository from 'src/auth/AuthRepository';
 import AuthService from 'src/auth/AuthService';
-import AuthController from 'src/auth/AuthController';
-import { demoUserSignIn } from './routes/demoUserSignIn';
 import { demoAdminSignIn } from './routes/demoAdminSignIn';
+import { demoUserSignIn } from './routes/demoUserSignIn';
 
 /**
  * Auth route.
