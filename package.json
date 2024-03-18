@@ -17,7 +17,6 @@
     "@prisma/client": "^5.11.0",
     "argon2": "^0.40.1",
     "elysia": "^1.0.4",
-    "elysia-rate-limit": "^3.0.0",
     "sanitize-html": "^2.12.1"
   },
   "devDependencies": {

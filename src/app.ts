@@ -15,7 +15,6 @@ import { users } from 'src/users/users';
  * @param prisma - The Prisma client instance.
  * @param swagger - The Swagger plugin instance.
  * @param cors - The CORS plugin instance.
- * @param rateLimit - The rate limit plugin instance.
  * @returns The Elysia app instance.
  */
 export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
