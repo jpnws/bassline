@@ -57,7 +57,7 @@ export const createApp = (
 
   // Add rate limit to the app.
   if (rateLimit) {
-    app.use(rateLimit({ max: 100 }));
+    app.use(rateLimit({ max: 200 }));
   }
 
   // Define a health check route.
