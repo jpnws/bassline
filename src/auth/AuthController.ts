@@ -1,4 +1,3 @@
-import { AuthorizationError } from 'src/errors/AuthorizationError';
 import { InvalidInputError } from 'src/errors/InvalidInputError';
 import { ItemAlreadyExistsError } from 'src/errors/ItemAlreadyExistsError';
 import { ItemNotFoundError } from 'src/errors/ItemNotFoundError';
@@ -116,23 +115,8 @@ export default class AuthController {
   };
 
   public signout = async ({ set }: RouteContext) => {
-    try {
-      await this.authService.signOutUser();
-      set.status = 200;
-    } catch (error) {
-      if (error instanceof AuthorizationError) {
-        set.status = 401;
-        return {
-          error: 'User not authorized',
-          message: error.message,
-        };
-      }
-      set.status = 500;
-      return {
-        status: 'Internal server error',
-        message: 'Failed to sign out user.',
-      };
-    }
+    await this.authService.signOutUser();
+    set.status = 200;
   };
 
   public signup = async ({ body, set, jwt }: RouteContext) => {
