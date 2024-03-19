@@ -1,4 +1,13 @@
-[*]
-indent_style = space
-indent_size = 2
-tab_width = 2
+root = true                            # Designates the topmost editor config file, stopping searches for additional files
+
+[*]                                    # Applies the following settings to all files
+end_of_line = lf                       # Ensures line endings are consistently LF (Unix-style)
+charset = utf-8                        # Sets file character encoding to UTF-8 for compatibility and standardization
+indent_style = space                   # Uses spaces for indentation for consistency across environments
+indent_size = 2                        # Sets the number of spaces per indentation level for readability
+tab_width = 2                          # Defines the width of a tab character as 2 spaces for consistent display
+insert_final_newline = true            # Ensures files end with a newline to avoid issues with UNIX tools
+trim_trailing_whitespace = true        # Removes whitespace at the end of lines to clean up code
+spaces_around_operators = true         # Enforces spacing around operators for readability (non-standard property, may not be respected by all tools)
+spaces_around_brackets = false         # Disallows spaces around brackets for a compact coding style (non-standard property, may not be respected by all tools)
+max_line_length = 80                   # Sets the maximum line length to 80 characters for readability and consistency
