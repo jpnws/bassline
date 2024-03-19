@@ -10,4 +10,3 @@ insert_final_newline = true            # Ensures files end with a newline to avo
 trim_trailing_whitespace = true        # Removes whitespace at the end of lines to clean up code
 spaces_around_operators = true         # Enforces spacing around operators for readability (non-standard property, may not be respected by all tools)
 spaces_around_brackets = false         # Disallows spaces around brackets for a compact coding style (non-standard property, may not be respected by all tools)
-max_line_length = 80                   # Sets the maximum line length to 80 characters for readability and consistency
