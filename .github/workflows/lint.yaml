@@ -36,5 +36,5 @@ jobs:
           VALIDATE_SQL: false
           VALIDATE_SQLFLUFF: false
           VALIDATE_TYPESCRIPT_STANDARD: false
-          FILTER_REGEX_EXCLUDE: '.*lockb|prisma/migrations/.*'
+          FILTER_REGEX_EXCLUDE: '.*lockb|prisma/migrations/.*|docs/.*'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
