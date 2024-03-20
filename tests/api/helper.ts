@@ -8,6 +8,28 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { createApp } from 'src/app';
 
+type PostBody = {
+  id?: number;
+  subject: string;
+  text: string;
+  boardId: number;
+  authorId: number;
+};
+
+type CommentBody = {
+  id?: number;
+  text: string;
+  postId: number;
+  authorId: number;
+};
+
+type UserBody = {
+  id?: number;
+  username: string;
+  password?: string;
+  role?: 'MEMBER' | 'ADMIN';
+};
+
 /**
  * Helper class for testing the API.
  *

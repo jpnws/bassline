@@ -35,7 +35,7 @@ export const posts = (prisma: PrismaClient) => {
     )
     .use(bearer())
     .derive(async ({ jwt, bearer }) => {
-      const currentUser = (await jwt.verify(bearer)) as UserBody;
+      const currentUser = await jwt.verify(bearer);
       return { currentUser };
     })
     .guard(

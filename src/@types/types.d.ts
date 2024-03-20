@@ -11,25 +11,3 @@ declare module 'bun' {
     APP_JWT_SECRET: string;
   }
 }
-
-type PostBody = {
-  id?: number;
-  subject: string;
-  text: string;
-  boardId: number;
-  authorId: number;
-};
-
-type CommentBody = {
-  id?: number;
-  text: string;
-  postId: number;
-  authorId: number;
-};
-
-type UserBody = {
-  id?: number;
-  username: string;
-  password?: string;
-  role?: 'MEMBER' | 'ADMIN';
-};
