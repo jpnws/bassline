@@ -34,7 +34,7 @@ export const auth = (prisma: PrismaClient) => {
     )
     .use(bearer())
     .derive(async ({ jwt, bearer }) => {
-      const currentUser = (await jwt.verify(bearer));
+      const currentUser = await jwt.verify(bearer);
       return { currentUser };
     })
     .guard(
