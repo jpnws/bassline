@@ -56,7 +56,7 @@ export const createApp = (
   if (cors) {
     app.use(
       cors({
-        origin: /discotime.netlify.app/,
+        origin: /^https?:\/\/discotime\.netlify\.app$/,
         methods: ['POST', 'GET', 'PUT', 'DELETE'],
       }),
     );
