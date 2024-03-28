@@ -29,13 +29,7 @@ export const createApp = (
   if (cors) {
     app.use(
       cors({
-        origin: /^https?:\/\/discotime\.netlify\.app.*$/,
-        methods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
-        allowedHeaders: '*',
-        exposedHeaders: '*',
-        credentials: 'omit',
-        maxAge: 5,
-        preflight: true,
+        methods: ['POST', 'GET', 'PUT', 'DELETE'],
       }),
     );
   }
