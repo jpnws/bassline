@@ -33,7 +33,7 @@ export const createApp = (
         methods: ['POST', 'GET', 'PUT', 'DELETE'],
         allowedHeaders: '*',
         exposedHeaders: '*',
-        credentials: true,
+        credentials: 'omit',
         maxAge: 5,
         preflight: true,
       }),
