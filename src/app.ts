@@ -25,6 +25,21 @@ export const createApp = (
 ) => {
   const app = new Elysia({ prefix: '/api' });
 
+  // Add CORS to allow requests from any origin.
+  if (cors) {
+    app.use(
+      cors({
+        origin: /^https?:\/\/discotime\.netlify\.app\/?$/,
+        methods: ['POST', 'GET', 'PUT', 'DELETE'],
+        allowedHeaders: '*',
+        exposedHeaders: '*',
+        credentials: true,
+        maxAge: 5,
+        preflight: true,
+      }),
+    );
+  }
+
   if (rateLimit) {
     app.use(rateLimit({ number: 100 }));
   }
@@ -48,21 +63,6 @@ export const createApp = (
             { name: 'Auth', description: 'Auth API' },
           ],
         },
-      }),
-    );
-  }
-
-  // Add CORS to allow requests from any origin.
-  if (cors) {
-    app.use(
-      cors({
-        origin: /^https?:\/\/discotime\.netlify\.app\/?$/,
-        methods: ['POST', 'GET', 'PUT', 'DELETE'],
-        allowedHeaders: '*',
-        exposedHeaders: '*',
-        credentials: true,
-        maxAge: 5,
-        preflight: true,
       }),
     );
   }
