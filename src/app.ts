@@ -29,7 +29,7 @@ export const createApp = (
   if (cors) {
     app.use(
       cors({
-        origin: /^https?:\/\/discotime\.netlify\.app\/?$/,
+        origin: /^https?:\/\/discotime\.netlify\.app.*$/,
         methods: ['POST', 'GET', 'PUT', 'DELETE'],
         allowedHeaders: '*',
         exposedHeaders: '*',
@@ -41,7 +41,7 @@ export const createApp = (
   }
 
   if (rateLimit) {
-    app.use(rateLimit({ number: 100 }));
+    app.use(rateLimit({ number: 1000 }));
   }
 
   // Add the Swagger plugin to the app.
