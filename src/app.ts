@@ -17,8 +17,17 @@ import { users } from 'src/users/users';
  * @param cors - The CORS plugin instance.
  * @returns The Elysia app instance.
  */
-export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
+export const createApp = (
+  prisma: PrismaClient,
+  swagger?: any,
+  cors?: any,
+  rateLimit?: any,
+) => {
   const app = new Elysia({ prefix: '/api' });
+
+  if (rateLimit) {
+    app.use(rateLimit({ number: 100 }));
+  }
 
   // Add the Swagger plugin to the app.
   if (swagger) {
@@ -45,7 +54,12 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
 
   // Add CORS to allow requests from any origin.
   if (cors) {
-    app.use(cors({ methods: ['POST', 'GET', 'PUT', 'DELETE'] }));
+    app.use(
+      cors({
+        origin: /discotime.netlify.app/,
+        methods: ['POST', 'GET', 'PUT', 'DELETE'],
+      }),
+    );
   }
 
   // Define a health check route.
