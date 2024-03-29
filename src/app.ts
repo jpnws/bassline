@@ -47,7 +47,9 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
   if (cors) {
     app.use(
       cors({
-        origin: /^https?:\/\/discotime\.netlify\.app.*$/,
+        origin: process.env['ALLOW_FE_ORIGIN_ONLY']
+          ? /^https?:\/\/discotime\.netlify\.app.*$/
+          : '*',
         methods: ['POST', 'GET', 'PUT', 'DELETE'],
       }),
     );
