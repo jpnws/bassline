@@ -43,6 +43,8 @@ export const createApp = (prisma: PrismaClient, swagger?: any, cors?: any) => {
     );
   }
 
+  console.log('ALLOW_FE_ORIGIN_ONLY:', process.env['ALLOW_FE_ORIGIN_ONLY']);
+
   // Add CORS to allow requests from any origin.
   if (cors) {
     app.use(
